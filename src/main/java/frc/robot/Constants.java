@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.util.Units;
 import frc.lib.util.SwerveModuleConstants;
 
@@ -42,10 +43,10 @@ public final class Constants {
         public static final double ANGLE_GEAR_RATIO = (12.0 / 1.0); // 12.8:1
 
         public static final SwerveDriveKinematics SWERVE_KINEMATICS = new SwerveDriveKinematics(
-            new Translation2d(WHEEL_BASE / 2.0, TRACK_WIDTH / 2.0),
-            new Translation2d(WHEEL_BASE / 2.0, -TRACK_WIDTH / 2.0),
-            new Translation2d(-WHEEL_BASE / 2.0, TRACK_WIDTH / 2.0),
-            new Translation2d(-WHEEL_BASE / 2.0, -TRACK_WIDTH / 2.0)
+            new Translation2d(  WHEEL_BASE / 2.0,   TRACK_WIDTH / 2.0),
+            new Translation2d(  WHEEL_BASE / 2.0,  -TRACK_WIDTH / 2.0),
+            new Translation2d( -WHEEL_BASE / 2.0,   TRACK_WIDTH / 2.0),
+            new Translation2d( -WHEEL_BASE / 2.0,  -TRACK_WIDTH / 2.0)
         );
 
         /* Current Limiting */
@@ -139,6 +140,69 @@ public final class Constants {
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(DRIVE_MOTOR_ID, ANGLE_MOTOR_ID, DRIVE_MOTOR_INVERTED, ANGLE_MOTOR_INVERTED, CAN_CODER_ID, ANGLE_OFFSET);
         }
+    }
+
+    public static final class Auton {
+        public static final double MAX_SPEED_MPS            = 3;    // meters per second
+        public static final double MAX_ACCELERATION_MPSS    = 3;    // meters per second squared
+
+        public static final double MAX_ANGULAR_SPEED_RPS    = Math.PI;      // radians per second
+        public static final double MAX_ANGULAR_SPEED_RPSS   = Math.PI;      // radians per second squared
+
+        public static final double PX_CONTROLLER        = 1.0;
+        public static final double PY_CONTROLLER        = 1.0;
+        public static final double PTHETA_CONTROLLER    = 1.0;
+
+        public static final TrapezoidProfile.Constraints THETA_CONTROLLER_CONTRAINTS = new TrapezoidProfile.Constraints(
+            MAX_ANGULAR_SPEED_RPS, MAX_ANGULAR_SPEED_RPSS
+        );
+    }
+
+    public static final class Playstation {
+        
+        // Driver Controls
+        public static final Integer USBID = 0;
+
+        // Axis
+        public static final Integer LeftXAxis = 0;
+        public static final Integer LeftYAxis = 1;
+        public static final Integer RightXAxis = 2;
+        public static final Integer RightYAxis = 5;
+
+        // Trigger
+        public static final Integer LeftTrigger = 3;
+        public static final Integer RightTrigger = 4;
+
+        // Bumper
+        public static final Integer LeftBumper = 5;
+        public static final Integer RightBumper = 6;
+
+        // Buttons
+        public static final Integer SquareButton = 1;
+        public static final Integer XButton = 2;
+        public static final Integer CircleButton = 3;
+        public static final Integer TriangleButton = 4;
+
+        public static final Integer LeftTriggerButton = 7;
+        public static final Integer RightTriggerButton = 8;
+
+        public static final Integer LeftButton = 9;
+        public static final Integer RightButton = 10;
+
+        public static final Integer LeftJoystickButton = 11;
+        public static final Integer RightJoystickButton = 12;
+        public static final Integer MiddleButton = 13;
+        public static final Integer BigButton = 14;
+
+        // POV Button
+        public static final Integer NorthPOVButton = 0;
+        public static final Integer NorthEastPOVButton = 45;
+        public static final Integer EastPOVButton = 90;
+        public static final Integer SouthEastPOVButton = 135;
+        public static final Integer SouthPOVButton = 180;
+        public static final Integer SouthWestPOVButton = 225;
+        public static final Integer WestPOVButton = 270;
+        public static final Integer NorthWestPOVButton = 315;
     }
 
 }
