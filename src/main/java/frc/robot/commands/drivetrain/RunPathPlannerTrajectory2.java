@@ -18,7 +18,7 @@ public class RunPathPlannerTrajectory2 extends SequentialCommandGroup {
                 Constants.SwerveDrivetrain.SWERVE_KINEMATICS, 
                 Constants.Auton.PX_CONTROLLER, 
                 Constants.Auton.PY_CONTROLLER,
-                Constants.Auton.ROT_PID_CONTROLLER,
+                Constants.Auton.THETA_CONTROLLER,
                 drivetrain::setModuleStates,
                 drivetrain
             )

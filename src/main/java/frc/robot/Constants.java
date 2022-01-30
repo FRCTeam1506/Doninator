@@ -125,7 +125,6 @@ public final class Constants {
         }
     }
 
-
     public static final class Shooter {
         public static final int SHOOTER_ID = 13;
     }
@@ -139,14 +138,14 @@ public final class Constants {
 
         // public static final PIDController PX_CONTROLLER = new PIDController(5.25, 1, 0.4);
         // public static final PIDController PY_CONTROLLER = new PIDController(5.25, 1, 0.4);
-        public static final PIDController PX_CONTROLLER = new PIDController(1.0, 0, 0.1);
-        public static final PIDController PY_CONTROLLER = new PIDController(1.0, 0, 0.1);
-        public static final double PTHETA_CONTROLLER    = 1.0;
+        public static final PIDController PX_CONTROLLER = new PIDController(1.0, 0, 0.0);
+        public static final PIDController PY_CONTROLLER = new PIDController(1.0, 0, 0.0);
+        // public static final double PTHETA_CONTROLLER    = 1.0;
 
-        public static final TrapezoidProfile.Constraints THETA_CONTROLLER_CONTRAINTS = new TrapezoidProfile.Constraints(
-            MAX_ANGULAR_SPEED_RPS, MAX_ANGULAR_SPEED_RPSS
-        );
+        public static final TrapezoidProfile.Constraints THETA_CONTROLLER_CONTRAINTS = new TrapezoidProfile.Constraints(MAX_ANGULAR_SPEED_RPS, MAX_ANGULAR_SPEED_RPSS);
 
-        public static final ProfiledPIDController ROT_PID_CONTROLLER = new ProfiledPIDController(.13, 0, .39, THETA_CONTROLLER_CONTRAINTS);
+        // public static final ProfiledPIDController ROT_PID_CONTROLLER = new ProfiledPIDController(.13, 0, .39, THETA_CONTROLLER_CONTRAINTS);
+        public static final ProfiledPIDController THETA_CONTROLLER = new ProfiledPIDController(.1, 0.0, 0.0, THETA_CONTROLLER_CONTRAINTS);
     }
+
 }
