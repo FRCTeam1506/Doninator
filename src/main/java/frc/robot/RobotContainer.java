@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.drivetrain.RunPathPlannerTrajectory2;
 import frc.robot.commands.drivetrain.SwerveTeleop;
-import frc.robot.commands.shooter.DefaultShooter;
+import frc.robot.commands.shooter.IdleShooter;
 import frc.robot.commands.shooter.Shoot;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveDrivetrain;
@@ -64,7 +64,7 @@ public class RobotContainer {
       )
     );
 
-    // shooter.setDefaultCommand(new DefaultShooter(shooter));
+    // shooter.setDefaultCommand(new IdleShooter(shooter));
   }
 
   private void loadTrajectories() {
