@@ -125,15 +125,22 @@ public final class Constants {
         }
     }
 
+
+    public static final class Shooter {
+        public static final int SHOOTER_ID = 13;
+    }
+
     public static final class Auton {
-        public static final double MAX_SPEED_MPS            = 3;    // meters per second
-        public static final double MAX_ACCELERATION_MPSS    = 3;    // meters per second squared
+        public static final double MAX_SPEED_MPS            = 2;    // meters per second
+        public static final double MAX_ACCELERATION_MPSS    = 1;    // meters per second squared
 
         public static final double MAX_ANGULAR_SPEED_RPS    = Math.PI;      // radians per second
         public static final double MAX_ANGULAR_SPEED_RPSS   = Math.PI;      // radians per second squared
 
-        public static final PIDController PX_CONTROLLER        = new PIDController(5.25, 1, 0.4);
-        public static final PIDController PY_CONTROLLER        = new PIDController(5.25, 1, 0.4);
+        // public static final PIDController PX_CONTROLLER = new PIDController(5.25, 1, 0.4);
+        // public static final PIDController PY_CONTROLLER = new PIDController(5.25, 1, 0.4);
+        public static final PIDController PX_CONTROLLER = new PIDController(1.0, 0, 0.1);
+        public static final PIDController PY_CONTROLLER = new PIDController(1.0, 0, 0.1);
         public static final double PTHETA_CONTROLLER    = 1.0;
 
         public static final TrapezoidProfile.Constraints THETA_CONTROLLER_CONTRAINTS = new TrapezoidProfile.Constraints(

@@ -15,8 +15,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.shuffleboard.WidgetType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
@@ -58,7 +56,7 @@ public class SwerveDrivetrain extends SubsystemBase {
                 )
         );
 
-        SwerveDriveKinematics.normalizeWheelSpeeds(swerveModuleStates, Constants.SwerveDrivetrain.MAX_SPEED);
+        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.SwerveDrivetrain.MAX_SPEED);
 
         for (SwerveModule mod : this.swerveModules) {
             mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
@@ -103,7 +101,7 @@ public class SwerveDrivetrain extends SubsystemBase {
     }
 
     public void setModuleStates(SwerveModuleState[] desiredStates) {
-        SwerveDriveKinematics.normalizeWheelSpeeds(desiredStates, Constants.SwerveDrivetrain.MAX_SPEED);
+        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.SwerveDrivetrain.MAX_SPEED);
         for (SwerveModule mod : this.swerveModules) {
             mod.setDesiredState(desiredStates[mod.moduleNumber], false);
         }
@@ -121,6 +119,6 @@ public class SwerveDrivetrain extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // this.swerveOdometry.update(this.getYaw(), this.getStates());
+        this.swerveOdometry.update(this.getYaw(), this.getStates());
     }
 }

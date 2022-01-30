@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-
 public class SwerveTeleop extends CommandBase {
 
     private static final double DEADBAND = 0.1;
@@ -31,7 +30,10 @@ public class SwerveTeleop extends CommandBase {
 
     @Override
     public void execute() {
-        // TODO: Convert from GenericHID to PS4Controller API
+        // double yAxis = -controller.getLeftY();
+        // double xAxis = -controller.getLeftX();
+        // double rAxis = -controller.getRightX();
+
         double yAxis = -controller.getRawAxis(1);
         double xAxis = -controller.getRawAxis(0);
         double rAxis = -controller.getRawAxis(2);
