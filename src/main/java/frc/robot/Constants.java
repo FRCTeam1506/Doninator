@@ -130,22 +130,22 @@ public final class Constants {
     }
 
     public static final class Auton {
-        public static final double MAX_SPEED_MPS            = 2;    // meters per second
-        public static final double MAX_ACCELERATION_MPSS    = 1;    // meters per second squared
+        public static final double MAX_SPEED_MPS            = 7.0;    // meters per second
+        public static final double MAX_ACCELERATION_MPSS    = 5.0;    // meters per second squared
 
-        public static final double MAX_ANGULAR_SPEED_RPS    = Math.PI;      // radians per second
-        public static final double MAX_ANGULAR_SPEED_RPSS   = Math.PI;      // radians per second squared
+        public static final double MAX_ANGULAR_SPEED_RPS    = 2 * Math.PI;      // radians per second
+        public static final double MAX_ANGULAR_SPEED_RPSS   = 2 * Math.PI;      // radians per second squared
 
         // public static final PIDController PX_CONTROLLER = new PIDController(5.25, 1, 0.4);
         // public static final PIDController PY_CONTROLLER = new PIDController(5.25, 1, 0.4);
-        public static final PIDController PX_CONTROLLER = new PIDController(1.0, 0, 0.0);
-        public static final PIDController PY_CONTROLLER = new PIDController(1.0, 0, 0.0);
+        public static final PIDController PX_CONTROLLER = new PIDController(6.0, 0, 0.1);
+        public static final PIDController PY_CONTROLLER = new PIDController(6.0, 0, 0.1);
         // public static final double PTHETA_CONTROLLER    = 1.0;
 
         public static final TrapezoidProfile.Constraints THETA_CONTROLLER_CONTRAINTS = new TrapezoidProfile.Constraints(MAX_ANGULAR_SPEED_RPS, MAX_ANGULAR_SPEED_RPSS);
 
         // public static final ProfiledPIDController ROT_PID_CONTROLLER = new ProfiledPIDController(.13, 0, .39, THETA_CONTROLLER_CONTRAINTS);
-        public static final ProfiledPIDController THETA_CONTROLLER = new ProfiledPIDController(.1, 0.0, 0.0, THETA_CONTROLLER_CONTRAINTS);
+        public static final ProfiledPIDController THETA_CONTROLLER = new ProfiledPIDController(10.0, 0.0, 0.0, THETA_CONTROLLER_CONTRAINTS);
     }
 
 }

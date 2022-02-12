@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.sensors.Pigeon2;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
 import frc.robot.Constants;
@@ -15,6 +16,8 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
@@ -22,10 +25,11 @@ public class SwerveDrivetrain extends SubsystemBase {
     
     private SwerveDriveOdometry swerveOdometry;
     private SwerveModule[] swerveModules;
-    private PigeonIMU gyro;
+    private Pigeon2 gyro;
+    private Field2d field;
 
     public SwerveDrivetrain() {
-        this.gyro = new PigeonIMU(Constants.SwerveDrivetrain.GYRO_ID);
+        this.gyro = new Pigeon2(Constants.SwerveDrivetrain.GYRO_ID);
         this.gyro.configFactoryDefault();
         this.zeroGyro();
 
@@ -37,6 +41,10 @@ public class SwerveDrivetrain extends SubsystemBase {
             new SwerveModule(2, Constants.SwerveDrivetrain.Mod2.constants),
             new SwerveModule(3, Constants.SwerveDrivetrain.Mod3.constants)
         };
+
+        this.field = new Field2d();
+
+        dashboard();
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
@@ -68,10 +76,22 @@ public class SwerveDrivetrain extends SubsystemBase {
         this.gyro.setYaw(0);
     }
 
+    private double optimizeGyro (double degrees) {
+        // 0 < degrees < 360
+        if ((degrees > 0.0) && (degrees < 360.0)) {
+            return degrees;
+        } else {
+            int m = (int) Math.floor( degrees / 360.0 );
+            double optimizedDegrees = degrees - (m * 360.0);
+            return Math.abs(optimizedDegrees);
+        }
+    }
+
     public Rotation2d getYaw() {
         double[] ypr = new double[3];
         this.gyro.getYawPitchRoll(ypr);
-        return Constants.SwerveDrivetrain.INVERT_GYRO ? Rotation2d.fromDegrees(360 - ypr[0]) : Rotation2d.fromDegrees(ypr[0]);
+        double yaw = optimizeGyro(ypr[0]);
+        return Constants.SwerveDrivetrain.INVERT_GYRO ? Rotation2d.fromDegrees(360 - yaw) : Rotation2d.fromDegrees(yaw);
     }
 
     public double getGyroAngleDegrees() {
@@ -85,6 +105,10 @@ public class SwerveDrivetrain extends SubsystemBase {
     /* Odometry */
     public Pose2d getPose() {
         return this.swerveOdometry.getPoseMeters();
+    }
+
+    public void setPose(Pose2d pose) {
+        this.swerveOdometry.resetPosition(pose, pose.getRotation());
     }
 
     public void resetOdometry(Pose2d pose) {
@@ -112,7 +136,7 @@ public class SwerveDrivetrain extends SubsystemBase {
         tab.add(this);
         tab.addNumber("Gyro Angle ???", this::getGyroAngleDegrees).withWidget(BuiltInWidgets.kGyro);
         tab.addNumber("Gyro Angle (GRAPH) ???", this::getGyroAngleDegrees).withWidget(BuiltInWidgets.kGraph);
-        
+        SmartDashboard.putData(this.field);
         // SmartDashboard.putData("ANGLE PID", data);
         // SmartDashboard.putData("DRIVE PID", data);
     }
@@ -120,5 +144,6 @@ public class SwerveDrivetrain extends SubsystemBase {
     @Override
     public void periodic() {
         this.swerveOdometry.update(this.getYaw(), this.getStates());
+        this.field.setRobotPose(this.swerveOdometry.getPoseMeters());
     }
 }
