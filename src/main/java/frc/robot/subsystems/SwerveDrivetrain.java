@@ -1,11 +1,9 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.sensors.Pigeon2;
-import com.ctre.phoenix.sensors.PigeonIMU;
 
 import frc.robot.Constants;
 import frc.robot.utils.swerve.SwerveModule;
-
+import com.ctre.phoenix.sensors.Pigeon2;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -131,14 +129,32 @@ public class SwerveDrivetrain extends SubsystemBase {
         }
     }
 
+    private double getSwerveModule0Degrees () {
+        return this.swerveModules[0].getCanCoder().getDegrees();
+    }
+
+    private double getSwerveModule1Degrees () {
+        return this.swerveModules[1].getCanCoder().getDegrees();
+    }
+
+    private double getSwerveModule2Degrees () {
+        return this.swerveModules[2].getCanCoder().getDegrees();
+    }
+
+    private double getSwerveModule3Degrees () {
+        return this.swerveModules[3].getCanCoder().getDegrees();
+    }
+
     public void dashboard() {
         ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
         tab.add(this);
-        tab.addNumber("Gyro Angle ???", this::getGyroAngleDegrees).withWidget(BuiltInWidgets.kGyro);
+        // tab.addNumber("Gyro Angle ???", this::getGyroAngleDegrees).withWidget(BuiltInWidgets.kGyro);
         tab.addNumber("Gyro Angle (GRAPH) ???", this::getGyroAngleDegrees).withWidget(BuiltInWidgets.kGraph);
+        tab.addNumber("Mod 0 Encoder", this::getSwerveModule0Degrees);
+        tab.addNumber("Mod 1 Encoder", this::getSwerveModule1Degrees);
+        tab.addNumber("Mod 2 Encoder", this::getSwerveModule2Degrees);
+        tab.addNumber("Mod 3 Encoder", this::getSwerveModule3Degrees);
         SmartDashboard.putData(this.field);
-        // SmartDashboard.putData("ANGLE PID", data);
-        // SmartDashboard.putData("DRIVE PID", data);
     }
 
     @Override
