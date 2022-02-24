@@ -126,7 +126,27 @@ public final class Constants {
     }
 
     public static final class Shooter {
-        public static final int SHOOTER_ID = 13;
+        public static final int LEFT_S = 50;
+        public static final int SHOOTER_ID = 51;
+    }
+
+    public static final class Intake {
+        public static final int MOTOR_ID = 52;
+        public static final int XFACTOR_ID = 15;
+    }
+
+    public static final class Indexer {
+        public static final int BOTTOM_MOTOR_ID = 53;
+        public static final int TOP_MOTOR_ID = 54;
+    }
+
+    public static final class Climber {
+        public static final int LEFT_CLIMBER = 61;
+        public static final int RIGHT_CLIMBER = 62;
+    }
+
+    public static final class Turret {
+        public static final int MOTOR_ID = 55;
     }
 
     public static final class Auton {

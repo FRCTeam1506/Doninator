@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-
 import frc.robot.Constants;
 import frc.robot.utils.swerve.SwerveModule;
 import com.ctre.phoenix.sensors.Pigeon2;
@@ -17,7 +16,6 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 
 public class SwerveDrivetrain extends SubsystemBase {
     

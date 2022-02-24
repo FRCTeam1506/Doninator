@@ -5,18 +5,34 @@
 package frc.robot;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
+
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PS4Controller;
+import edu.wpi.first.wpilibj.PneumaticHub;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.drivetrain.RunPathPlannerTrajectory2;
 import frc.robot.commands.drivetrain.SwerveTeleop;
+import frc.robot.commands.indexer.RunIndexer;
+import frc.robot.commands.indexer.StopIndexer;
+import frc.robot.commands.intake.ExtendAndIntake;
+import frc.robot.commands.intake.ExtendAndOuttake;
+import frc.robot.commands.intake.StopAndRetract;
+import frc.robot.commands.macros.IntakeAndIndex;
+import frc.robot.commands.macros.ShootAndIndex;
 import frc.robot.commands.shooter.IdleShooter;
-import frc.robot.commands.shooter.Shoot;
+import frc.robot.commands.shooter.RunShooter;
+import frc.robot.commands.turret.RunTurret;
+import frc.robot.commands.turret.StopTurret;
+import frc.robot.subsystems.IndexerSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveDrivetrain;
+import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.utils.TrajectoryHelper;
 
 public class RobotContainer {
@@ -26,51 +42,77 @@ public class RobotContainer {
 
   /* Buttons */
   private final JoystickButton zeroGyro = new JoystickButton(driver, PS4Controller.Button.kCircle.value);
-  // private final JoystickButton shoot = new JoystickButton(driver, PS4Controller.Button.kTriangle.value);
+  private final JoystickButton intakeAndIndex = new JoystickButton(driver, PS4Controller.Button.kL1.value);
+  private final JoystickButton extendAndOuttake = new JoystickButton(driver, PS4Controller.Button.kSquare.value);
+  private final JoystickButton shootAndIndex = new JoystickButton(driver, PS4Controller.Button.kR1.value);
+  private final JoystickButton runTurret = new JoystickButton(driver, PS4Controller.Button.kCross.value);
 
   /* Subsystems */
   private final SwerveDrivetrain drivetrain = new SwerveDrivetrain();
-  // private final ShooterSubsystem shooter = new ShooterSubsystem();
+  private final ShooterSubsystem shooter = new ShooterSubsystem();
+  private final IntakeSubsystem intake = new IntakeSubsystem();
+  private final IndexerSubsystem indexer = new IndexerSubsystem();
+  private final TurretSubsystem turret = new TurretSubsystem();
 
   /* Commands */
+  // * primitives
   private final Command c_zeroGyro = new InstantCommand( () -> drivetrain.zeroGyro() );
-  // private final Command c_shoot = new Shoot(shooter, 1850.0);
+  private final Command c_extendAndOuttake = new ExtendAndOuttake(intake);
+  private final Command c_stopAndRetract = new StopAndRetract(intake);
+  private final Command c_idleShooter = new IdleShooter(shooter);
+  private final Command c_stopIndexer = new StopIndexer(indexer);
+  private final Command c_stopTurret = new StopTurret(turret);
+  private final Command c_setTurretPos = new RunTurret(turret, -2000.0);
+
+  // * macros
+  private final Command c_runIndexer = new IntakeAndIndex(intake, indexer);
+  private final Command c_runShooter = new ShootAndIndex(shooter, indexer, 1850.0);
 
   /* Trajectories */
   private PathPlannerTrajectory tr_test_1;
+
+  private PneumaticHub hub = new PneumaticHub();
+  private Compressor compressor = new Compressor(1, PneumaticsModuleType.REVPH);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     LiveWindow.disableAllTelemetry();
     DriverStation.silenceJoystickConnectionWarning(true);
 
+    hub.enableCompressorAnalog(50, 60);
+
     setDefaultCommands();
     configureButtonBindings();
     loadTrajectories();
   }
 
-  private void configureButtonBindings() {
-    zeroGyro.whenPressed(c_zeroGyro);
-    // new JoystickButton(driver, PS4Controller.Button.kTriangle.value).whileHeld(c_shoot);
-    // shoot.whileHeld(c_shoot);
+  private void setDefaultCommands() {
+    // drivetrain.setDefaultCommand(
+    //   new SwerveTeleop(
+    //     drivetrain,
+    //     driver,
+    //     true, true
+    //   )
+    // );
+
+    shooter.setDefaultCommand(c_idleShooter);
+
+    intake.setDefaultCommand(c_stopAndRetract);
+
+    indexer.setDefaultCommand(c_stopIndexer);
+
+    turret.setDefaultCommand(c_stopTurret);
   }
 
-  private void setDefaultCommands() {
-    drivetrain.setDefaultCommand(
-      new SwerveTeleop(
-        drivetrain,
-        driver,
-        true, true
-      )
-    );
-
-    // shooter.setDefaultCommand(new IdleShooter(shooter));
+  private void configureButtonBindings() {
+    zeroGyro.whenPressed(c_zeroGyro);
+    shootAndIndex.whileHeld(c_runShooter);
+    intakeAndIndex.whileHeld(c_runIndexer);
+    extendAndOuttake.whileHeld(c_extendAndOuttake);
+    runTurret.whenPressed(c_setTurretPos);
   }
 
   private void loadTrajectories() {
-    // tr_test = TrajectoryHelper.loadWPILibTrajectoryFromFile("test1");
-    // tr_straight = TrajectoryHelper.loadWPILibTrajectoryFromFile("straight");
-    // tr_holotest = TrajectoryHelper.loadPathPlannerTrajectory("straight2");
     tr_test_1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("test_1");
   }
 
