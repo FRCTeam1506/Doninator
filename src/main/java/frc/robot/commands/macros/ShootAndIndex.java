@@ -10,7 +10,7 @@ public class ShootAndIndex extends ParallelCommandGroup {
     
     public ShootAndIndex (ShooterSubsystem shooter, IndexerSubsystem indexer, double velocity_rpm) {
         super(
-            new RunIndexer(indexer),
+            // new RunIndexer(indexer),
             new RunShooter(shooter, velocity_rpm)
         );
     }

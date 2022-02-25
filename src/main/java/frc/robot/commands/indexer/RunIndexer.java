@@ -14,7 +14,7 @@ public class RunIndexer extends CommandBase {
 
     @Override
     public void initialize() {
-        this.indexer.start_run();
+        indexer.start_run();
     }
 
 }

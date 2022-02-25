@@ -7,8 +7,6 @@ public class IdleShooter extends CommandBase {
 
     private ShooterSubsystem shooter;
 
-    private static final double IDLE_VELOCITY_RPM = 420.69;
-
     public IdleShooter (ShooterSubsystem shooter) {
         this.shooter = shooter;
         addRequirements(shooter);
@@ -16,6 +14,6 @@ public class IdleShooter extends CommandBase {
 
     @Override
     public void execute() {
-        shooter.shoot(IDLE_VELOCITY_RPM);
+        shooter.idle();
     }
 }

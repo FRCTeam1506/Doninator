@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 
 import com.ctre.phoenix.motorcontrol.ControlFrame;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
@@ -19,21 +20,16 @@ public class IntakeSubsystem extends SubsystemBase {
 
     private final double DEFAULT_SPEED = 0.33;
 
-    private enum XFactorState {
-        RETRACTED,
-        EXTENDED,
-    }
-
-    private XFactorState currentXFactorState;
+    private enum XFactorState { RETRACTED, EXTENDED }
+    private XFactorState currentXFactorState = XFactorState.RETRACTED;
 
     private TalonFX motor = new TalonFX(Constants.Intake.MOTOR_ID);
-    private Solenoid xFactor = new Solenoid(PneumaticsModuleType.REVPH, Constants.Intake.XFACTOR_ID);
+    private Solenoid xFactor = RobotContainer.hub.makeSolenoid(Constants.Intake.XFACTOR_ID);
 
     public IntakeSubsystem () {
         motor.configFactoryDefault();
         motor.setControlFramePeriod(ControlFrame.Control_3_General, 100);
         motor.setInverted(TalonFXInvertType.Clockwise);
-        currentXFactorState = XFactorState.RETRACTED;
         dashboard();
     }
 
@@ -53,34 +49,18 @@ public class IntakeSubsystem extends SubsystemBase {
         this.currentXFactorState = state;
         switch (state) {
             case RETRACTED:
-                this.xFactor.set(true);
-                break;
-
-            case EXTENDED:
                 this.xFactor.set(false);
                 break;
 
-            default:
-                this.setXFactorState(XFactorState.RETRACTED);
+            case EXTENDED:
+                this.xFactor.set(true);
                 break;
         }
     }
+    private String getXFactorStateName () { return currentXFactorState.name(); }
 
-    public void extend () {
-        this.setXFactorState(XFactorState.EXTENDED);
-    }
-
-    public void retract () {
-        this.setXFactorState(XFactorState.RETRACTED);
-    }
-
-    public XFactorState getXFactorState () {
-        return this.currentXFactorState;
-    }
-
-    private String getXFactorStateName () {
-        return this.currentXFactorState.name();
-    }
+    public void extend () { this.setXFactorState(XFactorState.EXTENDED); }
+    public void retract () { this.setXFactorState(XFactorState.RETRACTED); }
 
     private void dashboard () {
         ShuffleboardTab tab = Shuffleboard.getTab("Intake");

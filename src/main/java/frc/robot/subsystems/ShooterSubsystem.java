@@ -4,12 +4,16 @@ import java.util.Map;
 
 import frc.lib.math.Conversions;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -17,34 +21,103 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ShooterSubsystem extends SubsystemBase {
 
-    private TalonFX shooter = new TalonFX(Constants.Shooter.SHOOTER_ID);
+    private static final double kP = 0.2;
+    private static final double kI = 0.0;
+    private static final double kD = 0.0;
+    private static final double kF = 0.05;
+
+    private static final double IDLE_RPM = 420.69; // 420.69
+
+    private enum HoodState {
+        HIGH,
+        LOW,
+    }
+    private HoodState currentHoodState = HoodState.LOW;
+
+    private TalonFX leftMotor = new TalonFX(Constants.Shooter.LEFT_MOTOR_ID);
+    private TalonFX rightMotor = new TalonFX(Constants.Shooter.RIGHT_MOTOR_ID);
+
+    private Solenoid hood = RobotContainer.hub.makeSolenoid(Constants.Shooter.SOLENOID_ID);
     
     // TODO: Remove after testing
     private NetworkTableEntry velocity_dash;
     private double velocity_rpm = 1000.0;
 
     public ShooterSubsystem () {
-        shooter.configFactoryDefault();
-        shooter.setInverted(TalonFXInvertType.CounterClockwise);
+        leftMotor.configFactoryDefault();
+        rightMotor.configFactoryDefault();
 
-        shooter.config_kP(0, 0.2);
-        shooter.config_kI(0, 0.0);
-        shooter.config_kD(0, 0.0);
-        shooter.config_kF(0, 0.05);
+        leftMotor.setNeutralMode(NeutralMode.Coast);
+        rightMotor.setNeutralMode(NeutralMode.Coast);
+
+        leftMotor.setInverted(TalonFXInvertType.Clockwise);
+        rightMotor.setInverted(TalonFXInvertType.CounterClockwise);
+
+        leftMotor.config_kP(0, kP);
+        leftMotor.config_kI(0, kI);
+        leftMotor.config_kD(0, kD);
+        leftMotor.config_kF(0, kF);
+        leftMotor.configClosedloopRamp(0.1);
+
+        rightMotor.config_kP(0, kP);
+        rightMotor.config_kI(0, kI);
+        rightMotor.config_kD(0, kD);
+        rightMotor.config_kF(0, kF);
+        rightMotor.configClosedloopRamp(0.1);
+
 
         dashboard();
     }
 
+    private void setShooterVelocity (double velocity_rpm) {
+        leftMotor.set(TalonFXControlMode.Velocity, Conversions.RPMToFalcon(velocity_rpm, 1.0));
+        rightMotor.set(TalonFXControlMode.Velocity, Conversions.RPMToFalcon(velocity_rpm, 1.0));
+    }
+
     public void shoot (double velocity_rpm) {
-        // shooter.set(TalonFXControlMode.Velocity, Conversions.RPMToFalcon(this.velocity_dash.getDouble(this.velocity_rpm), 1.0));
+        setShooterVelocity(this.velocity_dash.getDouble(velocity_rpm));
+    }
+
+    public void idle () {
+        setShooterVelocity(IDLE_RPM);
+    }
+
+    private void setHoodState (HoodState state) {
+        this.currentHoodState = state;
+        switch (state) {
+            case HIGH:
+                hood.set(false);
+                break;
+        
+            case LOW:
+                hood.set(true);
+                break;
+
+            default:
+                setHoodState(HoodState.LOW);
+                break;
+        }
+    }
+
+    private String getHoodStateName () {
+        return this.currentHoodState.name();
+    }
+
+    public void set_high () {
+        this.setHoodState(HoodState.HIGH);
+    }
+
+    public void set_low () {
+        this.setHoodState(HoodState.LOW);
     }
 
     public double getVelocity () {
-        return Conversions.falconToRPM(shooter.getSelectedSensorVelocity(), 1.0);
+        return Conversions.falconToRPM(rightMotor.getSelectedSensorVelocity(), 1.0);
     }
 
     public void dashboard () {
         ShuffleboardTab tab = Shuffleboard.getTab("Shooter");
+        tab.add(this);
         tab.addNumber("Velocity (RPM)", this::getVelocity);
         tab.addNumber("Velocity Graph (RPM)", this::getVelocity).withWidget(BuiltInWidgets.kGraph);
         
@@ -52,5 +125,7 @@ public class ShooterSubsystem extends SubsystemBase {
             .withWidget(BuiltInWidgets.kNumberSlider)
             .withProperties(Map.of("min", 1000, "max", 2500, "blockIncrement", 500))
             .getEntry();
+
+        tab.addString("Hood State", this::getHoodStateName);
     }
 }
