@@ -71,9 +71,7 @@ public class SwerveModule {
 
     private void configAngleEncoder() {
         this.angleEncoder.configFactoryDefault();
-        System.out.println("HERE");
         this.angleEncoder.configAllSettings(Robot.ctreConfigs.swerveCANCoderConfig);
-        System.out.println("HERE 2");
     }
 
     private void configAngleMotor() {
