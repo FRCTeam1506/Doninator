@@ -5,7 +5,6 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -54,11 +53,11 @@ public final class Constants {
         /* Angle Motor PID Values */
         public static final double ANGLE_kP = 0.6;   // 0.6
         public static final double ANGLE_kI = 0.0;   // 0.0
-        public static final double ANGLE_kD = 12.0;   // 12.0
+        public static final double ANGLE_kD = 12.0;  // 12.0
         public static final double ANGLE_kF = 0.0;   // 0.0
 
         /* Drive Motor PID Values */
-        public static final double DRIVE_kP = 0.1;  // 0.10
+        public static final double DRIVE_kP = 0.1;   // 0.10
         public static final double DRIVE_kI = 0.0;   // 0.0
         public static final double DRIVE_kD = 0.0;   // 0.0
         public static final double DRIVE_kF = 0.0;   // 0.0
@@ -89,7 +88,7 @@ public final class Constants {
             public static final int CAN_CODER_ID    = 10;
             public static final int ANGLE_MOTOR_ID  = 11;
             public static final int DRIVE_MOTOR_ID  = 12;
-            public static final double ANGLE_OFFSET = 297.598; // 297.598
+            public static final double ANGLE_OFFSET = 0.0; // 297.598
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(DRIVE_MOTOR_ID, ANGLE_MOTOR_ID, CAN_CODER_ID, ANGLE_OFFSET);
         }
@@ -99,7 +98,7 @@ public final class Constants {
             public static final int CAN_CODER_ID    = 20;
             public static final int ANGLE_MOTOR_ID  = 21;
             public static final int DRIVE_MOTOR_ID  = 22;
-            public static final double ANGLE_OFFSET = 71.104; // 71.104
+            public static final double ANGLE_OFFSET = 0.0; // 71.104
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(DRIVE_MOTOR_ID, ANGLE_MOTOR_ID, CAN_CODER_ID, ANGLE_OFFSET);
         }
@@ -109,7 +108,7 @@ public final class Constants {
             public static final int CAN_CODER_ID    = 30;
             public static final int ANGLE_MOTOR_ID  = 31;
             public static final int DRIVE_MOTOR_ID  = 32;
-            public static final double ANGLE_OFFSET = 346.729; // 359.385
+            public static final double ANGLE_OFFSET = 0.0; // 346.729
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(DRIVE_MOTOR_ID, ANGLE_MOTOR_ID, CAN_CODER_ID, ANGLE_OFFSET);
         }
@@ -119,7 +118,7 @@ public final class Constants {
             public static final int CAN_CODER_ID    = 40;
             public static final int ANGLE_MOTOR_ID  = 41;
             public static final int DRIVE_MOTOR_ID  = 42;
-            public static final double ANGLE_OFFSET = 93.428; // 92.637
+            public static final double ANGLE_OFFSET = 0.0; // 93.428
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(DRIVE_MOTOR_ID, ANGLE_MOTOR_ID, CAN_CODER_ID, ANGLE_OFFSET);
         }
@@ -128,7 +127,6 @@ public final class Constants {
     public static final class Shooter {
         public static final int LEFT_MOTOR_ID = 50;
         public static final int RIGHT_MOTOR_ID = 51;
-        public static final int SOLENOID_ID = 15;
     }
 
     public static final class Intake {
@@ -156,9 +154,10 @@ public final class Constants {
     }
 
     public static final class Turret {
+        public static final int HOOD_ID = 15;
         public static final int MOTOR_ID = 55;
-        public static final double AUTO_kP = 1.0;
-        public static final double AUTO_kI = 0.0;
+        public static final double AUTO_kP = 0.023;
+        public static final double AUTO_kI = 0.005;
         public static final double AUTO_kD = 0.0;
     }
 
@@ -169,15 +168,11 @@ public final class Constants {
         public static final double MAX_ANGULAR_SPEED_RPS    = 2 * Math.PI;      // radians per second
         public static final double MAX_ANGULAR_SPEED_RPSS   = 2 * Math.PI;      // radians per second squared
 
-        // public static final PIDController PX_CONTROLLER = new PIDController(5.25, 1, 0.4);
-        // public static final PIDController PY_CONTROLLER = new PIDController(5.25, 1, 0.4);
         public static final PIDController PX_CONTROLLER = new PIDController(6.0, 0, 0.1);
         public static final PIDController PY_CONTROLLER = new PIDController(6.0, 0, 0.1);
-        // public static final double PTHETA_CONTROLLER    = 1.0;
 
         public static final TrapezoidProfile.Constraints THETA_CONTROLLER_CONTRAINTS = new TrapezoidProfile.Constraints(MAX_ANGULAR_SPEED_RPS, MAX_ANGULAR_SPEED_RPSS);
 
-        // public static final ProfiledPIDController ROT_PID_CONTROLLER = new ProfiledPIDController(.13, 0, .39, THETA_CONTROLLER_CONTRAINTS);
         public static final ProfiledPIDController THETA_CONTROLLER = new ProfiledPIDController(10.0, 0.0, 0.0, THETA_CONTROLLER_CONTRAINTS);
     }
 

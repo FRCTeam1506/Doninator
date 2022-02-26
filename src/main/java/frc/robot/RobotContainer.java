@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.climber.ProgressClimber;
 import frc.robot.commands.climber.StopClimber;
-import frc.robot.commands.drivetrain.RunPathPlannerTrajectory2;
+import frc.robot.commands.drivetrain.RunPathPlannerTrajectory;
 import frc.robot.commands.drivetrain.SwerveTeleop;
 import frc.robot.commands.indexer.RunIndexer;
 import frc.robot.commands.indexer.StopIndexer;
@@ -29,6 +29,7 @@ import frc.robot.commands.macros.IntakeAndIndex;
 import frc.robot.commands.macros.ShootAndIndex;
 import frc.robot.commands.shooter.IdleShooter;
 import frc.robot.commands.shooter.RunShooter;
+import frc.robot.commands.turret.AimTurret;
 import frc.robot.commands.turret.RunTurret;
 import frc.robot.commands.turret.StopTurret;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -40,6 +41,10 @@ import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.utils.TrajectoryHelper;
 
 public class RobotContainer {
+
+  public static PneumaticHub hub = new PneumaticHub();
+  // private Compressor compressor = hub.makeCompressor();
+  // private Compressor compressor = new Compressor(1, PneumaticsModuleType.REVPH);
 
   /* Controllers */
   private final PS4Controller driver = new PS4Controller(0);
@@ -54,11 +59,11 @@ public class RobotContainer {
 
   /* Subsystems */
   private final SwerveDrivetrain drivetrain = new SwerveDrivetrain();
-  private final ShooterSubsystem shooter = new ShooterSubsystem();
-  private final IntakeSubsystem intake = new IntakeSubsystem();
+  private final ShooterSubsystem shooter = new ShooterSubsystem(hub);
+  private final IntakeSubsystem intake = new IntakeSubsystem(hub);
   private final IndexerSubsystem indexer = new IndexerSubsystem();
-  private final TurretSubsystem turret = new TurretSubsystem();
-  private final ClimberSubsystem climber = new ClimberSubsystem();
+  private final TurretSubsystem turret = new TurretSubsystem(hub);
+  private final ClimberSubsystem climber = new ClimberSubsystem(hub);
 
   /* Commands */
   // * primitives
@@ -68,19 +73,16 @@ public class RobotContainer {
   private final Command c_idleShooter = new IdleShooter(shooter);
   private final Command c_stopIndexer = new StopIndexer(indexer);
   private final Command c_stopTurret = new StopTurret(turret);
-  private final Command c_setTurretPos = new RunTurret(turret, -15000.0);
   private final Command c_stopClimber = new StopClimber(climber);
   private final Command c_progressClimb = new ProgressClimber(climber);
+  private final Command c_aimTurret = new AimTurret(turret);
 
   // * macros
   private final Command c_runIndexer = new IntakeAndIndex(intake, indexer);
-  private final Command c_runShooter = new ShootAndIndex(shooter, indexer, 1850.0);
+  private final Command c_runShooter = new ShootAndIndex(shooter, indexer, 1770.0); // 1850.0
 
   /* Trajectories */
   private PathPlannerTrajectory tr_test_1;
-
-  public static PneumaticHub hub = new PneumaticHub();
-  private  Compressor compressor = new Compressor(1, PneumaticsModuleType.REVPH);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -88,6 +90,7 @@ public class RobotContainer {
     DriverStation.silenceJoystickConnectionWarning(true);
 
     hub.enableCompressorAnalog(100, 120);
+    // compressor.enableAnalog(100, 120);
 
     setDefaultCommands();
     configureButtonBindings();
@@ -95,13 +98,13 @@ public class RobotContainer {
   }
 
   private void setDefaultCommands() {
-    // drivetrain.setDefaultCommand(
-    //   new SwerveTeleop(
-    //     drivetrain,
-    //     driver,
-    //     true, true
-    //   )
-    // );
+    drivetrain.setDefaultCommand(
+      new SwerveTeleop(
+        drivetrain,
+        driver,
+        true, true
+      )
+    );
 
     shooter.setDefaultCommand(c_idleShooter);
 
@@ -119,12 +122,12 @@ public class RobotContainer {
     shootAndIndex.whileHeld(c_runShooter);
     intakeAndIndex.whileHeld(c_runIndexer);
     extendAndOuttake.whileHeld(c_extendAndOuttake);
-    runTurret.whenPressed(c_setTurretPos);
+    runTurret.whileHeld(c_aimTurret);
     progressClimb.whenPressed(c_progressClimb);
 
     new POVButton(driver, 0).whenPressed(new RunTurret(turret, 0));
-    new POVButton(driver, 90).whenPressed(new RunTurret(turret, 15000.0));
-    new POVButton(driver, 270).whenPressed(new RunTurret(turret, -15000.0));
+    new POVButton(driver, 90).whenPressed(new RunTurret(turret, 5000.0));
+    new POVButton(driver, 270).whenPressed(new RunTurret(turret, 8000.0));
     new POVButton(driver, 180).whenPressed(new RunTurret(turret, -8000.0));
   }
 
@@ -133,6 +136,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return new RunPathPlannerTrajectory2(drivetrain, tr_test_1);
+    // return new RunPathPlannerTrajectory2(drivetrain, tr_test_1);
+    return null;
   }
 }

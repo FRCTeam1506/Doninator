@@ -1,16 +1,13 @@
 package frc.robot.subsystems;
 
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
 
 import com.ctre.phoenix.motorcontrol.ControlFrame;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticHub;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -23,10 +20,11 @@ public class IntakeSubsystem extends SubsystemBase {
     private enum XFactorState { RETRACTED, EXTENDED }
     private XFactorState currentXFactorState = XFactorState.RETRACTED;
 
+    private Solenoid xFactor;
     private TalonFX motor = new TalonFX(Constants.Intake.MOTOR_ID);
-    private Solenoid xFactor = RobotContainer.hub.makeSolenoid(Constants.Intake.XFACTOR_ID);
 
-    public IntakeSubsystem () {
+    public IntakeSubsystem (PneumaticHub hub) {
+        xFactor = hub.makeSolenoid(Constants.Intake.XFACTOR_ID);
         motor.configFactoryDefault();
         motor.setControlFramePeriod(ControlFrame.Control_3_General, 100);
         motor.setInverted(TalonFXInvertType.Clockwise);

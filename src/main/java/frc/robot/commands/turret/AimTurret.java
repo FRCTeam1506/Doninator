@@ -14,12 +14,11 @@ public class AimTurret extends PIDCommand {
                 Constants.Turret.AUTO_kI,
                 Constants.Turret.AUTO_kD
             ),
-            turret::getSensorPosition, 
-            2.0,
-            output -> { turret.setPosition(output); },
+            turret::getXError, 
+            -2.0,
+            output -> { System.out.println(output); turret.setPower(-output); },
             turret
         );
-
         getController().setTolerance(0.2);
     }
 

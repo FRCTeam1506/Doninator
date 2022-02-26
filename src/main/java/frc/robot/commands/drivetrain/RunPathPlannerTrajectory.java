@@ -8,9 +8,9 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.subsystems.SwerveDrivetrain;
 
-public class RunPathPlannerTrajectory2 extends SequentialCommandGroup {
+public class RunPathPlannerTrajectory extends SequentialCommandGroup {
 
-    public RunPathPlannerTrajectory2 (SwerveDrivetrain drivetrain, PathPlannerTrajectory trajectory) {
+    public RunPathPlannerTrajectory (SwerveDrivetrain drivetrain, PathPlannerTrajectory trajectory) {
         addRequirements(drivetrain);
         addCommands(
             new InstantCommand(() -> drivetrain.setPose(trajectory.getInitialPose())),
