@@ -25,7 +25,7 @@ public class SwerveDrivetrain extends SubsystemBase {
     private Field2d field;
 
     public SwerveDrivetrain() {
-        this.gyro = new Pigeon2(Constants.SwerveDrivetrain.GYRO_ID, "canivore");
+        this.gyro = new Pigeon2(Constants.SwerveDrivetrain.GYRO_ID, "rio");
         this.gyro.configFactoryDefault();
         this.zeroGyro();
 
