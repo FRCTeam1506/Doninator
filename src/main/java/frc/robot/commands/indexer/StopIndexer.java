@@ -15,6 +15,7 @@ public class StopIndexer extends CommandBase {
     @Override
     public void initialize() {
         this.indexer.stop_run();
+        this.indexer.disableShooting();
     }
 
 }

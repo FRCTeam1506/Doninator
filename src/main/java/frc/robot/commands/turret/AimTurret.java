@@ -16,7 +16,18 @@ public class AimTurret extends PIDCommand {
             ),
             turret::getXError, 
             -2.0,
-            output -> { System.out.println(output); turret.setPower(-output); },
+            output -> {
+                System.out.println(output);
+                if (Math.abs(output) > 0.0 && Math.abs(output) < 0.5) {
+                    turret.setPower(-output);
+                } else {
+                    if (output > 0.0) { // positive
+                        turret.setPower(-0.5);
+                    } else {
+                        turret.setPower(0.5);
+                    }
+                }
+            },
             turret
         );
         getController().setTolerance(0.2);

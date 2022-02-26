@@ -88,7 +88,7 @@ public final class Constants {
             public static final int CAN_CODER_ID    = 10;
             public static final int ANGLE_MOTOR_ID  = 11;
             public static final int DRIVE_MOTOR_ID  = 12;
-            public static final double ANGLE_OFFSET = 0.0; // 297.598
+            public static final double ANGLE_OFFSET = 298.0; // 297.598
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(DRIVE_MOTOR_ID, ANGLE_MOTOR_ID, CAN_CODER_ID, ANGLE_OFFSET);
         }
@@ -98,7 +98,7 @@ public final class Constants {
             public static final int CAN_CODER_ID    = 20;
             public static final int ANGLE_MOTOR_ID  = 21;
             public static final int DRIVE_MOTOR_ID  = 22;
-            public static final double ANGLE_OFFSET = 0.0; // 71.104
+            public static final double ANGLE_OFFSET = 70.0; // 71.104
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(DRIVE_MOTOR_ID, ANGLE_MOTOR_ID, CAN_CODER_ID, ANGLE_OFFSET);
         }
@@ -108,7 +108,7 @@ public final class Constants {
             public static final int CAN_CODER_ID    = 30;
             public static final int ANGLE_MOTOR_ID  = 31;
             public static final int DRIVE_MOTOR_ID  = 32;
-            public static final double ANGLE_OFFSET = 0.0; // 346.729
+            public static final double ANGLE_OFFSET = 347.0; // 346.729
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(DRIVE_MOTOR_ID, ANGLE_MOTOR_ID, CAN_CODER_ID, ANGLE_OFFSET);
         }
@@ -118,7 +118,7 @@ public final class Constants {
             public static final int CAN_CODER_ID    = 40;
             public static final int ANGLE_MOTOR_ID  = 41;
             public static final int DRIVE_MOTOR_ID  = 42;
-            public static final double ANGLE_OFFSET = 0.0; // 93.428
+            public static final double ANGLE_OFFSET = 92.0; // 93.428
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(DRIVE_MOTOR_ID, ANGLE_MOTOR_ID, CAN_CODER_ID, ANGLE_OFFSET);
         }

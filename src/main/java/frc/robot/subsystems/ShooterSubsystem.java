@@ -19,12 +19,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ShooterSubsystem extends SubsystemBase {
 
-    private static final double kP = 0.2;
+    private static final double kP = 0.0;
     private static final double kI = 0.0;
     private static final double kD = 0.0;
-    private static final double kF = 0.1;
+    private static final double kF = 0.188;
 
-    private static final double IDLE_RPM = 1000.0; // 2000.0
+    private static final double IDLE_RPM = 0.0; // 2000.0 1000.0
 
     private TalonFX leftMotor = new TalonFX(Constants.Shooter.LEFT_MOTOR_ID);
     private TalonFX rightMotor = new TalonFX(Constants.Shooter.RIGHT_MOTOR_ID);
@@ -43,11 +43,7 @@ public class ShooterSubsystem extends SubsystemBase {
         leftMotor.setInverted(TalonFXInvertType.Clockwise);
         rightMotor.setInverted(TalonFXInvertType.CounterClockwise);
 
-        leftMotor.config_kP(0, kP);
-        leftMotor.config_kI(0, kI);
-        leftMotor.config_kD(0, kD);
-        leftMotor.config_kF(0, kF);
-        leftMotor.configClosedloopRamp(0.5);
+        leftMotor.follow(rightMotor);
 
         rightMotor.config_kP(0, kP);
         rightMotor.config_kI(0, kI);
@@ -65,7 +61,15 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void shoot (double velocity_rpm) {
         // setShooterVelocity(this.velocity_dash.getDouble(velocity_rpm));
-        setShooterVelocity(velocity_rpm);
+        this.velocity_rpm = velocity_rpm;
+        setShooterVelocity(this.velocity_rpm);
+    }
+
+    public boolean isShooterReady () {
+        if ( rightMotor.getSelectedSensorVelocity() >= this.velocity_rpm - 200.0 && rightMotor.getSelectedSensorVelocity() <= this.velocity_rpm + 200.0 ) {
+            return true;
+        }
+        return false;
     }
 
     public void idle () {

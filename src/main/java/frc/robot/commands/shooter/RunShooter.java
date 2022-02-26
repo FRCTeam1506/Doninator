@@ -21,4 +21,9 @@ public class RunShooter extends CommandBase {
     public void execute() {
         shooter.shoot(velocity_rpm);
     }
+
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
 }

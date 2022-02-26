@@ -12,22 +12,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IndexerSubsystem extends SubsystemBase {
 
-    private enum IndexerState {
-        EMPTY,
-        LOW,
-        HIGH,
-        FULL,
-    }
+    private enum IndexerState { EMPTY, LOW, HIGH, FULL}
     private IndexerState currentIndexerState = IndexerState.EMPTY;
 
-    private enum ShootingState {
-        NO_SHOOT,
-        SHOOT,
-    }
+    private enum ShootingState { NO_SHOOT, SHOOT }
     private ShootingState currentShootingState = ShootingState.NO_SHOOT;
 
     private final double DEFAULT_BOTTOM_SPEED = 0.25; // 0.77 0.10
-    private final double DEFAULT_TOP_SPEED = 0.21; // 0.48 0.13 0.35
+    private final double DEFAULT_TOP_SPEED = 0.21; // 0.48 0.13 0.35 0.21
 
     private TalonFX bottomMotor = new TalonFX(Constants.Indexer.BOTTOM_MOTOR_ID);
     private TalonFX topMotor = new TalonFX(Constants.Indexer.TOP_MOTOR_ID);
@@ -102,7 +94,7 @@ public class IndexerSubsystem extends SubsystemBase {
         topMotor.set(TalonFXControlMode.PercentOutput, 0.0);
     }
 
-    public void setShootingState (ShootingState state) {
+    private void setShootingState (ShootingState state) {
         this.currentShootingState = state;
     }
 
@@ -134,6 +126,7 @@ public class IndexerSubsystem extends SubsystemBase {
         ShuffleboardTab tab = Shuffleboard.getTab("Indexer");
         tab.add(this);
         tab.addString("Indexer State", this::getIndexerStateName);
+        tab.addString("Shooting State", () -> this.currentShootingState.name());
         tab.addBoolean("Low Sensor", lowSensor::get);
         tab.addBoolean("High Sensor", highSensor::get);
     }
