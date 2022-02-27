@@ -141,8 +141,8 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    // return new RunPathPlannerTrajectory2(drivetrain, tr_test_1);
+    return new RunPathPlannerTrajectory(drivetrain, tr_test_1);
     // return null;
-    return new WaitCommand(1.0);
+    // return new WaitCommand(1.0);
   }
 }
