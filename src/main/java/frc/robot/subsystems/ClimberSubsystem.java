@@ -7,7 +7,6 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticHub;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -29,21 +28,25 @@ public class ClimberSubsystem extends SubsystemBase {
     private static final double ABOVE_RUNG_HEIGHT = 25_000.0;
     private static final double FULL_EXTEND = MAX_POSITION;
 
-    private TalonFX leftMotor = new TalonFX(Constants.Climber.LEFT_MOTOR_ID);
-    private TalonFX rightMotor = new TalonFX(Constants.Climber.RIGHT_MOTOR_ID);
+    private static final ExtendoState DEFAULT_EXTENDO_STATE = ExtendoState.RETRACTED;
+    private static final LeanboiState DEFAULT_LEANBOI_STATE = LeanboiState.EXTENDED;
+    private static final TriggerState DEFAULT_TRIGGER_STATE = TriggerState.RETRACTED;
+
+    private TalonFX leftMotor = new TalonFX(Constants.Climber.LEFT_MOTOR_ID, "canivore");
+    private TalonFX rightMotor = new TalonFX(Constants.Climber.RIGHT_MOTOR_ID, "canivore");
 
     private DoubleSolenoid extendo;
     private DoubleSolenoid leanboi;
     private DoubleSolenoid trigger;
 
     private enum ExtendoState { EXTENDED, RETRACTED }
-    private ExtendoState currentExtendoState = ExtendoState.RETRACTED;
+    private ExtendoState currentExtendoState = DEFAULT_EXTENDO_STATE;
 
     private enum LeanboiState { EXTENDED, RETRACTED }
-    private LeanboiState currentLeanboiState = LeanboiState.RETRACTED;
+    private LeanboiState currentLeanboiState = DEFAULT_LEANBOI_STATE;
 
     private enum TriggerState { EXTENDED, RETRACTED }
-    private TriggerState currentTriggerState = TriggerState.RETRACTED;
+    private TriggerState currentTriggerState = DEFAULT_TRIGGER_STATE;
 
     private int currentClimbState = 0;
 
@@ -136,11 +139,11 @@ public class ClimberSubsystem extends SubsystemBase {
         currentLeanboiState = state;
         switch (state) {
             case RETRACTED:
-                leanboi.set(Value.kForward);
+                leanboi.set(Value.kOff);
                 break;
 
             case EXTENDED:
-                leanboi.set(Value.kReverse);
+                leanboi.set(Value.kForward);
                 break;
         }
     }
@@ -177,14 +180,12 @@ public class ClimberSubsystem extends SubsystemBase {
         currentClimbState = state;
         switch (state) {
             case 0:
-                setLeanboiState(LeanboiState.RETRACTED);
-                setTriggerState(TriggerState.EXTENDED);
                 break;
 
             case 1:
-                setExtendoState(ExtendoState.EXTENDED);
-                setLeanboiState(LeanboiState.EXTENDED);
-                setTriggerState(TriggerState.RETRACTED);
+                extendExtendo();
+                retractLeanboi();
+                retractTrigger();
                 break;
 
             case 2:
@@ -243,6 +244,13 @@ public class ClimberSubsystem extends SubsystemBase {
         }
     }
 
+    @Override
+    public void periodic() {
+        // refreshExtendoState();
+        // refreshTriggerState();
+        // refreshLeanboiState();
+    }
+
     private void dashboard () {
         ShuffleboardTab tab = Shuffleboard.getTab("Climber");
         tab.add(this);
@@ -252,6 +260,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
         tab.addNumber("Left Motor Pos", leftMotor::getSelectedSensorPosition);
         tab.addNumber("Right Motor Pos", rightMotor::getSelectedSensorPosition);
+        tab.addNumber("Climb State", () -> currentClimbState);
     }
 
 }

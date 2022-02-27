@@ -21,8 +21,8 @@ public class IndexerSubsystem extends SubsystemBase {
     private final double DEFAULT_BOTTOM_SPEED = 0.25; // 0.77 0.10
     private final double DEFAULT_TOP_SPEED = 0.21; // 0.48 0.13 0.35 0.21
 
-    private TalonFX bottomMotor = new TalonFX(Constants.Indexer.BOTTOM_MOTOR_ID);
-    private TalonFX topMotor = new TalonFX(Constants.Indexer.TOP_MOTOR_ID);
+    private TalonFX bottomMotor = new TalonFX(Constants.Indexer.BOTTOM_MOTOR_ID, "canivore");
+    private TalonFX topMotor = new TalonFX(Constants.Indexer.TOP_MOTOR_ID, "canivore");
 
     private DigitalInput lowSensor = new DigitalInput(2);
     private DigitalInput highSensor = new DigitalInput(1);

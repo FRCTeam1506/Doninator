@@ -26,8 +26,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private static final double IDLE_RPM = 0.0; // 2000.0 1000.0
 
-    private TalonFX leftMotor = new TalonFX(Constants.Shooter.LEFT_MOTOR_ID);
-    private TalonFX rightMotor = new TalonFX(Constants.Shooter.RIGHT_MOTOR_ID);
+    private TalonFX leftMotor = new TalonFX(Constants.Shooter.LEFT_MOTOR_ID, "canivore");
+    private TalonFX rightMotor = new TalonFX(Constants.Shooter.RIGHT_MOTOR_ID, "canivore");
     
     // TODO: Remove after testing
     private NetworkTableEntry velocity_dash;

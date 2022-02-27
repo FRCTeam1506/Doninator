@@ -21,7 +21,7 @@ public class IntakeSubsystem extends SubsystemBase {
     private XFactorState currentXFactorState = XFactorState.RETRACTED;
 
     private Solenoid xFactor;
-    private TalonFX motor = new TalonFX(Constants.Intake.MOTOR_ID);
+    private TalonFX motor = new TalonFX(Constants.Intake.MOTOR_ID, "canivore");
 
     public IntakeSubsystem (PneumaticHub hub) {
         xFactor = hub.makeSolenoid(Constants.Intake.XFACTOR_ID);

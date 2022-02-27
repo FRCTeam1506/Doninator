@@ -18,6 +18,9 @@ import frc.robot.Constants;
 
 public class TurretSubsystem extends SubsystemBase {
 
+    enum ControlState { MANUAL, AUTO }
+    private ControlState currentControlState = ControlState.AUTO;
+
     enum HoodState { UP, DOWN }
 
     class LimelightData {
@@ -33,9 +36,9 @@ public class TurretSubsystem extends SubsystemBase {
             else {
                 double H1_LIMELIGHT_HEIGHT_HUP      = Units.metersToInches(1.1176); // 44 in
                 double H1_LIMELIGHT_HEIGHT_HDOWN    = Units.metersToInches(1.0668); // 42 in
-                double H2_GOAL_HEIGHT = Units.metersToInches(2.591); // 8.5 ft
-                double A1_HOOD_UP   = Units.degreesToRadians(16.0);
-                double A1_HOOD_DOWN = Units.degreesToRadians(32.0);
+                double H2_GOAL_HEIGHT   = Units.metersToInches(2.591); // 8.5 ft
+                double A1_HOOD_UP       = Units.degreesToRadians(16.0);
+                double A1_HOOD_DOWN     = Units.degreesToRadians(32.0);
                 double A2_Y_DIFF = this.y;
     
                 double A1;
@@ -77,7 +80,7 @@ public class TurretSubsystem extends SubsystemBase {
 
     private static final double TURRET_MAX_TICKS = 25_000.0;
 
-    private TalonFX motor = new TalonFX(Constants.Turret.MOTOR_ID);
+    private TalonFX motor = new TalonFX(Constants.Turret.MOTOR_ID, "canivore");
 
     private HoodState currentHoodState = HoodState.UP;
     private Solenoid hood;
@@ -123,12 +126,17 @@ public class TurretSubsystem extends SubsystemBase {
     public void setPosition (double pos) {
         if ((Math.abs(pos) <= TURRET_MAX_TICKS)) {
             motor.set(TalonFXControlMode.MotionMagic, pos);
+        } else {
+            if (pos < 0) motor.set(TalonFXControlMode.MotionMagic, -pos);
+            else motor.set(TalonFXControlMode.MotionMagic, pos);
         }
     }
 
     public void setPower (double power) {
-        if ((Math.abs(motor.getSelectedSensorPosition()) <= TURRET_MAX_TICKS)) {
+        if (Math.abs(motor.getSelectedSensorPosition()) <= TURRET_MAX_TICKS) {
             motor.set(TalonFXControlMode.PercentOutput, power);
+        } else {
+            motor.set(TalonFXControlMode.PercentOutput, 0.0);
         }
     }
 
@@ -177,6 +185,23 @@ public class TurretSubsystem extends SubsystemBase {
         double m = 0.5;
         double b = 1000.0;
         return (m * limelightData.getDistance(currentHoodState)) + b;
+    }
+
+    public boolean isTracking () {
+        return limelightData.isTargeting;
+    }
+
+
+    private void setControlState (ControlState state) { currentControlState = state; }
+
+    public void setManual () { setControlState(ControlState.MANUAL); }
+    public void setAuto () { setControlState(ControlState.AUTO); }
+    public boolean isManual () { return currentControlState == ControlState.MANUAL; }
+    public boolean isAuto () { return currentControlState == ControlState.AUTO; }
+
+    public void toggleControlState () {
+        if (currentControlState == ControlState.MANUAL) setControlState(ControlState.AUTO);
+        else setControlState(ControlState.MANUAL);
     }
 
     @Override
