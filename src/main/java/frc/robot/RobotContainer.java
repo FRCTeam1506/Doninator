@@ -60,7 +60,7 @@ public class RobotContainer {
 
   private final JoystickButton toggleTurretControl = new JoystickButton(operator, PS4Controller.Button.kL1.value);
   private final JoystickButton shootAndIndex = new JoystickButton(operator, PS4Controller.Button.kR1.value);
-  private final JoystickButton progressClimb = new JoystickButton(driver, PS4Controller.Button.kTriangle.value);
+  private final JoystickButton progressClimb = new JoystickButton(operator, PS4Controller.Button.kCircle.value);
 
   /* Subsystems */
   private final SwerveDrivetrain drivetrain = new SwerveDrivetrain();
@@ -79,7 +79,7 @@ public class RobotContainer {
   private final Command c_stopIndexer = new StopIndexer(indexer);
   private final Command c_stopClimber = new StopClimber(climber);
   private final Command c_progressClimb = new ProgressClimber(climber);
-  private final Command c_aimTurret = new AimTurret(turret, () -> operator.getLeftX());
+  private final Command c_aimTurret = new AimTurret(turret, () -> operator.getRightX());
   private final Command c_toggleTurretControl = new ToggleTurretControlState(turret);
 
   // // * macros
