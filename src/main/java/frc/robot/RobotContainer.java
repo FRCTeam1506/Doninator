@@ -32,7 +32,6 @@ import frc.robot.commands.macros.ShootAndIndex;
 import frc.robot.commands.shooter.IdleShooter;
 import frc.robot.commands.shooter.RunShooter;
 import frc.robot.commands.turret.AimTurret;
-import frc.robot.commands.turret.RunTurret;
 import frc.robot.commands.turret.StopTurret;
 import frc.robot.commands.turret.ToggleTurretControlState;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -54,10 +53,12 @@ public class RobotContainer {
   private final PS4Controller operator = new PS4Controller(1);
 
   /* Buttons */
+  // * driver
   private final JoystickButton zeroGyro = new JoystickButton(driver, PS4Controller.Button.kCircle.value);
   private final JoystickButton intakeAndIndex = new JoystickButton(driver, PS4Controller.Button.kL1.value);
   private final JoystickButton extendAndOuttake = new JoystickButton(driver, PS4Controller.Button.kSquare.value);
 
+  // * operator
   private final JoystickButton toggleTurretControl = new JoystickButton(operator, PS4Controller.Button.kL1.value);
   private final JoystickButton shootAndIndex = new JoystickButton(operator, PS4Controller.Button.kR1.value);
   private final JoystickButton progressClimb = new JoystickButton(operator, PS4Controller.Button.kCircle.value);
@@ -82,7 +83,7 @@ public class RobotContainer {
   private final Command c_aimTurret = new AimTurret(turret, () -> operator.getRightX());
   private final Command c_toggleTurretControl = new ToggleTurretControlState(turret);
 
-  // // * macros
+  // * macros
   private final Command c_runIndexer = new IntakeAndIndex(intake, indexer);
   private final Command c_runShooter = new ShootAndIndex(shooter, indexer, 550.0); // 700.0 1850.0 1770.0
 
@@ -129,11 +130,6 @@ public class RobotContainer {
     extendAndOuttake.whileHeld(c_extendAndOuttake);
     progressClimb.whenPressed(c_progressClimb);
     toggleTurretControl.whenPressed(c_toggleTurretControl);
-
-    // new POVButton(driver, 0).whenPressed(new RunTurret(turret, 0));
-    // new POVButton(driver, 90).whenPressed(new RunTurret(turret, 5000.0));
-    // new POVButton(driver, 270).whenPressed(new RunTurret(turret, 8000.0));
-    // new POVButton(driver, 180).whenPressed(new RunTurret(turret, -8000.0));
   }
 
   private void loadTrajectories() {

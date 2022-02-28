@@ -31,7 +31,7 @@ public class ShooterSubsystem extends SubsystemBase {
     
     // TODO: Remove after testing
     private NetworkTableEntry velocity_dash;
-    private double velocity_rpm = 1000.0;
+    private double targetVelocity = 500.0;
 
     public ShooterSubsystem (PneumaticHub hub) {
         leftMotor.configFactoryDefault();
@@ -61,12 +61,12 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void shoot (double velocity_rpm) {
         // setShooterVelocity(this.velocity_dash.getDouble(velocity_rpm));
-        this.velocity_rpm = velocity_rpm;
-        setShooterVelocity(this.velocity_rpm);
+        this.targetVelocity = velocity_rpm;
+        setShooterVelocity(this.targetVelocity);
     }
 
     public boolean isShooterReady () {
-        if ( rightMotor.getSelectedSensorVelocity() >= this.velocity_rpm - 200.0 && rightMotor.getSelectedSensorVelocity() <= this.velocity_rpm + 200.0 ) {
+        if ( rightMotor.getSelectedSensorVelocity() >= this.targetVelocity - 200.0 && rightMotor.getSelectedSensorVelocity() <= this.targetVelocity + 200.0 ) {
             return true;
         }
         return false;
@@ -77,7 +77,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public double getVelocity () {
-        return Conversions.falconToRPM(rightMotor.getSelectedSensorVelocity(), 1.0);
+        return Conversions.falconToRPM(rightMotor.getSelectedSensorVelocity(), 1.5);
     }
 
     public void dashboard () {
@@ -86,9 +86,9 @@ public class ShooterSubsystem extends SubsystemBase {
         tab.addNumber("Velocity (RPM)", this::getVelocity);
         tab.addNumber("Velocity Graph (RPM)", this::getVelocity).withWidget(BuiltInWidgets.kGraph);
         
-        this.velocity_dash = tab.add("Set Velocity (RPM)", this.velocity_rpm)
+        this.velocity_dash = tab.add("Set Velocity (RPM)", this.targetVelocity)
             .withWidget(BuiltInWidgets.kNumberSlider)
-            .withProperties(Map.of("min", 1000, "max", 2500, "blockIncrement", 500))
+            .withProperties(Map.of("min", 200, "max", 1000, "blockIncrement", 500))
             .getEntry();
     }
 }

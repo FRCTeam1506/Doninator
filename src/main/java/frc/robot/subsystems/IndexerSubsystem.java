@@ -12,14 +12,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IndexerSubsystem extends SubsystemBase {
 
+    private static final double DEFAULT_BOTTOM_SPEED = 0.25;  // 0.77 0.10
+    private static final double DEFAULT_TOP_SPEED = 0.21;     // 0.48 0.13 0.35 0.21
+
     private enum IndexerState { EMPTY, LOW, HIGH, FULL}
     private IndexerState currentIndexerState = IndexerState.EMPTY;
 
     private enum ShootingState { NO_SHOOT, SHOOT }
     private ShootingState currentShootingState = ShootingState.NO_SHOOT;
-
-    private final double DEFAULT_BOTTOM_SPEED = 0.25; // 0.77 0.10
-    private final double DEFAULT_TOP_SPEED = 0.21; // 0.48 0.13 0.35 0.21
 
     private TalonFX bottomMotor = new TalonFX(Constants.Indexer.BOTTOM_MOTOR_ID, "canivore");
     private TalonFX topMotor = new TalonFX(Constants.Indexer.TOP_MOTOR_ID, "canivore");
@@ -27,12 +27,11 @@ public class IndexerSubsystem extends SubsystemBase {
     private DigitalInput lowSensor = new DigitalInput(2);
     private DigitalInput highSensor = new DigitalInput(1);
 
-    private boolean isRunning;
+    private boolean isRunning = false;
 
     public IndexerSubsystem () {
         bottomMotor.setInverted(TalonFXInvertType.Clockwise);
         topMotor.setInverted(TalonFXInvertType.CounterClockwise);
-        isRunning = false;
         dashboard();
     }
 
@@ -43,46 +42,36 @@ public class IndexerSubsystem extends SubsystemBase {
                 case EMPTY:
                 case LOW:
                     //? low and high index until high sensor detects it
-                    this.fullIndex();
+                    fullIndex();
                     break;
 
                 case HIGH:
                     //? low index until low sensor detects it
                     if (this.currentShootingState == ShootingState.SHOOT) {
-                        this.highIndex();
+                        highIndex();
                     } else {
-                        this.lowIndex();
+                        lowIndex();
                     }
                     break;
 
                 case FULL:
                     if (this.currentShootingState == ShootingState.SHOOT) {
-                        this.highIndex();
+                        highIndex();
                     } else {
-                        this.stop();
+                        stop();
                     }
                     break;
             }
         } else {
-            this.stop();
+            stop();
         }
     }
 
-    public void start_run () {
-        isRunning = true;
-    }
+    public void enableIndexing () { isRunning = true; }
+    public void disableIndexing () { isRunning = false; }
 
-    public void stop_run () {
-        isRunning = false;
-    }
-
-    private void lowIndex () {
-        bottomMotor.set(TalonFXControlMode.PercentOutput, DEFAULT_BOTTOM_SPEED);
-    }
-
-    private void highIndex () {
-        topMotor.set(TalonFXControlMode.PercentOutput, DEFAULT_TOP_SPEED);
-    }
+    private void lowIndex () { bottomMotor.set(TalonFXControlMode.PercentOutput, DEFAULT_BOTTOM_SPEED); }
+    private void highIndex () { topMotor.set(TalonFXControlMode.PercentOutput, DEFAULT_TOP_SPEED); }
 
     private void fullIndex () {
         bottomMotor.set(TalonFXControlMode.PercentOutput, DEFAULT_BOTTOM_SPEED);
@@ -94,25 +83,13 @@ public class IndexerSubsystem extends SubsystemBase {
         topMotor.set(TalonFXControlMode.PercentOutput, 0.0);
     }
 
-    private void setShootingState (ShootingState state) {
-        this.currentShootingState = state;
-    }
-
-    public void enableShooting () {
-        setShootingState(ShootingState.SHOOT);
-    }
-
-    public void disableShooting () {
-        setShootingState(ShootingState.NO_SHOOT);
-    }
-
-    private String getIndexerStateName () {
-        return this.currentIndexerState.name();
-    }
+    private void setShootingState (ShootingState state) { this.currentShootingState = state; }
+    public void enableShooting () { setShootingState(ShootingState.SHOOT); }
+    public void disableShooting () { setShootingState(ShootingState.NO_SHOOT); }
 
     @Override
     public void periodic() {
-        //? use sensor data to determine state
+        //? use sensor data to determine indexer state
         boolean isLowSensorBlocked  = !lowSensor.get();
         boolean isHighSensorBlocked = !highSensor.get();
 
@@ -125,7 +102,7 @@ public class IndexerSubsystem extends SubsystemBase {
     private void dashboard () {
         ShuffleboardTab tab = Shuffleboard.getTab("Indexer");
         tab.add(this);
-        tab.addString("Indexer State", this::getIndexerStateName);
+        tab.addString("Indexer State", () -> this.currentIndexerState.name());
         tab.addString("Shooting State", () -> this.currentShootingState.name());
         tab.addBoolean("Low Sensor", lowSensor::get);
         tab.addBoolean("High Sensor", highSensor::get);
