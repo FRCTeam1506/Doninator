@@ -87,7 +87,7 @@ public class RobotContainer {
 
   // * macros
   private final Command c_runIndexer = new IntakeAndIndex(intake, indexer);
-  private final Command c_runShooter = new ShootAndIndex(shooter, indexer, 1970.0); // 700.0 1850.0 1770.0 550.0
+  private final Command c_runShooter = new ShootAndIndex(shooter, indexer, 1965.0); // 700.0 1850.0 1770.0 550.0
 
   /* Trajectories */
   private PathPlannerTrajectory tr_test_1;
