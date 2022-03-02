@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.commands.climber.ControlLeanboiMotors;
 import frc.robot.commands.climber.ProgressClimber;
 import frc.robot.commands.climber.StopClimber;
 import frc.robot.commands.drivetrain.RunPathPlannerTrajectory;
@@ -81,11 +82,12 @@ public class RobotContainer {
   private final Command c_stopClimber = new StopClimber(climber);
   private final Command c_progressClimb = new ProgressClimber(climber);
   private final Command c_aimTurret = new AimTurret(turret, () -> operator.getRightX());
+  private final Command c_controlClimbMotors = new ControlLeanboiMotors(climber, () -> operator.getLeftY(), () -> operator.getRightY());
   private final Command c_toggleTurretControl = new ToggleTurretControlState(turret);
 
   // * macros
   private final Command c_runIndexer = new IntakeAndIndex(intake, indexer);
-  private final Command c_runShooter = new ShootAndIndex(shooter, indexer, 550.0); // 700.0 1850.0 1770.0
+  private final Command c_runShooter = new ShootAndIndex(shooter, indexer, 1970.0); // 700.0 1850.0 1770.0 550.0
 
   /* Trajectories */
   private PathPlannerTrajectory tr_test_1;

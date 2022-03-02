@@ -12,8 +12,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IndexerSubsystem extends SubsystemBase {
 
-    private static final double DEFAULT_BOTTOM_SPEED = 0.25;  // 0.77 0.10
-    private static final double DEFAULT_TOP_SPEED = 0.21;     // 0.48 0.13 0.35 0.21
+    private static final double DEFAULT_BOTTOM_SPEED = 0.15;  // 0.77 0.10 0.25 0.21
+    private static final double DEFAULT_TOP_SPEED = 0.15;     // 0.48 0.13 0.35 0.21 0.15
 
     private enum IndexerState { EMPTY, LOW, HIGH, FULL}
     private IndexerState currentIndexerState = IndexerState.EMPTY;
@@ -70,8 +70,15 @@ public class IndexerSubsystem extends SubsystemBase {
     public void enableIndexing () { isRunning = true; }
     public void disableIndexing () { isRunning = false; }
 
-    private void lowIndex () { bottomMotor.set(TalonFXControlMode.PercentOutput, DEFAULT_BOTTOM_SPEED); }
-    private void highIndex () { topMotor.set(TalonFXControlMode.PercentOutput, DEFAULT_TOP_SPEED); }
+    private void lowIndex () {
+        bottomMotor.set(TalonFXControlMode.PercentOutput, DEFAULT_BOTTOM_SPEED);
+        topMotor.set(TalonFXControlMode.PercentOutput, 0.0);
+    }
+
+    private void highIndex () {
+        topMotor.set(TalonFXControlMode.PercentOutput, DEFAULT_TOP_SPEED);
+        bottomMotor.set(TalonFXControlMode.PercentOutput, 0.0);
+    }
 
     private void fullIndex () {
         bottomMotor.set(TalonFXControlMode.PercentOutput, DEFAULT_BOTTOM_SPEED);
@@ -93,10 +100,10 @@ public class IndexerSubsystem extends SubsystemBase {
         boolean isLowSensorBlocked  = !lowSensor.get();
         boolean isHighSensorBlocked = !highSensor.get();
 
-        if (isLowSensorBlocked && isHighSensorBlocked) this.setIndexerState(IndexerState.FULL);
-        else if (isLowSensorBlocked) this.setIndexerState(IndexerState.LOW);
-        else if (isHighSensorBlocked) this.setIndexerState(IndexerState.HIGH);
-        else this.setIndexerState(IndexerState.EMPTY);
+        if (isLowSensorBlocked && isHighSensorBlocked) setIndexerState(IndexerState.FULL);
+        else if (isLowSensorBlocked) setIndexerState(IndexerState.LOW);
+        else if (isHighSensorBlocked) setIndexerState(IndexerState.HIGH);
+        else setIndexerState(IndexerState.EMPTY);
     }
 
     private void dashboard () {

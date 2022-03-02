@@ -162,8 +162,8 @@ public final class Constants {
     }
 
     public static final class Auton {
-        public static final double MAX_SPEED_MPS            = 7.0;    // meters per second
-        public static final double MAX_ACCELERATION_MPSS    = 5.0;    // meters per second squared
+        public static final double MAX_SPEED_MPS            = 3.0;    // meters per second          7.0
+        public static final double MAX_ACCELERATION_MPSS    = 2.0;    // meters per second squared  5.0
 
         public static final double MAX_ANGULAR_SPEED_RPS    = 2 * Math.PI;      // radians per second
         public static final double MAX_ANGULAR_SPEED_RPSS   = 2 * Math.PI;      // radians per second squared

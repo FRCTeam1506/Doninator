@@ -5,6 +5,8 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
+import org.opencv.core.Mat;
+
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -103,6 +105,24 @@ public class ClimberSubsystem extends SubsystemBase {
         if ((Math.abs(pos) <= MAX_POSITION)) {
             leftMotor.set(TalonFXControlMode.MotionMagic, pos);
             rightMotor.set(TalonFXControlMode.MotionMagic, pos);
+        } else {
+            stopMotors();
+        }
+    }
+
+    public void setPower (double leftPower, double rightPower) {
+        double leftPosition = leftMotor.getSelectedSensorPosition();
+        if (Math.abs(leftPosition) <= MAX_POSITION) {
+            leftMotor.set(TalonFXControlMode.PercentOutput, leftPower);
+        } else {
+            leftMotor.set(TalonFXControlMode.PercentOutput, 0.0);
+        }
+
+        double rightPosition = rightMotor.getSelectedSensorPosition();
+        if (Math.abs(rightPosition) <= MAX_POSITION) {
+            rightMotor.set(TalonFXControlMode.PercentOutput, rightPower);
+        } else {
+            rightMotor.set(TalonFXControlMode.PercentOutput, 0.0);
         }
     }
 

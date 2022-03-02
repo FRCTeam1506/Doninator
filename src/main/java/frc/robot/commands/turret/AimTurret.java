@@ -2,6 +2,7 @@ package frc.robot.commands.turret;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.Constants;
@@ -22,25 +23,19 @@ public class AimTurret extends PIDCommand {
                 if (turret.isAuto()) {
                     if (turret.isTracking()) {
                         System.out.println(output);
-                        if (Math.abs(output) > 0.0 && Math.abs(output) < 0.5) {
-                            turret.setPower(-output);
-                        } else {
-                            if (output > 0.0) { // positive
-                                turret.setPower(-0.5);
-                            } else {
-                                turret.setPower(0.5);
-                            }
-                        }
+                        double m_power = MathUtil.clamp(output, -0.2, 0.2);
+                        turret.setPower(m_power);
                     } else {
                         turret.setPosition(0.0);
                     }
                 } else {
-                    turret.setPower(power.getAsDouble() * 0.10);
+                    System.out.println(power.getAsDouble() * 0.1);
+                    turret.setPower(power.getAsDouble() * 0.1);
                 }
             },
             turret
         );
-        getController().setTolerance(0.2);
+        getController().setTolerance(1.0); // 0.2
     }
 
     // @Override

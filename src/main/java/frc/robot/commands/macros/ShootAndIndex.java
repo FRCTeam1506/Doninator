@@ -1,36 +1,41 @@
 package frc.robot.commands.macros;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.indexer.RunIndexer;
-import frc.robot.commands.shooter.RunShooter;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
-public class ShootAndIndex extends SequentialCommandGroup {
+public class ShootAndIndex extends CommandBase {
 
+    private ShooterSubsystem shooter;
     private IndexerSubsystem indexer;
+    private double velocity_rpm;
     
     public ShootAndIndex (ShooterSubsystem shooter, IndexerSubsystem indexer, double velocity_rpm) {
-        super(
-            new InstantCommand(() -> indexer.enableShooting(), indexer),
-            new ParallelCommandGroup(
-                new RunShooter(shooter, velocity_rpm),
-                new SequentialCommandGroup(
-                    new WaitCommand(1.0),
-                    new RunIndexer(indexer)
-                )
-            )
-        );
-
+        this.shooter = shooter;
         this.indexer = indexer;
-        addRequirements(this.indexer);
+        this.velocity_rpm = velocity_rpm;
+        addRequirements(this.shooter, this.indexer);
+    }
+
+    @Override
+    public void initialize() {
+        indexer.enableIndexing();
+    }
+
+    @Override
+    public void execute() {
+        indexer.enableIndexing();
+        shooter.shoot(velocity_rpm);
+        System.out.println("AAAAAAAAAAAAAAAAAAAAA");
+        if (shooter.isShooterReady()) {
+            System.out.println("BBBBBBBBBBBBBBBBBBBBB");
+            indexer.enableShooting();
+        }
     }
 
     @Override
     public void end (boolean interrupted) {
+        indexer.disableIndexing();
         indexer.disableShooting();
     }
 

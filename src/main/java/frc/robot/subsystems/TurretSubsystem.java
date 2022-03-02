@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
-import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
@@ -93,12 +91,8 @@ public class TurretSubsystem extends SubsystemBase {
 
         motor.configFactoryDefault();
 
-        // motor.setNeutralMode(NeutralMode.Brake);
-        motor.setNeutralMode(NeutralMode.Coast);
-
-        //? limit switch "hard stops"
-        motor.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
-        motor.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
+        motor.setNeutralMode(NeutralMode.Brake);
+        // motor.setNeutralMode(NeutralMode.Coast);
 
         //? pid for motion magic
         motor.config_kP(0, 1.0);
@@ -124,16 +118,17 @@ public class TurretSubsystem extends SubsystemBase {
     public void stop () { motor.set(TalonFXControlMode.PercentOutput, 0.0); }
 
     public void setPosition (double pos) {
-        if ((Math.abs(pos) <= TURRET_MAX_TICKS)) {
+        if (Math.abs(pos) <= TURRET_MAX_TICKS) {
             motor.set(TalonFXControlMode.MotionMagic, pos);
         } else {
-            if (pos < 0) motor.set(TalonFXControlMode.MotionMagic, -pos);
-            else motor.set(TalonFXControlMode.MotionMagic, pos);
+            if (pos < 0) motor.set(TalonFXControlMode.MotionMagic, -TURRET_MAX_TICKS);
+            else motor.set(TalonFXControlMode.MotionMagic, TURRET_MAX_TICKS);
         }
     }
 
     public void setPower (double power) {
-        if (Math.abs(motor.getSelectedSensorPosition()) <= TURRET_MAX_TICKS) {
+        double pos = motor.getSelectedSensorPosition();
+        if (Math.abs(pos) <= TURRET_MAX_TICKS) {
             motor.set(TalonFXControlMode.PercentOutput, power);
         } else {
             motor.set(TalonFXControlMode.PercentOutput, 0.0);
@@ -192,6 +187,11 @@ public class TurretSubsystem extends SubsystemBase {
     }
 
 
+    /* 
+    * ####################### 
+    *   Control Functions
+    * #######################
+    */
     private void setControlState (ControlState state) { currentControlState = state; }
 
     public void setManual () { setControlState(ControlState.MANUAL); }
@@ -203,6 +203,7 @@ public class TurretSubsystem extends SubsystemBase {
         if (currentControlState == ControlState.MANUAL) setControlState(ControlState.AUTO);
         else setControlState(ControlState.MANUAL);
     }
+
 
     @Override
     public void periodic() {
@@ -216,6 +217,7 @@ public class TurretSubsystem extends SubsystemBase {
         tab.addNumber("Limelight Horiz Error ", this::getXError);
         tab.addNumber("Calculated Shooter RPM", this::calculateShooterRPM);
         tab.addNumber("Limelight Distance", () -> limelightData.getDistance(currentHoodState));
+        tab.addBoolean("Control State", () -> this.currentControlState == ControlState.AUTO);
     }
 
 }
