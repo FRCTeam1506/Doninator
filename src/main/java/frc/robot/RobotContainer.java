@@ -97,7 +97,8 @@ public class RobotContainer {
 
   // * macros
   private final Command c_runIndexer = new IntakeAndIndex(intake, indexer);
-  private final Command c_runShooter = new ShootAndIndex(shooter, indexer, 1965.0); // 700.0 1850.0 1770.0 550.0
+  private final Command c_runShooter = new ShootAndIndex(shooter, indexer, turret, 1800.0); // 700.0 1850.0 1770.0 550.0 1970.0
+  private final Command c_extendAndOuttake = new ExtendAndOuttake(intake, indexer);
 
   /* Trajectories */
   private PathPlannerTrajectory tr_test_1, tr_two_ball, tr_two_ball_pos3, tr_four_ball_pos1_1, tr_four_ball_pos1_2, tr_four_ball_pos1_3;
