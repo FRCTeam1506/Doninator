@@ -143,11 +143,11 @@ public final class Constants {
         public static final int LEFT_MOTOR_ID = 61;
         public static final int RIGHT_MOTOR_ID = 62;
 
-        public static final int LEFT_LEANBOI_ID = 9;
-        public static final int RIGHT_LEANBOI_ID = 10;
+        public static final int LEFT_LEANBOI_ID = 11;
+        public static final int RIGHT_LEANBOI_ID = 12;
 
-        public static final int LEFT_TRIGGER_ID = 11;
-        public static final int RIGHT_TRIGGER_ID = 12;
+        public static final int LEFT_TRIGGER_ID = 9;
+        public static final int RIGHT_TRIGGER_ID = 10;
 
         public static final int LEFT_EXTENDO_ID = 13;
         public static final int RIGHT_EXTENDO_ID = 14;
@@ -156,14 +156,14 @@ public final class Constants {
     public static final class Turret {
         public static final int HOOD_ID = 15;
         public static final int MOTOR_ID = 55;
-        public static final double AUTO_kP = 0.023;
-        public static final double AUTO_kI = 0.005;
-        public static final double AUTO_kD = 0.0;
+        public static final double AUTO_kP = 0.05;  // 0.023
+        public static final double AUTO_kI = 0.005; // 0.005
+        public static final double AUTO_kD = 0.0;   // 0.0
     }
 
     public static final class Auton {
-        public static final double MAX_SPEED_MPS            = 3.0;    // meters per second          7.0
-        public static final double MAX_ACCELERATION_MPSS    = 2.0;    // meters per second squared  5.0
+        public static final double MAX_SPEED_MPS            = 1.0;    // meters per second          7.0
+        public static final double MAX_ACCELERATION_MPSS    = 1.0;    // meters per second squared  5.0
 
         public static final double MAX_ANGULAR_SPEED_RPS    = 2 * Math.PI;      // radians per second
         public static final double MAX_ANGULAR_SPEED_RPSS   = 2 * Math.PI;      // radians per second squared

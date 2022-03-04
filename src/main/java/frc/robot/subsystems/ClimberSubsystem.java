@@ -5,8 +5,6 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
-import org.opencv.core.Mat;
-
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -17,18 +15,18 @@ import frc.robot.Constants;
 
 public class ClimberSubsystem extends SubsystemBase {
 
-    private static final double kP = 0.2;
+    private static final double kP = 0.2;   // 0.2
     private static final double kI = 0.0;
     private static final double kD = 0.0;
-    private static final double kF = 0.05;
+    private static final double kF = 0.1;  // 0.05
 
     private static final double kVelocity = 70_000.0;
     private static final double kAcceleration = 50_000.0;
 
-    private static final double MAX_POSITION = 150_000.0;
-    private static final double FIRST_RUNG_HEIGHT = 75_000.0;
-    private static final double ABOVE_RUNG_HEIGHT = 25_000.0;
-    private static final double FULL_EXTEND = MAX_POSITION;
+    private static final double MAX_POSITION = 110_000.0;
+    public static final double FIRST_RUNG_HEIGHT = 75_000.0;
+    public static final double ABOVE_RUNG_HEIGHT = 25_000.0;
+    public static final double FULL_EXTEND = MAX_POSITION;
 
     private static final ExtendoState DEFAULT_EXTENDO_STATE = ExtendoState.RETRACTED;
     private static final LeanboiState DEFAULT_LEANBOI_STATE = LeanboiState.EXTENDED;
@@ -50,7 +48,7 @@ public class ClimberSubsystem extends SubsystemBase {
     private enum TriggerState { EXTENDED, RETRACTED }
     private TriggerState currentTriggerState = DEFAULT_TRIGGER_STATE;
 
-    private int currentClimbState = 0;
+    public int currentClimbState = 0;
 
     public ClimberSubsystem (PneumaticHub hub) {
         extendo = hub.makeDoubleSolenoid(Constants.Climber.LEFT_EXTENDO_ID, Constants.Climber.RIGHT_EXTENDO_ID);
@@ -60,8 +58,8 @@ public class ClimberSubsystem extends SubsystemBase {
         leftMotor.configFactoryDefault();
         rightMotor.configFactoryDefault();
 
-        leftMotor.setNeutralMode(NeutralMode.Coast);
-        rightMotor.setNeutralMode(NeutralMode.Coast);
+        leftMotor.setNeutralMode(NeutralMode.Brake);
+        rightMotor.setNeutralMode(NeutralMode.Brake);
 
         leftMotor.setInverted(TalonFXInvertType.Clockwise);
         rightMotor.setInverted(TalonFXInvertType.CounterClockwise);
@@ -80,6 +78,10 @@ public class ClimberSubsystem extends SubsystemBase {
         leftMotor.configMotionAcceleration(kAcceleration);
         rightMotor.configMotionCruiseVelocity(kVelocity);
         rightMotor.configMotionAcceleration(kAcceleration);
+
+        setLeanboiState(LeanboiState.EXTENDED);
+        setTriggerState(TriggerState.EXTENDED);
+        setExtendoState(ExtendoState.RETRACTED);
 
         resetMotors();
         dashboard();
@@ -102,9 +104,13 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public void setMotorPosition (double pos) {
-        if ((Math.abs(pos) <= MAX_POSITION)) {
-            leftMotor.set(TalonFXControlMode.MotionMagic, pos);
-            rightMotor.set(TalonFXControlMode.MotionMagic, pos);
+        if (Math.abs(pos) <= MAX_POSITION && pos >= 0) {
+            // double leftPos = leftMotor.getSelectedSensorPosition();
+            // double rightPos = rightMotor.getSelectedSensorPosition();
+            // while (!(leftPos <= pos - 50 && leftPos >= pos + 50 && rightPos <= pos - 50 && rightPos >= pos + 50)) {
+                leftMotor.set(TalonFXControlMode.MotionMagic, pos);
+                rightMotor.set(TalonFXControlMode.MotionMagic, pos);
+            // }
         } else {
             stopMotors();
         }
@@ -112,14 +118,14 @@ public class ClimberSubsystem extends SubsystemBase {
 
     public void setPower (double leftPower, double rightPower) {
         double leftPosition = leftMotor.getSelectedSensorPosition();
-        if (Math.abs(leftPosition) <= MAX_POSITION) {
+        if (Math.abs(leftPosition) <= MAX_POSITION && leftPosition > 0) {
             leftMotor.set(TalonFXControlMode.PercentOutput, leftPower);
         } else {
             leftMotor.set(TalonFXControlMode.PercentOutput, 0.0);
         }
 
         double rightPosition = rightMotor.getSelectedSensorPosition();
-        if (Math.abs(rightPosition) <= MAX_POSITION) {
+        if (Math.abs(rightPosition) <= MAX_POSITION && rightPosition > 0) {
             rightMotor.set(TalonFXControlMode.PercentOutput, rightPower);
         } else {
             rightMotor.set(TalonFXControlMode.PercentOutput, 0.0);
@@ -128,7 +134,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
 
     /*
-    * ####################### 
+    * #######################
     *   Extendo Functions
     * #######################
     */
@@ -159,11 +165,11 @@ public class ClimberSubsystem extends SubsystemBase {
         currentLeanboiState = state;
         switch (state) {
             case RETRACTED:
-                leanboi.set(Value.kOff);
+                leanboi.set(Value.kForward);
                 break;
 
             case EXTENDED:
-                leanboi.set(Value.kForward);
+                leanboi.set(Value.kReverse);
                 break;
         }
     }
@@ -259,9 +265,10 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public void progressClimb () {
-        if (currentClimbState < 13) {
-            setClimbState(currentClimbState+1);
-        }
+        currentClimbState++;
+        // if (currentClimbState < 13) {
+        //     setClimbState(currentClimbState+1);
+        // }
     }
 
     @Override

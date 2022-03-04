@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IndexerSubsystem extends SubsystemBase {
 
-    private static final double DEFAULT_BOTTOM_SPEED = 0.15;  // 0.77 0.10 0.25 0.21
+    private static final double DEFAULT_BOTTOM_SPEED = 0.20;  // 0.77 0.10 0.25 0.21 0.15
     private static final double DEFAULT_TOP_SPEED = 0.15;     // 0.48 0.13 0.35 0.21 0.15
 
     private enum IndexerState { EMPTY, LOW, HIGH, FULL}
@@ -83,6 +83,11 @@ public class IndexerSubsystem extends SubsystemBase {
     private void fullIndex () {
         bottomMotor.set(TalonFXControlMode.PercentOutput, DEFAULT_BOTTOM_SPEED);
         topMotor.set(TalonFXControlMode.PercentOutput, DEFAULT_TOP_SPEED);
+    }
+
+    public void reverse () {
+        bottomMotor.set(TalonFXControlMode.PercentOutput, -0.20);
+        topMotor.set(TalonFXControlMode.PercentOutput, -0.20);
     }
 
     public void stop () {

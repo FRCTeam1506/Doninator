@@ -18,13 +18,13 @@ public class AimTurret extends PIDCommand {
                 Constants.Turret.AUTO_kD
             ),
             turret::getXError, 
-            -2.0,
+            -1.0, // -2.0
             output -> {
                 if (turret.isAuto()) {
                     if (turret.isTracking()) {
                         System.out.println(output);
-                        double m_power = MathUtil.clamp(output, -0.2, 0.2);
-                        turret.setPower(m_power);
+                        double m_power = MathUtil.clamp(output, -0.3, 0.3);
+                        turret.setPower(-m_power);
                     } else {
                         turret.setPosition(0.0);
                     }
@@ -35,7 +35,7 @@ public class AimTurret extends PIDCommand {
             },
             turret
         );
-        getController().setTolerance(1.0); // 0.2
+        getController().setTolerance(0.07); // 0.2
     }
 
     // @Override

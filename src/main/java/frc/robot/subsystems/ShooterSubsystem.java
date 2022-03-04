@@ -27,7 +27,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private static final double GEAR_RATIO = 1.5;
     private static final double VELOCITY_DELTA = 50.0;
 
-    private static final double IDLE_RPM = 1300.0; // 2000.0 1000.0
+    private static final double IDLE_RPM = 800.0; // 2000.0 1000.0
 
     private TalonFX leftMotor = new TalonFX(Constants.Shooter.LEFT_MOTOR_ID, "canivore");
     private TalonFX rightMotor = new TalonFX(Constants.Shooter.RIGHT_MOTOR_ID, "canivore");
@@ -66,8 +66,8 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void shoot (double velocity_rpm) {
-        // setVelocity(this.velocity_dash.getDouble(velocity_rpm));
         this.targetVelocityRPM = velocity_rpm;
+        // setVelocity(this.velocity_dash.getDouble(this.targetVelocityRPM));
         setVelocity(this.targetVelocityRPM);
     }
 
@@ -96,7 +96,7 @@ public class ShooterSubsystem extends SubsystemBase {
         
         this.velocity_dash = tab.add("Set Velocity (RPM)", this.targetVelocityRPM)
             .withWidget(BuiltInWidgets.kNumberSlider)
-            .withProperties(Map.of("min", 200, "max", 1000, "blockIncrement", 50))
+            .withProperties(Map.of("min", 1000, "max", 2500, "blockIncrement", 50))
             .getEntry();
     }
 }

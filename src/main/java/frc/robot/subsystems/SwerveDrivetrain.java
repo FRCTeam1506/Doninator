@@ -83,11 +83,24 @@ public class SwerveDrivetrain extends SubsystemBase {
         }
     }
 
+    private double optimizeGyro2 (double degrees) {
+        if (degrees > -180.0 && degrees < 180.0) { return degrees; }
+        else {
+            int m = (int) Math.floor( degrees / 180.0 );
+            double optimizedDegrees = degrees - (m * 180.0);
+            return Math.abs(optimizedDegrees);
+        }
+    }
+
     public Rotation2d getYaw() {
         double[] ypr = new double[3];
         this.gyro.getYawPitchRoll(ypr);
         double yaw = optimizeGyro(ypr[0]);
         return Constants.SwerveDrivetrain.INVERT_GYRO ? Rotation2d.fromDegrees(360 - yaw) : Rotation2d.fromDegrees(yaw);
+    }
+
+    public void setGyro (double degrees) {
+        gyro.setYaw(degrees);
     }
 
     public double getGyroAngleDegrees() {
@@ -125,6 +138,10 @@ public class SwerveDrivetrain extends SubsystemBase {
         for (SwerveModule mod : this.swerveModules) {
             mod.setDesiredState(desiredStates[mod.moduleNumber], false);
         }
+    }
+
+    public void stop () {
+        setModuleStates(Constants.SwerveDrivetrain.SWERVE_KINEMATICS.toSwerveModuleStates(new ChassisSpeeds(0.0, 0.0, 0.0)));
     }
 
     private double getSwerveModule0Degrees () {

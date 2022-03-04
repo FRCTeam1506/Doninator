@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PS4Controller;
@@ -15,18 +16,26 @@ import edu.wpi.first.wpilibj.PS4Controller.Axis;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.commands.autons.FourBall1;
+import frc.robot.commands.autons.TwoBall1;
+import frc.robot.commands.climber.ControlClimberStepper;
 import frc.robot.commands.climber.ControlLeanboiMotors;
+import frc.robot.commands.climber.MoveClimberDown;
+import frc.robot.commands.climber.MoveClimberUp;
 import frc.robot.commands.climber.ProgressClimber;
 import frc.robot.commands.climber.StopClimber;
+import frc.robot.commands.drivetrain.DriveDistance;
 import frc.robot.commands.drivetrain.RunPathPlannerTrajectory;
 import frc.robot.commands.drivetrain.SwerveTeleop;
 import frc.robot.commands.indexer.RunIndexer;
 import frc.robot.commands.indexer.StopIndexer;
 import frc.robot.commands.intake.ExtendAndIntake;
-import frc.robot.commands.intake.ExtendAndOuttake;
+import frc.robot.commands.macros.ExtendAndOuttake;
 import frc.robot.commands.intake.StopAndRetract;
 import frc.robot.commands.macros.IntakeAndIndex;
 import frc.robot.commands.macros.ShootAndIndex;
@@ -56,13 +65,15 @@ public class RobotContainer {
   /* Buttons */
   // * driver
   private final JoystickButton zeroGyro = new JoystickButton(driver, PS4Controller.Button.kCircle.value);
-  private final JoystickButton intakeAndIndex = new JoystickButton(driver, PS4Controller.Button.kL1.value);
-  private final JoystickButton extendAndOuttake = new JoystickButton(driver, PS4Controller.Button.kSquare.value);
+  // private final JoystickButton extendAndOuttake = new JoystickButton(driver, PS4Controller.Button.kSquare.value);
 
   // * operator
-  private final JoystickButton toggleTurretControl = new JoystickButton(operator, PS4Controller.Button.kL1.value);
+  private final JoystickButton intakeAndIndex = new JoystickButton(operator, PS4Controller.Button.kL1.value);
+  private final JoystickButton toggleTurretControl = new JoystickButton(operator, PS4Controller.Button.kTriangle.value);
   private final JoystickButton shootAndIndex = new JoystickButton(operator, PS4Controller.Button.kR1.value);
   private final JoystickButton progressClimb = new JoystickButton(operator, PS4Controller.Button.kCircle.value);
+  private final JoystickButton extendAndOutake = new JoystickButton(operator, PS4Controller.Button.kSquare.value);
+  private final JoystickButton runClimbStep = new JoystickButton(operator, PS4Controller.Button.kCross.value);
 
   /* Subsystems */
   private final SwerveDrivetrain drivetrain = new SwerveDrivetrain();
@@ -75,7 +86,6 @@ public class RobotContainer {
   /* Commands */
   // * primitives
   private final Command c_zeroGyro = new InstantCommand( () -> drivetrain.zeroGyro() );
-  private final Command c_extendAndOuttake = new ExtendAndOuttake(intake);
   private final Command c_stopAndRetract = new StopAndRetract(intake);
   private final Command c_idleShooter = new IdleShooter(shooter);
   private final Command c_stopIndexer = new StopIndexer(indexer);
@@ -87,10 +97,11 @@ public class RobotContainer {
 
   // * macros
   private final Command c_runIndexer = new IntakeAndIndex(intake, indexer);
-  private final Command c_runShooter = new ShootAndIndex(shooter, indexer, 1970.0); // 700.0 1850.0 1770.0 550.0
+  private final Command c_runShooter = new ShootAndIndex(shooter, indexer, turret, 1800.0); // 700.0 1850.0 1770.0 550.0 1970.0
+  private final Command c_extendAndOuttake = new ExtendAndOuttake(intake, indexer);
 
   /* Trajectories */
-  private PathPlannerTrajectory tr_test_1;
+  private PathPlannerTrajectory tr_test_1, tr_two_ball, tr_two_ball_pos3, tr_four_ball_pos1_1, tr_four_ball_pos1_2, tr_four_ball_pos1_3;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -129,18 +140,37 @@ public class RobotContainer {
     zeroGyro.whenPressed(c_zeroGyro);
     shootAndIndex.whileHeld(c_runShooter);
     intakeAndIndex.whileHeld(c_runIndexer);
-    extendAndOuttake.whileHeld(c_extendAndOuttake);
+    extendAndOutake.whileHeld(c_extendAndOuttake);
     progressClimb.whenPressed(c_progressClimb);
+    runClimbStep.whileHeld(
+      new ControlClimberStepper(turret, climber, shooter)
+    );
     toggleTurretControl.whenPressed(c_toggleTurretControl);
+
+    new POVButton(operator, 0).whileHeld(new MoveClimberUp(climber));
+    new POVButton(operator, 180).whileHeld(new MoveClimberDown(climber));
+
+    // new POVButton(operator, 0).whenPressed(new InstantCommand(() -> climber.extendLeanboi(), climber));
+    // new POVButton(operator, 180).whenPressed(new InstantCommand(() -> climber.retractLeanboi(), climber));
+    // new POVButton(operator, 270).whenPressed(new InstantCommand(() -> climber.retractTrigger(), climber));
+    // new POVButton(operator, 90).whenPressed(new InstantCommand(() -> climber.extendTrigger(), climber));
+    // new JoystickButton(operator, PS4Controller.Button.kTriangle.value).whenPressed(new InstantCommand(() -> climber.retractExtendo(), climber));
+    // new JoystickButton(operator, PS4Controller.Button.kCross.value).whenPressed(new InstantCommand(() -> climber.extendExtendo(), climber));
   }
 
   private void loadTrajectories() {
     tr_test_1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("test_1");
+    tr_two_ball = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("two_ball");
+    tr_two_ball_pos3 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("two_ball_pos3");
+    tr_four_ball_pos1_1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("four_ball_pos1_1");
+    tr_four_ball_pos1_2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("four_ball_pos1_2");
+    tr_four_ball_pos1_3 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("four_ball_pos1_3");
   }
 
   public Command getAutonomousCommand() {
-    return new RunPathPlannerTrajectory(drivetrain, tr_test_1);
-    // return null;
-    // return new WaitCommand(1.0);
+    // return new RunPathPlannerTrajectory(drivetrain, tr_test_1);
+    return new TwoBall1(drivetrain, intake, indexer, shooter, turret, tr_two_ball);
+    // return new FourBall1(drivetrain, intake, indexer, shooter, turret, tr_four_ball_pos1_1, tr_four_ball_pos1_2, tr_four_ball_pos1_3);
+    // return new DriveDistance(drivetrain, Units.inchesToMeters(20), true);
   }
 }

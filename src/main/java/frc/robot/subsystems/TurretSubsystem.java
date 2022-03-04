@@ -37,7 +37,7 @@ public class TurretSubsystem extends SubsystemBase {
                 double H2_GOAL_HEIGHT   = Units.metersToInches(2.591); // 8.5 ft
                 double A1_HOOD_UP       = Units.degreesToRadians(16.0);
                 double A1_HOOD_DOWN     = Units.degreesToRadians(32.0);
-                double A2_Y_DIFF = this.y;
+                double A2_Y_DIFF = Units.degreesToRadians(this.y);
     
                 double A1;
                 switch (state) {
@@ -145,11 +145,11 @@ public class TurretSubsystem extends SubsystemBase {
         currentHoodState = state;
         switch (state) {
             case UP:
-                hood.set(true);
+                hood.set(false);
                 break;
 
             case DOWN:
-                hood.set(false);
+                hood.set(true);
                 break;
         }
     }
@@ -177,9 +177,10 @@ public class TurretSubsystem extends SubsystemBase {
     }
 
     public double calculateShooterRPM () {
-        double m = 0.5;
-        double b = 1000.0;
-        return (m * limelightData.getDistance(currentHoodState)) + b;
+        double x = limelightData.getDistance(currentHoodState);
+        double m = 3.97411;
+        double b = 1178.94;
+        return (m * x) + b;
     }
 
     public boolean isTracking () {

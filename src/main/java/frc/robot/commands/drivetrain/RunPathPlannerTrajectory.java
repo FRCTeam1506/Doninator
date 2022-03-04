@@ -13,7 +13,10 @@ public class RunPathPlannerTrajectory extends SequentialCommandGroup {
     public RunPathPlannerTrajectory (SwerveDrivetrain drivetrain, PathPlannerTrajectory trajectory) {
         addRequirements(drivetrain);
         addCommands(
-            new InstantCommand(() -> drivetrain.setPose(trajectory.getInitialPose())),
+            new InstantCommand(() -> {
+                drivetrain.setPose(trajectory.getInitialPose());
+                drivetrain.setGyro(trajectory.getInitialPose().getRotation().getDegrees());
+            }),
             new PPSwerveControllerCommand(
                 trajectory, 
                 drivetrain::getPose, 
@@ -23,7 +26,8 @@ public class RunPathPlannerTrajectory extends SequentialCommandGroup {
                 Constants.Auton.THETA_CONTROLLER,
                 drivetrain::setModuleStates,
                 drivetrain
-            )
+            ),
+            new InstantCommand(() -> drivetrain.stop())
         );
     }
     
