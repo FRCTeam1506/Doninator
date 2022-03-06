@@ -14,7 +14,7 @@ public class Step8 extends CommandBase {
 
     @Override
     public void execute() {
-        climber.setMotorPosition(climber.ABOVE_RUNG_HEIGHT);
+        climber.setMotorPosition(100_000.0); // 100_000.0
     }
     
 }

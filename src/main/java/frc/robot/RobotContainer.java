@@ -7,6 +7,7 @@ package frc.robot;
 import com.pathplanner.lib.PathPlannerTrajectory;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PS4Controller;
@@ -14,6 +15,8 @@ import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.PS4Controller.Axis;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
@@ -28,6 +31,7 @@ import frc.robot.commands.climber.ControlLeanboiMotors;
 import frc.robot.commands.climber.MoveClimberDown;
 import frc.robot.commands.climber.MoveClimberUp;
 import frc.robot.commands.climber.ProgressClimber;
+import frc.robot.commands.climber.RegressClimber;
 import frc.robot.commands.climber.StopClimber;
 import frc.robot.commands.drivetrain.DriveDistance;
 import frc.robot.commands.drivetrain.RunPathPlannerTrajectory;
@@ -56,7 +60,7 @@ public class RobotContainer {
 
   public static PneumaticHub hub = new PneumaticHub();
   // private Compressor compressor = hub.makeCompressor();
-  // private Compressor compressor = new Compressor(1, PneumaticsModuleType.REVPH);
+  public static Compressor compressor = new Compressor(1, PneumaticsModuleType.REVPH);
 
   /* Controllers */
   private final PS4Controller driver = new PS4Controller(0);
@@ -97,11 +101,16 @@ public class RobotContainer {
 
   // * macros
   private final Command c_runIndexer = new IntakeAndIndex(intake, indexer);
-  private final Command c_runShooter = new ShootAndIndex(shooter, indexer, turret, 1800.0); // 700.0 1850.0 1770.0 550.0 1970.0
+  private final Command c_runShooter = new ShootAndIndex(shooter, indexer, 1760.0); // 700.0 1850.0 1770.0 550.0 1970.0
+  private final Command c_runShooterLow = new ShootAndIndex(shooter, indexer, 760.0);
   private final Command c_extendAndOuttake = new ExtendAndOuttake(intake, indexer);
 
   /* Trajectories */
   private PathPlannerTrajectory tr_test_1, tr_two_ball, tr_two_ball_pos3, tr_four_ball_pos1_1, tr_four_ball_pos1_2, tr_four_ball_pos1_3;
+
+  private enum Autons { TwoBall, Nothing }
+  private SendableChooser<Autons> autonChooser = new SendableChooser<>();
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -114,6 +123,7 @@ public class RobotContainer {
     setDefaultCommands();
     configureButtonBindings();
     loadTrajectories();
+    configureAuton();
   }
 
   private void setDefaultCommands() {
@@ -133,7 +143,7 @@ public class RobotContainer {
 
     turret.setDefaultCommand(c_aimTurret);
 
-    climber.setDefaultCommand(c_stopClimber);
+    climber.setDefaultCommand(c_controlClimbMotors); // c_stopClimber
   }
 
   private void configureButtonBindings () {
@@ -142,13 +152,18 @@ public class RobotContainer {
     intakeAndIndex.whileHeld(c_runIndexer);
     extendAndOutake.whileHeld(c_extendAndOuttake);
     progressClimb.whenPressed(c_progressClimb);
-    runClimbStep.whileHeld(
+    runClimbStep.whenPressed(
       new ControlClimberStepper(turret, climber, shooter)
     );
     toggleTurretControl.whenPressed(c_toggleTurretControl);
 
-    new POVButton(operator, 0).whileHeld(new MoveClimberUp(climber));
-    new POVButton(operator, 180).whileHeld(new MoveClimberDown(climber));
+    new POVButton(operator, 0).whileHeld(c_runShooterLow);
+    new POVButton(operator, 180).whenPressed(new RegressClimber(climber));
+
+    new POVButton(driver, 0).whenPressed(new InstantCommand(() -> hub.enableCompressorAnalog(100, 120)));
+
+    // new POVButton(operator, 0).whileHeld(new MoveClimberUp(climber));
+    // new POVButton(operator, 180).whileHeld(new MoveClimberDown(climber));
 
     // new POVButton(operator, 0).whenPressed(new InstantCommand(() -> climber.extendLeanboi(), climber));
     // new POVButton(operator, 180).whenPressed(new InstantCommand(() -> climber.retractLeanboi(), climber));
@@ -158,7 +173,7 @@ public class RobotContainer {
     // new JoystickButton(operator, PS4Controller.Button.kCross.value).whenPressed(new InstantCommand(() -> climber.extendExtendo(), climber));
   }
 
-  private void loadTrajectories() {
+  private void loadTrajectories () {
     tr_test_1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("test_1");
     tr_two_ball = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("two_ball");
     tr_two_ball_pos3 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("two_ball_pos3");
@@ -167,10 +182,29 @@ public class RobotContainer {
     tr_four_ball_pos1_3 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("four_ball_pos1_3");
   }
 
-  public Command getAutonomousCommand() {
-    // return new RunPathPlannerTrajectory(drivetrain, tr_test_1);
-    return new TwoBall1(drivetrain, intake, indexer, shooter, turret, tr_two_ball);
-    // return new FourBall1(drivetrain, intake, indexer, shooter, turret, tr_four_ball_pos1_1, tr_four_ball_pos1_2, tr_four_ball_pos1_3);
-    // return new DriveDistance(drivetrain, Units.inchesToMeters(20), true);
+  private void configureAuton () {
+    autonChooser.setDefaultOption("Nothing", Autons.Nothing);
+    autonChooser.addOption("2 Ball", Autons.TwoBall);
+    Shuffleboard.getTab("Autonomous").add(autonChooser);
+  }
+
+  // public Command getAutonomousCommand() {
+  //   // return new RunPathPlannerTrajectory(drivetrain, tr_test_1);
+  //   return new TwoBall1(drivetrain, intake, indexer, shooter, turret, tr_two_ball);
+  //   // return new FourBall1(drivetrain, intake, indexer, shooter, turret, tr_four_ball_pos1_1, tr_four_ball_pos1_2, tr_four_ball_pos1_3);
+  //   // return new DriveDistance(drivetrain, Units.inchesToMeters(20), true);
+  // }
+
+  public Command getAutonomousCommand () {
+    switch (autonChooser.getSelected()) {
+      case Nothing:
+        return new WaitCommand(15.0);
+
+      case TwoBall:
+        return new TwoBall1(drivetrain, intake, indexer, shooter, turret, tr_two_ball);
+    
+      default:
+        return new WaitCommand(15.0);
+    }
   }
 }

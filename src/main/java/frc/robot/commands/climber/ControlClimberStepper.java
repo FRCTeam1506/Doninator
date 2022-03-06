@@ -65,7 +65,7 @@ public class ControlClimberStepper extends SequentialCommandGroup {
                 break;
 
             case 9:
-                CommandScheduler.getInstance().schedule(new Step9(climber));
+                CommandScheduler.getInstance().schedule(new Step3(climber));
                 break;
 
             case 10:
@@ -88,12 +88,15 @@ public class ControlClimberStepper extends SequentialCommandGroup {
                 CommandScheduler.getInstance().schedule(new Step8(climber));
                 break;
 
+            case 15:
+                CommandScheduler.getInstance().schedule(new Step9(climber));
+                break;
         
             default:
                 break;
         }
-    }
 
-    
+        // climber.currentClimbState++;
+    }
 
 }

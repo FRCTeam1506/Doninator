@@ -1,6 +1,8 @@
 package frc.robot.commands.macros.climb;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.RobotContainer;
+import frc.robot.commands.shooter.StopShooter;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
@@ -20,7 +22,12 @@ public class Step1 extends CommandBase {
 
     @Override
     public void execute() {
-        shooter.shoot(0.0);
+        // shooter.shoot(0.0);
+        shooter.setDefaultCommand(
+            new StopShooter(shooter)
+        );
+
+        // RobotContainer.compressor.disable();
 
         turret.setPosition(0.0);
         turret.putHoodDown();

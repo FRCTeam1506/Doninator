@@ -36,9 +36,9 @@ public class TwoBall1 extends SequentialCommandGroup {
             new ParallelCommandGroup(
                 new RunIndexer(indexer),
                 new AimTurret(turret, () -> 0.0)
-            ).withTimeout(1.4),
+            ).withTimeout(1.2),
 
-            new ShootAndIndex(shooter, indexer, turret, 0.0).perpetually().withTimeout(7)
+            new ShootAndIndex(shooter, indexer, 1720.0).perpetually().withTimeout(7) // 1635.0
         );
     }
     

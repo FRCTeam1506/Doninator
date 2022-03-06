@@ -19,7 +19,7 @@ public class ControlLeanboiMotors extends CommandBase {
 
     @Override
     public void execute() {
-        climber.setPower(leftPower.getAsDouble() * 0.07, rightPower.getAsDouble() * 0.07);
+        climber.setPower(leftPower.getAsDouble() * 0.8, rightPower.getAsDouble() * 0.8);
     }
 
 }

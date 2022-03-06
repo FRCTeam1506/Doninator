@@ -14,7 +14,8 @@ public class Step9 extends CommandBase {
 
     @Override
     public void execute() {
-        climber.setMotorPosition(0.0);
+        // climber.setMotorPosition(0.0);
+        climber.setPower(0.0, 0.0);
     }
 
 }

@@ -27,7 +27,7 @@ public class TwoBallPos3 extends SequentialCommandGroup {
                 new ExtendAndIntake(intake)
             ).withTimeout(15),
 
-            new ShootAndIndex(shooter, indexer, turret, 0.0).withTimeout(10)
+            new ShootAndIndex(shooter, indexer, 1575.0).withTimeout(10)
         );
     }
     

@@ -15,17 +15,17 @@ import frc.robot.Constants;
 
 public class ClimberSubsystem extends SubsystemBase {
 
-    private static final double kP = 0.2;   // 0.2
+    private static final double kP = 0.84;   // 0.84
     private static final double kI = 0.0;
     private static final double kD = 0.0;
-    private static final double kF = 0.1;  // 0.05
+    private static final double kF = 0.4;  // 0.4
 
-    private static final double kVelocity = 70_000.0;
-    private static final double kAcceleration = 50_000.0;
+    private static final double kVelocity = 62_000.0;       // 70_000.0
+    private static final double kAcceleration = 44_000.0;   // 50_000.0
 
-    private static final double MAX_POSITION = 110_000.0;
-    public static final double FIRST_RUNG_HEIGHT = 75_000.0;
-    public static final double ABOVE_RUNG_HEIGHT = 25_000.0;
+    private static final double MAX_POSITION = 150_000.0; // 110_000
+    public static final double FIRST_RUNG_HEIGHT = 130_000.0; // 90_000
+    public static final double ABOVE_RUNG_HEIGHT = 25_000.0; // 25_000
     public static final double FULL_EXTEND = MAX_POSITION;
 
     private static final ExtendoState DEFAULT_EXTENDO_STATE = ExtendoState.RETRACTED;
@@ -118,14 +118,14 @@ public class ClimberSubsystem extends SubsystemBase {
 
     public void setPower (double leftPower, double rightPower) {
         double leftPosition = leftMotor.getSelectedSensorPosition();
-        if (Math.abs(leftPosition) <= MAX_POSITION && leftPosition > 0) {
+        if (Math.abs(leftPosition) <= MAX_POSITION && leftPosition >= 0) {
             leftMotor.set(TalonFXControlMode.PercentOutput, leftPower);
         } else {
             leftMotor.set(TalonFXControlMode.PercentOutput, 0.0);
         }
 
         double rightPosition = rightMotor.getSelectedSensorPosition();
-        if (Math.abs(rightPosition) <= MAX_POSITION && rightPosition > 0) {
+        if (Math.abs(rightPosition) <= MAX_POSITION && rightPosition >= 0) {
             rightMotor.set(TalonFXControlMode.PercentOutput, rightPower);
         } else {
             rightMotor.set(TalonFXControlMode.PercentOutput, 0.0);
@@ -266,9 +266,10 @@ public class ClimberSubsystem extends SubsystemBase {
 
     public void progressClimb () {
         currentClimbState++;
-        // if (currentClimbState < 13) {
-        //     setClimbState(currentClimbState+1);
-        // }
+    }
+
+    public void regressClimb () {
+        currentClimbState--;
     }
 
     @Override

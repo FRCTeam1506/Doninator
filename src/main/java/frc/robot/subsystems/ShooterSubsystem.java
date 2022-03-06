@@ -79,8 +79,25 @@ public class ShooterSubsystem extends SubsystemBase {
         //? target-delta <= actual <= target+delta
         if ( actual_velocity_rpm >= this.targetVelocityRPM - VELOCITY_DELTA && actual_velocity_rpm <= this.targetVelocityRPM + VELOCITY_DELTA ) {
             return true;
-        } else { return false;}
+        } else { return false; }
     }
+
+    public boolean isShooterReady2 () {
+        double actual_velocity_rpm = getVelocity();
+
+        //? target-delta <= actual <= target+delta
+
+
+        if (velocity_dash != null) {
+            if ( actual_velocity_rpm >= this.velocity_dash.getDouble(0.0) - VELOCITY_DELTA && actual_velocity_rpm <= this.velocity_dash.getDouble(0.0) + VELOCITY_DELTA ) {
+                return true;
+            } else { return false; }
+        } else {
+            return false;
+        }
+    }
+
+    
 
     @Override
     public void periodic() {
@@ -96,7 +113,10 @@ public class ShooterSubsystem extends SubsystemBase {
         
         this.velocity_dash = tab.add("Set Velocity (RPM)", this.targetVelocityRPM)
             .withWidget(BuiltInWidgets.kNumberSlider)
-            .withProperties(Map.of("min", 1000, "max", 2500, "blockIncrement", 50))
+            .withProperties(Map.of("min", 500, "max", 2500, "blockIncrement", 50))
             .getEntry();
+
+        // low goal: 760.0
+        // high goal: 1750.0
     }
 }

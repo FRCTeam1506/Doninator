@@ -30,7 +30,7 @@ public class FourBall1 extends SequentialCommandGroup {
                 new RunIndexer(indexer),
                 new AimTurret(turret, () -> 0.0)
             ).withTimeout(0.8),
-            new ShootAndIndex(shooter, indexer, turret, 0.0).perpetually().withTimeout(4.0),
+            new ShootAndIndex(shooter, indexer, 1575.0).perpetually().withTimeout(4.0),
             
             new ParallelDeadlineGroup(
                 new RunPathPlannerTrajectory(drivetrain, trajectory2),
@@ -39,7 +39,7 @@ public class FourBall1 extends SequentialCommandGroup {
             new StopAndRetract(intake).withTimeout(0.1),
             
             new RunPathPlannerTrajectory(drivetrain, trajectory3).withTimeout(4.0),
-            new ShootAndIndex(shooter, indexer, turret, 0.0).perpetually().withTimeout(7)
+            new ShootAndIndex(shooter, indexer, 1630.0).perpetually().withTimeout(7)
         );
     }
     
