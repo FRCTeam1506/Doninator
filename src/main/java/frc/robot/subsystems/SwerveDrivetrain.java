@@ -67,35 +67,39 @@ public class SwerveDrivetrain extends SubsystemBase {
         }
     }
 
+    public void openLoopDrive (ChassisSpeeds speeds) {
+        if (speeds.vxMetersPerSecond == 0 && speeds.vyMetersPerSecond == 0 && speeds.omegaRadiansPerSecond == 0) {
+            stop();
+            return;
+        }
+      
+        SwerveModuleState[] swerveModuleStates = Constants.SwerveDrivetrain.SWERVE_KINEMATICS.toSwerveModuleStates(speeds);
+                 
+        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.SwerveDrivetrain.MAX_SPEED);
+          
+        setModuleStates(swerveModuleStates);
+    }
+
     /* Gyro */
     public void zeroGyro() {
         this.gyro.setYaw(0);
     }
 
-    private double optimizeGyro (double degrees) {
-        // 0 < degrees < 360
+    private double optimizeGyro2 (double degrees) {
+        // -180 < degrees < 180
         if ((degrees > 0.0) && (degrees < 360.0)) {
-            return degrees;
+            return degrees - 180.0;
         } else {
             int m = (int) Math.floor( degrees / 360.0 );
             double optimizedDegrees = degrees - (m * 360.0);
-            return Math.abs(optimizedDegrees);
-        }
-    }
-
-    private double optimizeGyro2 (double degrees) {
-        if (degrees > -180.0 && degrees < 180.0) { return degrees; }
-        else {
-            int m = (int) Math.floor( degrees / 180.0 );
-            double optimizedDegrees = degrees - (m * 180.0);
-            return Math.abs(optimizedDegrees);
+            return Math.abs(optimizedDegrees) - 180.0;
         }
     }
 
     public Rotation2d getYaw() {
         double[] ypr = new double[3];
         this.gyro.getYawPitchRoll(ypr);
-        double yaw = optimizeGyro(ypr[0]);
+        double yaw = optimizeGyro2(ypr[0]);
         return Constants.SwerveDrivetrain.INVERT_GYRO ? Rotation2d.fromDegrees(360 - yaw) : Rotation2d.fromDegrees(yaw);
     }
 
@@ -114,10 +118,6 @@ public class SwerveDrivetrain extends SubsystemBase {
     /* Odometry */
     public Pose2d getPose() {
         return this.swerveOdometry.getPoseMeters();
-    }
-
-    public void setPose(Pose2d pose) {
-        this.swerveOdometry.resetPosition(pose, pose.getRotation());
     }
 
     public void resetOdometry(Pose2d pose) {

@@ -2,7 +2,14 @@
   "NetworkTables": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/Shuffleboard/Autonomous/SendableChooser[0]": "String Chooser",
+      "/Shuffleboard/Autonomous/SendableChooser[1]": "String Chooser",
+      "/Shuffleboard/Climber/ClimberSubsystem": "Subsystem",
       "/Shuffleboard/Drivetrain/SwerveDrivetrain": "Subsystem",
+      "/Shuffleboard/Indexer/IndexerSubsystem": "Subsystem",
+      "/Shuffleboard/Intake/IntakeSubsystem": "Subsystem",
+      "/Shuffleboard/Shooter/ShooterSubsystem": "Subsystem",
+      "/Shuffleboard/Turret/TurretSubsystem": "Subsystem",
       "/SmartDashboard/Field": "Field2d"
     },
     "windows": {

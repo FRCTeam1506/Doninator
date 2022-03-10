@@ -18,4 +18,10 @@ public class ExtendAndIntake extends CommandBase {
         intake.intake();
     }
 
+    @Override
+    public void end(boolean interrupted) {
+        intake.stop();
+        intake.retract();
+    }
+
 }

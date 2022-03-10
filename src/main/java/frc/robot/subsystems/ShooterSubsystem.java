@@ -28,6 +28,8 @@ public class ShooterSubsystem extends SubsystemBase {
     private static final double VELOCITY_DELTA = 50.0;
 
     private static final double IDLE_RPM = 800.0; // 2000.0 1000.0
+    private static final double MAX_RPM = 2450.0;
+    private static final double MAX_SENSOR_VELOCITY = Conversions.RPMToFalcon(MAX_RPM, GEAR_RATIO);
 
     private TalonFX leftMotor = new TalonFX(Constants.Shooter.LEFT_MOTOR_ID, "canivore");
     private TalonFX rightMotor = new TalonFX(Constants.Shooter.RIGHT_MOTOR_ID, "canivore");
@@ -67,8 +69,16 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void shoot (double velocity_rpm) {
         this.targetVelocityRPM = velocity_rpm;
+
+        if (velocity_rpm >= 0 && velocity_rpm <= MAX_RPM) {
+            setVelocity(this.targetVelocityRPM);
+        } else if (velocity_rpm < 0) {
+            setVelocity(0.0);
+        } else if (velocity_rpm > MAX_RPM) {
+            setVelocity(MAX_RPM);
+        }
+
         // setVelocity(this.velocity_dash.getDouble(this.targetVelocityRPM));
-        setVelocity(this.targetVelocityRPM);
     }
 
     public void idle () { setVelocity(IDLE_RPM); }
@@ -84,11 +94,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public boolean isShooterReady2 () {
         double actual_velocity_rpm = getVelocity();
-
-        //? target-delta <= actual <= target+delta
-
-
+        
         if (velocity_dash != null) {
+            //? target-delta <= actual <= target+delta
             if ( actual_velocity_rpm >= this.velocity_dash.getDouble(0.0) - VELOCITY_DELTA && actual_velocity_rpm <= this.velocity_dash.getDouble(0.0) + VELOCITY_DELTA ) {
                 return true;
             } else { return false; }

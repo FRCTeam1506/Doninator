@@ -108,7 +108,7 @@ public final class Constants {
             public static final int CAN_CODER_ID    = 30;
             public static final int ANGLE_MOTOR_ID  = 31;
             public static final int DRIVE_MOTOR_ID  = 32;
-            public static final double ANGLE_OFFSET = 347.0; // 346.729
+            public static final double ANGLE_OFFSET = 350.5; // 346.729
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(DRIVE_MOTOR_ID, ANGLE_MOTOR_ID, CAN_CODER_ID, ANGLE_OFFSET);
         }
@@ -118,7 +118,7 @@ public final class Constants {
             public static final int CAN_CODER_ID    = 40;
             public static final int ANGLE_MOTOR_ID  = 41;
             public static final int DRIVE_MOTOR_ID  = 42;
-            public static final double ANGLE_OFFSET = 92.0; // 93.428
+            public static final double ANGLE_OFFSET = 93.6; // 93.428
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(DRIVE_MOTOR_ID, ANGLE_MOTOR_ID, CAN_CODER_ID, ANGLE_OFFSET);
         }
@@ -168,12 +168,12 @@ public final class Constants {
         public static final double MAX_ANGULAR_SPEED_RPS    = 2 * Math.PI;      // radians per second
         public static final double MAX_ANGULAR_SPEED_RPSS   = 2 * Math.PI;      // radians per second squared
 
-        public static final PIDController PX_CONTROLLER = new PIDController(6.0, 0, 0.1);
-        public static final PIDController PY_CONTROLLER = new PIDController(6.0, 0, 0.1);
+        public static final PIDController PX_CONTROLLER = new PIDController(6.0, 0, 0.1);   // 6.0
+        public static final PIDController PY_CONTROLLER = new PIDController(6.0, 0, 0.1);   // 6.0
 
         public static final TrapezoidProfile.Constraints THETA_CONTROLLER_CONTRAINTS = new TrapezoidProfile.Constraints(MAX_ANGULAR_SPEED_RPS, MAX_ANGULAR_SPEED_RPSS);
 
-        public static final ProfiledPIDController THETA_CONTROLLER = new ProfiledPIDController(10.0, 0.0, 0.0, THETA_CONTROLLER_CONTRAINTS);
+        public static final ProfiledPIDController THETA_CONTROLLER = new ProfiledPIDController(1.0, 0.0, 0.0, THETA_CONTROLLER_CONTRAINTS);
     }
 
 }
