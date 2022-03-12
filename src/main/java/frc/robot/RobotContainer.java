@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.autons.FourBall1;
-import frc.robot.commands.autons.FourBallR1;
 import frc.robot.commands.autons.TwoBall1;
 import frc.robot.commands.autons.TwoBallB1;
 import frc.robot.commands.autons.TwoBallB2;
@@ -37,7 +36,6 @@ import frc.robot.commands.climber.ProgressClimber;
 import frc.robot.commands.climber.RegressClimber;
 import frc.robot.commands.climber.StopClimber;
 import frc.robot.commands.drivetrain.DriveDistance;
-import frc.robot.commands.drivetrain.RotateToAngle;
 import frc.robot.commands.drivetrain.RunPathPlannerTrajectory;
 import frc.robot.commands.drivetrain.SwerveTeleop;
 import frc.robot.commands.indexer.RunIndexer;
@@ -49,6 +47,7 @@ import frc.robot.commands.macros.IntakeAndIndex;
 import frc.robot.commands.macros.ShootAndIndex;
 import frc.robot.commands.shooter.IdleShooter;
 import frc.robot.commands.shooter.RunShooter;
+import frc.robot.commands.shooter.StopShooter;
 import frc.robot.commands.turret.AimTurret;
 import frc.robot.commands.turret.StopTurret;
 import frc.robot.commands.turret.ToggleTurretControlState;
@@ -131,6 +130,7 @@ public class RobotContainer {
     configureButtonBindings();
     loadTrajectories();
     configureAuton();
+    dashboardStuff();
   }
 
   private void setDefaultCommands() {
@@ -166,10 +166,10 @@ public class RobotContainer {
 
     new POVButton(operator, 0).whileHeld(c_runShooterLow);
     new POVButton(operator, 180).whenPressed(new RegressClimber(climber));
+    new POVButton(operator, 90).whenPressed(new StopShooter(shooter).perpetually());
+    new POVButton(operator, 270).whenPressed(new IdleShooter(shooter).perpetually());
 
     new POVButton(driver, 0).whenPressed(new InstantCommand(() -> hub.enableCompressorAnalog(100, 120)));
-
-    new POVButton(driver, 180).whenPressed(new RotateToAngle(drivetrain, 30.0));
   }
 
   private void loadTrajectories () {
@@ -200,6 +200,11 @@ public class RobotContainer {
 
     ShuffleboardTab tab = Shuffleboard.getTab("Autonomous");
     tab.add(autonChooser);
+  }
+
+  private void dashboardStuff () {
+    ShuffleboardTab tab = Shuffleboard.getTab("Climber");
+    tab.addNumber("PSI", () -> hub.getPressure(0));
   }
 
   // public Command getAutonomousCommand () {

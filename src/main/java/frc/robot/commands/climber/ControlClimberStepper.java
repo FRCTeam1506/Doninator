@@ -3,6 +3,7 @@ package frc.robot.commands.climber;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.macros.climb.Step1;
+import frc.robot.commands.macros.climb.Step10;
 import frc.robot.commands.macros.climb.Step2;
 import frc.robot.commands.macros.climb.Step3;
 import frc.robot.commands.macros.climb.Step4;
@@ -65,7 +66,7 @@ public class ControlClimberStepper extends SequentialCommandGroup {
                 break;
 
             case 9:
-                CommandScheduler.getInstance().schedule(new Step3(climber));
+                CommandScheduler.getInstance().schedule(new Step10(climber));
                 break;
 
             case 10:
