@@ -30,10 +30,6 @@ public class SwerveTeleop extends CommandBase {
 
     @Override
     public void execute() {
-        // double yAxis = -controller.getLeftY();
-        // double xAxis = -controller.getLeftX();
-        // double rAxis = -controller.getRightX();
-
         double yAxis = controller.getRawAxis(1) * 0.48; // 0.55
         double xAxis = controller.getRawAxis(0) * 0.48; // 0.55
         double rAxis = -controller.getRawAxis(2);

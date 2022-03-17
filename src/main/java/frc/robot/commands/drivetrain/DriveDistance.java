@@ -3,12 +3,15 @@ package frc.robot.commands.drivetrain;
 import java.util.List;
 
 import edu.wpi.first.math.controller.HolonomicDriveController;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+
 import frc.robot.Constants;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.utils.TrajectoryHelper;
@@ -39,6 +42,14 @@ public class DriveDistance extends CommandBase {
 
     @Override
     public void initialize() {
+        
+        //? create controllers
+        PIDController xController = new PIDController(Constants.Auton.PX_CONTROLLER, 0.0, 0.0);
+        PIDController yController = new PIDController(Constants.Auton.PY_CONTROLLER, 0.0, 0.0);
+
+        ProfiledPIDController thetaController = new ProfiledPIDController(1.0, 0.0, 0.0, Constants.Auton.THETA_CONTROLLER_CONTRAINTS);
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
         initialPose = drivetrain.getPose();
         x = initialPose.getX() + (distance_m * initialPose.getRotation().getCos());
         y = initialPose.getY() + (distance_m * initialPose.getRotation().getSin());
@@ -53,17 +64,17 @@ public class DriveDistance extends CommandBase {
             initialPose, 
             List.of(
                 new Translation2d(x * 0.25, y * 0.25),
-                new Translation2d(x * 0.50, y * 0.50)
-                // new Translation2d(x * 0.75, y * 0.75)
+                new Translation2d(x * 0.50, y * 0.50),
+                new Translation2d(x * 0.75, y * 0.75)
             ),
             targetPose, 
             Constants.Auton.MAX_SPEED_MPS, 
             Constants.Auton.MAX_ACCELERATION_MPSS
         );
         controller = new HolonomicDriveController(
-            Constants.Auton.PX_CONTROLLER,
-            Constants.Auton.PY_CONTROLLER,
-            Constants.Auton.THETA_CONTROLLER
+            xController,
+            yController,
+            thetaController
         );
         controller.setEnabled(true);
         timer.start();

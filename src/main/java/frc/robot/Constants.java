@@ -5,12 +5,11 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+
 import frc.robot.utils.swerve.SwerveModuleConstants;
 
 public final class Constants {
@@ -124,43 +123,6 @@ public final class Constants {
         }
     }
 
-    public static final class Shooter {
-        public static final int LEFT_MOTOR_ID = 50;
-        public static final int RIGHT_MOTOR_ID = 51;
-    }
-
-    public static final class Intake {
-        public static final int MOTOR_ID = 52;
-        public static final int XFACTOR_ID = 8;
-    }
-
-    public static final class Indexer {
-        public static final int BOTTOM_MOTOR_ID = 53;
-        public static final int TOP_MOTOR_ID = 54;
-    }
-
-    public static final class Climber {
-        public static final int LEFT_MOTOR_ID = 61;
-        public static final int RIGHT_MOTOR_ID = 62;
-
-        public static final int LEFT_LEANBOI_ID = 11;
-        public static final int RIGHT_LEANBOI_ID = 12;
-
-        public static final int LEFT_TRIGGER_ID = 9;
-        public static final int RIGHT_TRIGGER_ID = 10;
-
-        public static final int LEFT_EXTENDO_ID = 13;
-        public static final int RIGHT_EXTENDO_ID = 14;
-    }
-
-    public static final class Turret {
-        public static final int HOOD_ID = 15;
-        public static final int MOTOR_ID = 55;
-        public static final double AUTO_kP = 0.05;  // 0.023
-        public static final double AUTO_kI = 0.005; // 0.005
-        public static final double AUTO_kD = 0.0;   // 0.0
-    }
-
     public static final class Auton {
         public static final double MAX_SPEED_MPS            = 1.0;    // meters per second          7.0
         public static final double MAX_ACCELERATION_MPSS    = 1.0;    // meters per second squared  5.0
@@ -168,12 +130,10 @@ public final class Constants {
         public static final double MAX_ANGULAR_SPEED_RPS    = 2 * Math.PI;      // radians per second
         public static final double MAX_ANGULAR_SPEED_RPSS   = 2 * Math.PI;      // radians per second squared
 
-        public static final PIDController PX_CONTROLLER = new PIDController(6.0, 0, 0.1);   // 6.0
-        public static final PIDController PY_CONTROLLER = new PIDController(6.0, 0, 0.1);   // 6.0
+        public static final double PX_CONTROLLER = 6.0;
+        public static final double PY_CONTROLLER = 6.0;
 
         public static final TrapezoidProfile.Constraints THETA_CONTROLLER_CONTRAINTS = new TrapezoidProfile.Constraints(MAX_ANGULAR_SPEED_RPS, MAX_ANGULAR_SPEED_RPSS);
-
-        public static final ProfiledPIDController THETA_CONTROLLER = new ProfiledPIDController(1.0, 0.0, 0.0, THETA_CONTROLLER_CONTRAINTS);
     }
 
 }

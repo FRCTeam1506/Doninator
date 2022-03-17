@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import frc.robot.Constants;
 import frc.robot.utils.swerve.SwerveModule;
+
 import com.ctre.phoenix.sensors.Pigeon2;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -85,7 +86,7 @@ public class SwerveDrivetrain extends SubsystemBase {
         this.gyro.setYaw(0);
     }
 
-    private double optimizeGyro2 (double degrees) {
+    private double optimizeGyro (double degrees) {
         // -180 < degrees < 180
         if ((degrees > 0.0) && (degrees < 360.0)) {
             return degrees - 180.0;
@@ -99,7 +100,8 @@ public class SwerveDrivetrain extends SubsystemBase {
     public Rotation2d getYaw() {
         double[] ypr = new double[3];
         this.gyro.getYawPitchRoll(ypr);
-        double yaw = optimizeGyro2(ypr[0]);
+        double yaw = ypr[0];
+        // double yaw = optimizeGyro(ypr[0]);
         return Constants.SwerveDrivetrain.INVERT_GYRO ? Rotation2d.fromDegrees(360 - yaw) : Rotation2d.fromDegrees(yaw);
     }
 

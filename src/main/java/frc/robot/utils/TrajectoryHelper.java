@@ -3,8 +3,10 @@ package frc.robot.utils;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -13,6 +15,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
+
 import frc.robot.Constants;
 
 
@@ -34,6 +37,10 @@ public class TrajectoryHelper {
 
     public static PathPlannerTrajectory loadHolonomicPathPlannerTrajectory (String filename, double maxVelocity, double maxAcceleration) {
         return PathPlanner.loadPath(filename, maxVelocity, maxAcceleration, false);
+    }
+
+    public static PathPlannerTrajectory loadHolonomicPathPlannerTrajectory (String filename) {
+        return PathPlanner.loadPath(filename, Constants.Auton.MAX_SPEED_MPS, Constants.Auton.MAX_ACCELERATION_MPSS, false);
     }
 
     public static Trajectory createTrajectory (Pose2d initial,
