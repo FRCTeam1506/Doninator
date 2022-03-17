@@ -23,6 +23,7 @@ public class ClimberSubsystem extends SubsystemBase {
     private static final double kVelocity = 62_000.0;       // 70_000.0
     private static final double kAcceleration = 44_000.0;   // 50_000.0
 
+    private static final double MIN_POSITION = -1_000.0;
     private static final double MAX_POSITION = 150_000.0; // 110_000
     public static final double FIRST_RUNG_HEIGHT = 130_000.0; // 90_000
     public static final double ABOVE_RUNG_HEIGHT = 25_000.0; // 25_000
@@ -104,7 +105,7 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public void setMotorPosition (double pos) {
-        if (Math.abs(pos) <= MAX_POSITION && pos >= 0) {
+        if (Math.abs(pos) <= MAX_POSITION && pos >= MIN_POSITION) {
             // double leftPos = leftMotor.getSelectedSensorPosition();
             // double rightPos = rightMotor.getSelectedSensorPosition();
             // while (!(leftPos <= pos - 50 && leftPos >= pos + 50 && rightPos <= pos - 50 && rightPos >= pos + 50)) {

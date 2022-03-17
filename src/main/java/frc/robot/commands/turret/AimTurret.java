@@ -23,7 +23,7 @@ public class AimTurret extends PIDCommand {
                 if (turret.isAuto()) {
                     if (turret.isTracking()) {
                         System.out.println(output);
-                        double m_power = MathUtil.clamp(output, -0.3, 0.3);
+                        double m_power = MathUtil.clamp(output, -0.27, 0.27); // 0.3
                         turret.setPower(-m_power);
                     } else {
                         turret.setPosition(0.0);
