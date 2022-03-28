@@ -22,7 +22,7 @@ public class RunPathPlannerTrajectory extends SequentialCommandGroup {
         PIDController xController = new PIDController(Constants.Auton.PX_CONTROLLER, 0.0, 0.0);
         PIDController yController = new PIDController(Constants.Auton.PY_CONTROLLER, 0.0, 0.0);
 
-        ProfiledPIDController thetaController = new ProfiledPIDController(1.0, 0.0, 0.0, Constants.Auton.THETA_CONTROLLER_CONTRAINTS);
+        ProfiledPIDController thetaController = new ProfiledPIDController(Constants.Auton.PTHETA_CONTROLLER, 0.0, 0.0, Constants.Auton.THETA_CONTROLLER_CONTRAINTS);
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
         //? create trajectory preparation command

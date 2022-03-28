@@ -171,6 +171,8 @@ public class SwerveDrivetrain extends SubsystemBase {
         tab.addNumber("Mod 1 Encoder", this::getSwerveModule1Degrees);
         tab.addNumber("Mod 2 Encoder", this::getSwerveModule2Degrees);
         tab.addNumber("Mod 3 Encoder", this::getSwerveModule3Degrees);
+        tab.addNumber("Pose X", () -> getPose().getX());
+        tab.addNumber("Pose Y", () -> getPose().getY());
         SmartDashboard.putData(this.field);
     }
 

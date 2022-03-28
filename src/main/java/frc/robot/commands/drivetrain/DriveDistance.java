@@ -44,32 +44,35 @@ public class DriveDistance extends CommandBase {
     public void initialize() {
         
         //? create controllers
-        PIDController xController = new PIDController(Constants.Auton.PX_CONTROLLER, 0.0, 0.0);
-        PIDController yController = new PIDController(Constants.Auton.PY_CONTROLLER, 0.0, 0.0);
+        PIDController xController = new PIDController(1.0, 0.0, 0.0);
+        PIDController yController = new PIDController(1.0, 0.0, 0.0);
 
-        ProfiledPIDController thetaController = new ProfiledPIDController(1.0, 0.0, 0.0, Constants.Auton.THETA_CONTROLLER_CONTRAINTS);
+        ProfiledPIDController thetaController = new ProfiledPIDController(Constants.Auton.PTHETA_CONTROLLER, 0.0, 0.0, Constants.Auton.THETA_CONTROLLER_CONTRAINTS);
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
         initialPose = drivetrain.getPose();
-        x = initialPose.getX() + (distance_m * initialPose.getRotation().getCos());
-        y = initialPose.getY() + (distance_m * initialPose.getRotation().getSin());
 
-        if (!isForward) {
-            x = -x;
-            y = -y;
+        if (isForward) {
+            x = initialPose.getX() + (distance_m * initialPose.getRotation().getSin());
+            y = initialPose.getY() + (distance_m * initialPose.getRotation().getCos());
+        } else {
+            x = -((distance_m * initialPose.getRotation().getSin()) - initialPose.getX());
+            y = -((distance_m * initialPose.getRotation().getCos()) - initialPose.getY());
         }
 
         targetPose = new Pose2d(x, y, initialPose.getRotation());
         trajectory = TrajectoryHelper.createTrajectory(
             initialPose, 
             List.of(
-                new Translation2d(x * 0.25, y * 0.25),
-                new Translation2d(x * 0.50, y * 0.50),
-                new Translation2d(x * 0.75, y * 0.75)
+                new Translation2d(x * 0.2, y * 0.2),
+                new Translation2d(x * 0.4, y * 0.4),
+                new Translation2d(x * 0.6, y * 0.6),
+                new Translation2d(x * 0.8, y * 0.8)
             ),
             targetPose, 
             Constants.Auton.MAX_SPEED_MPS, 
-            Constants.Auton.MAX_ACCELERATION_MPSS
+            Constants.Auton.MAX_ACCELERATION_MPSS,
+            !isForward
         );
         controller = new HolonomicDriveController(
             xController,
@@ -77,6 +80,8 @@ public class DriveDistance extends CommandBase {
             thetaController
         );
         controller.setEnabled(true);
+
+        timer.reset();
         timer.start();
     }
 

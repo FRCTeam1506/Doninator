@@ -47,10 +47,12 @@ public class TrajectoryHelper {
                                                 List<Translation2d> interiorWaypoints,
                                                 Pose2d end,
                                                 double maxSpeed,
-                                                double maxAcceleration) {
+                                                double maxAcceleration,
+                                                boolean reversed) {
 
         TrajectoryConfig config = new TrajectoryConfig(maxSpeed, maxAcceleration)
-            .setKinematics(Constants.SwerveDrivetrain.SWERVE_KINEMATICS);
+            .setKinematics(Constants.SwerveDrivetrain.SWERVE_KINEMATICS)
+            .setReversed(reversed);
 
         Trajectory trajectory =
             TrajectoryGenerator.generateTrajectory(

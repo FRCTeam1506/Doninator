@@ -47,11 +47,11 @@ public class RobotContainer {
   private final Command c_zeroGyro = new InstantCommand( () -> drivetrain.zeroGyro() );
 
   /* Trajectories */
-  private PathPlannerTrajectory tr_straight_1, tr_straight_2, 
+  private PathPlannerTrajectory tr_straight_x, tr_straight_y, tr_straight_rot, 
                                 tr_small_curve, tr_small_curve_rot, 
                                 tr_fancy_1, tr_fancy_2;
 
-  private enum Autons { Nothing, Straight1, Straight2, SmallCurve, SmallCurveRot, Fancy1, Fancy2 }
+  private enum Autons { Nothing, StraightX, StraightY, StraightCurve, SmallCurve, SmallCurveRot, Fancy1, Fancy2 }
   private SendableChooser<Autons> autonChooser = new SendableChooser<>();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -81,23 +81,28 @@ public class RobotContainer {
   private void configureButtonBindings () {
     zeroGyro.whenPressed(c_zeroGyro);
     new POVButton(driver, 0).whenPressed(new InstantCommand(() -> hub.enableCompressorAnalog(100, 120)));
+    
+    new POVButton(driver, 270).whenPressed(new DriveDistance(drivetrain, 2.0, true));
+    new POVButton(driver, 90).whenPressed(new DriveDistance(drivetrain, 2.0, false));
   }
 
   private void loadTrajectories () {
-    tr_straight_1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("straight_1");
-    tr_straight_2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("straight_2");
+    tr_straight_x = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("straight_x", 1.5, 1.0);
+    tr_straight_y = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("straight_y", 1.5, 1.0);
+    tr_straight_rot = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("straight_rot");
 
-    tr_small_curve = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("small_curve");
-    tr_small_curve_rot = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("small_curve_rot");
+    tr_small_curve = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("small_curve", 2.3, 1.5);
+    // tr_small_curve_rot = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("small_curve_rot");
 
-    tr_fancy_1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("fancy_1");
-    tr_fancy_2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("fancy_2");
+    // tr_fancy_1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("fancy_1");
+    // tr_fancy_2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("fancy_2");
   }
 
   private void configureAuton () {
     autonChooser.setDefaultOption("Nothing", Autons.Nothing);
-    autonChooser.addOption(Autons.Straight1.name(), Autons.Straight1);
-    autonChooser.addOption(Autons.Straight2.name(), Autons.Straight2);
+    autonChooser.addOption(Autons.StraightX.name(), Autons.StraightX);
+    autonChooser.addOption(Autons.StraightY.name(), Autons.StraightY);
+    autonChooser.addOption(Autons.StraightCurve.name(), Autons.StraightCurve);
     autonChooser.addOption(Autons.SmallCurve.name(), Autons.SmallCurve);
     autonChooser.addOption(Autons.SmallCurveRot.name(), Autons.SmallCurveRot);
     autonChooser.addOption(Autons.Fancy1.name(), Autons.Fancy1);
@@ -117,11 +122,14 @@ public class RobotContainer {
       case Nothing:
         return new WaitCommand(15.0);
 
-      case Straight1:
-        return new RunPathPlannerTrajectory(drivetrain, tr_straight_1);
+      case StraightX:
+        return new RunPathPlannerTrajectory(drivetrain, tr_straight_x);
 
-      case Straight2:
-        return new RunPathPlannerTrajectory(drivetrain, tr_straight_2);
+      case StraightY:
+        return new RunPathPlannerTrajectory(drivetrain, tr_straight_y);
+
+      case StraightCurve:
+        return new RunPathPlannerTrajectory(drivetrain, tr_straight_rot);
 
       case SmallCurve:
         return new RunPathPlannerTrajectory(drivetrain, tr_small_curve);

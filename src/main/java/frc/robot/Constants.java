@@ -62,8 +62,8 @@ public final class Constants {
         public static final double DRIVE_kF = 0.0;   // 0.0
 
         /* Drive Motor Characterization Values (FeedForward) */
-        public static final double FF_kS    = (0.632 / 12);     // 0.667 --- divide by 12 to convert from volts to percent output for CTRE
-        public static final double FF_kV    = (0.0514 / 12);    // 2.44
+        public static final double FF_kS    = (0.632 / 12);     // 0.632 --- divide by 12 to convert from volts to percent output for CTRE
+        public static final double FF_kV    = (0.0514 / 12);    // 0.0514
         public static final double FF_kA    = (0.00337 / 12);   // 0.27
 
         /* Swerve Profiling Values */
@@ -132,7 +132,8 @@ public final class Constants {
 
         public static final double PX_CONTROLLER = 6.0;
         public static final double PY_CONTROLLER = 6.0;
-
+        public static final double PTHETA_CONTROLLER = 7.0;
+        
         public static final TrapezoidProfile.Constraints THETA_CONTROLLER_CONTRAINTS = new TrapezoidProfile.Constraints(MAX_ANGULAR_SPEED_RPS, MAX_ANGULAR_SPEED_RPSS);
     }
 
