@@ -16,16 +16,15 @@ import frc.robot.Constants;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.utils.TrajectoryHelper;
 
+//! BROKEN
 public class DriveDistance extends CommandBase {
 
     private SwerveDrivetrain drivetrain;
     private double distance_m;
 
     private Trajectory trajectory;
-    private Trajectory.State desiredState;
-    private Pose2d initialPose, targetPose, currentPose;
+    private Pose2d initialPose, targetPose;
     private double x,y;
-    private ChassisSpeeds speeds;
 
     private boolean isForward;
     private HolonomicDriveController controller;
@@ -61,14 +60,31 @@ public class DriveDistance extends CommandBase {
         }
 
         targetPose = new Pose2d(x, y, initialPose.getRotation());
+
+        List<Translation2d> interiorTranslations;
+        if (initialPose.getX() == targetPose.getX()) {
+            interiorTranslations = List.of(
+                new Translation2d(x, (y - initialPose.getY()) * (0.25 * 1)),
+                new Translation2d(x, (y - initialPose.getY()) * (0.25 * 2)),
+                new Translation2d(x, (y - initialPose.getY()) * (0.25 * 3))
+            );
+        } else if (initialPose.getY() == targetPose.getY()) {
+            interiorTranslations = List.of(
+                new Translation2d((x - initialPose.getX()) * (0.25 * 1), y),
+                new Translation2d((x - initialPose.getX()) * (0.25 * 2), y),
+                new Translation2d((x - initialPose.getX()) * (0.25 * 3), y)
+            );
+        } else {
+            interiorTranslations = List.of(
+                new Translation2d((x - initialPose.getX()) * (0.25 * 1), (y - initialPose.getY()) * (0.25 * 1)),
+                new Translation2d((x - initialPose.getX()) * (0.25 * 2), (y - initialPose.getY()) * (0.25 * 2)),
+                new Translation2d((x - initialPose.getX()) * (0.25 * 3), (y - initialPose.getY()) * (0.25 * 3))
+            );
+        }
+
         trajectory = TrajectoryHelper.createTrajectory(
             initialPose, 
-            List.of(
-                new Translation2d(x * 0.2, y * 0.2),
-                new Translation2d(x * 0.4, y * 0.4),
-                new Translation2d(x * 0.6, y * 0.6),
-                new Translation2d(x * 0.8, y * 0.8)
-            ),
+            interiorTranslations,
             targetPose, 
             Constants.Auton.MAX_SPEED_MPS, 
             Constants.Auton.MAX_ACCELERATION_MPSS,
@@ -81,15 +97,21 @@ public class DriveDistance extends CommandBase {
         );
         controller.setEnabled(true);
 
+        System.out.println(initialPose);
+        for (Translation2d translation : interiorTranslations) {
+            System.out.println(translation);
+        }
+        System.out.println(targetPose);
+
         timer.reset();
         timer.start();
     }
 
     @Override
     public void execute() {
-        desiredState = trajectory.sample(timer.get());
-        currentPose = drivetrain.getPose();
-        speeds = controller.calculate(currentPose, desiredState, initialPose.getRotation());
+        Trajectory.State desiredState = trajectory.sample(timer.get());
+        Pose2d currentPose = drivetrain.getPose();
+        ChassisSpeeds speeds = controller.calculate(currentPose, desiredState, initialPose.getRotation());
         drivetrain.setModuleStates(Constants.SwerveDrivetrain.SWERVE_KINEMATICS.toSwerveModuleStates(speeds));
     }
 

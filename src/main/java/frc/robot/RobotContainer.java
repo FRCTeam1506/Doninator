@@ -45,6 +45,7 @@ public class RobotContainer {
   /* Commands */
   // * primitives
   private final Command c_zeroGyro = new InstantCommand( () -> drivetrain.zeroGyro() );
+  private final Command c_resetOdometryToZone = new InstantCommand( () -> drivetrain.resetOdometryToProtectedZone() );
 
   /* Trajectories */
   private PathPlannerTrajectory tr_straight_x, tr_straight_y, tr_straight_rot, 
@@ -80,9 +81,10 @@ public class RobotContainer {
 
   private void configureButtonBindings () {
     zeroGyro.whenPressed(c_zeroGyro);
-    new POVButton(driver, 0).whenPressed(new InstantCommand(() -> hub.enableCompressorAnalog(100, 120)));
+    // new POVButton(driver, 0).whenPressed(new InstantCommand(() -> hub.enableCompressorAnalog(100, 120)));
+    new POVButton(driver, 0).whenPressed(c_resetOdometryToZone);
     
-    new POVButton(driver, 270).whenPressed(new DriveDistance(drivetrain, 2.0, true));
+    new POVButton(driver, 270).whenPressed(new DriveDistance(drivetrain, 1.0, true));
     new POVButton(driver, 90).whenPressed(new DriveDistance(drivetrain, 2.0, false));
   }
 
@@ -109,7 +111,7 @@ public class RobotContainer {
     autonChooser.addOption(Autons.Fancy2.name(), Autons.Fancy2);
 
     ShuffleboardTab tab = Shuffleboard.getTab("Autonomous");
-    tab.add(autonChooser);
+    tab.add("Auton Chooser", autonChooser);
   }
 
   private void dashboardStuff () {

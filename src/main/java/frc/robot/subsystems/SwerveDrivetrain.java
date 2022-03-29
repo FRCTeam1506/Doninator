@@ -19,6 +19,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class SwerveDrivetrain extends SubsystemBase {
+
+    private static final Pose2d HUB_CENTER = new Pose2d(8.24, 4.16, new Rotation2d(0.0));
+    private static final Pose2d PROTECTED_ZONE = new Pose2d(3.77, 5.23, new Rotation2d(0.0));
     
     private SwerveDriveOdometry swerveOdometry;
     private SwerveModule[] swerveModules;
@@ -75,9 +78,7 @@ public class SwerveDrivetrain extends SubsystemBase {
         }
       
         SwerveModuleState[] swerveModuleStates = Constants.SwerveDrivetrain.SWERVE_KINEMATICS.toSwerveModuleStates(speeds);
-                 
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.SwerveDrivetrain.MAX_SPEED);
-          
         setModuleStates(swerveModuleStates);
     }
 
@@ -118,12 +119,79 @@ public class SwerveDrivetrain extends SubsystemBase {
     }
 
     /* Odometry */
-    public Pose2d getPose() {
+    public Pose2d getPose () {
         return this.swerveOdometry.getPoseMeters();
     }
 
-    public void resetOdometry(Pose2d pose) {
+    public void resetOdometry (Pose2d pose) {
         this.swerveOdometry.resetPosition(pose, this.getYaw());
+    }
+
+    public void resetOdometryToProtectedZone () {
+        resetOdometry(PROTECTED_ZONE);
+    }
+
+    private double getRadiusFromHub () {
+        Pose2d currentPose = getPose();
+        double x = currentPose.getX();
+        double y = currentPose.getY();
+
+        double a = x - HUB_CENTER.getX();
+        double b = y - HUB_CENTER.getY();
+
+        double radius = Math.sqrt( Math.pow(a, 2) + Math.pow(b, 2) );
+        return radius;
+    }
+
+    public int getZone () {
+        double radius = getRadiusFromHub();
+
+        int zone;
+        if (radius >= 10.0) {
+            zone = 20;
+        } else if (radius < 10.0 && radius >= 9.5) {
+            zone = 19;
+        } else if (radius < 9.5 && radius >= 9.0) {
+            zone = 18;
+        } else if (radius < 9.0 && radius >= 8.5) {
+            zone = 17;
+        } else if (radius < 8.5 && radius >= 8.0) {
+            zone = 16;
+        } else if (radius < 8.0 && radius >= 7.5) {
+            zone = 15;
+        } else if (radius < 7.5 && radius >= 7.0) {
+            zone = 14;
+        } else if (radius < 7.0 && radius >= 6.5) {
+            zone = 13;
+        } else if (radius < 6.5 && radius >= 6.0) {
+            zone = 12;
+        } else if (radius < 6.0 && radius >= 5.5) {
+            zone = 11;
+        } else if (radius < 5.5 && radius >= 5.0) {
+            zone = 10;
+        } else if (radius < 5.0 && radius >= 4.5) {
+            zone = 9;
+        } else if (radius < 4.5 && radius >= 4.0) {
+            zone = 8;
+        } else if (radius < 4.0 && radius >= 3.5) {
+            zone = 7;
+        } else if (radius < 3.5 && radius >= 3.0) {
+            zone = 6;
+        } else if (radius < 3.0 && radius >= 2.5) {
+            zone = 5;
+        } else if (radius < 2.5 && radius >= 2.0) {
+            zone = 4;
+        } else if (radius < 2.0 && radius >= 1.5) {
+            zone = 3;
+        } else if (radius < 1.5 && radius >= 1.0) {
+            zone = 2;
+        } else if (radius < 1.0 && radius >= 0.5) {
+            zone = 1;
+        } else {
+            zone = 0;
+        }
+
+        return zone;
     }
 
     /* Module States */
@@ -135,7 +203,7 @@ public class SwerveDrivetrain extends SubsystemBase {
         return states;
     }
 
-    public void setModuleStates(SwerveModuleState[] desiredStates) {
+    public void setModuleStates (SwerveModuleState[] desiredStates) {
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.SwerveDrivetrain.MAX_SPEED);
         for (SwerveModule mod : this.swerveModules) {
             mod.setDesiredState(desiredStates[mod.moduleNumber], false);
@@ -173,6 +241,8 @@ public class SwerveDrivetrain extends SubsystemBase {
         tab.addNumber("Mod 3 Encoder", this::getSwerveModule3Degrees);
         tab.addNumber("Pose X", () -> getPose().getX());
         tab.addNumber("Pose Y", () -> getPose().getY());
+        tab.addNumber("Radius", () -> getRadiusFromHub());
+        tab.addNumber("Zone", () -> getZone());
         SmartDashboard.putData(this.field);
     }
 
