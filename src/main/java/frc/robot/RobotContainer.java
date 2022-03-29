@@ -35,7 +35,6 @@ import frc.robot.commands.climber.MoveClimberUp;
 import frc.robot.commands.climber.ProgressClimber;
 import frc.robot.commands.climber.RegressClimber;
 import frc.robot.commands.climber.StopClimber;
-import frc.robot.commands.drivetrain.DriveDistance;
 import frc.robot.commands.drivetrain.RunPathPlannerTrajectory;
 import frc.robot.commands.drivetrain.SwerveTeleop;
 import frc.robot.commands.indexer.RunIndexer;
@@ -206,17 +205,6 @@ public class RobotContainer {
     ShuffleboardTab tab = Shuffleboard.getTab("Climber");
     tab.addNumber("PSI", () -> hub.getPressure(0));
   }
-
-  // public Command getAutonomousCommand () {
-  //   return new TwoBallR1(drivetrain, intake, indexer, shooter, tr_two_ball_r1);
-  //   // return new TwoBallR2(drivetrain, intake, indexer, shooter, tr_two_ball_r2);
-  //   // return new TwoBallR3(drivetrain, intake, indexer, shooter, tr_two_ball_r3);
-  //   // return new TwoBallB1(drivetrain, intake, indexer, shooter, tr_two_ball_b1);
-  //   // return new TwoBallB2(drivetrain, intake, indexer, shooter, tr_two_ball_r2);
-  //   // return new TwoBallB3(drivetrain, intake, indexer, shooter, tr_two_ball_b3);
-  //   // return new RunPathPlannerTrajectory(drivetrain, tr_test_2);
-  //   // return new FourBallR1(drivetrain, intake, indexer, shooter, tr_four_ball_r1_1, tr_four_ball_r1_2, tr_four_ball_r1_3);
-  // }
 
   public Command getAutonomousCommand () {
     switch (autonChooser.getSelected()) {

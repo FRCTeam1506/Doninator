@@ -168,12 +168,11 @@ public final class Constants {
         public static final double MAX_ANGULAR_SPEED_RPS    = 2 * Math.PI;      // radians per second
         public static final double MAX_ANGULAR_SPEED_RPSS   = 2 * Math.PI;      // radians per second squared
 
-        public static final PIDController PX_CONTROLLER = new PIDController(6.0, 0, 0.1);   // 6.0
-        public static final PIDController PY_CONTROLLER = new PIDController(6.0, 0, 0.1);   // 6.0
-
+        public static final double PX_CONTROLLER = 6.0;
+        public static final double PY_CONTROLLER = 6.0;
+        public static final double PTHETA_CONTROLLER = 7.0;
+        
         public static final TrapezoidProfile.Constraints THETA_CONTROLLER_CONTRAINTS = new TrapezoidProfile.Constraints(MAX_ANGULAR_SPEED_RPS, MAX_ANGULAR_SPEED_RPSS);
-
-        public static final ProfiledPIDController THETA_CONTROLLER = new ProfiledPIDController(1.0, 0.0, 0.0, THETA_CONTROLLER_CONTRAINTS);
     }
 
 }

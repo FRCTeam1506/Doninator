@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.drivetrain.DriveDistance;
 import frc.robot.commands.drivetrain.RunPathPlannerTrajectory;
 import frc.robot.commands.indexer.RunIndexer;
 import frc.robot.commands.intake.ExtendAndIntake;
