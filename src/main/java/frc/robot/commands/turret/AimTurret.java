@@ -10,6 +10,8 @@ import frc.robot.subsystems.TurretSubsystem;
 
 public class AimTurret extends PIDCommand {
 
+    private static final double MAX_POWER = 0.27;
+
     public AimTurret (TurretSubsystem turret, DoubleSupplier power) {
         super(
             new PIDController(
@@ -23,7 +25,7 @@ public class AimTurret extends PIDCommand {
                 if (turret.isAuto()) {
                     if (turret.isTracking()) {
                         System.out.println(output);
-                        double m_power = MathUtil.clamp(output, -0.27, 0.27); // 0.3
+                        double m_power = MathUtil.clamp(output, -MAX_POWER, MAX_POWER);
                         turret.setPower(-m_power);
                     } else {
                         turret.setPosition(0.0);

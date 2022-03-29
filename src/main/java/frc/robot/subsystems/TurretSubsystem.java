@@ -135,6 +135,15 @@ public class TurretSubsystem extends SubsystemBase {
         }
     }
 
+    public void setVelocity (double velocity_ticks) {
+        double pos = motor.getSelectedSensorPosition();
+        if (Math.abs(pos) <= TURRET_MAX_TICKS) {
+            motor.set(TalonFXControlMode.Velocity, velocity_ticks);
+        } else {
+            motor.set(TalonFXControlMode.PercentOutput, 0.0);
+        }
+    }
+
 
     /* 
     * ####################### 
