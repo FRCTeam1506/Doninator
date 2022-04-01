@@ -1,18 +1,13 @@
 package frc.robot.commands.autons;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
-
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.drivetrain.RunPathPlannerTrajectory;
 import frc.robot.commands.indexer.RunIndexer;
 import frc.robot.commands.intake.ExtendAndIntake;
-import frc.robot.commands.intake.StopAndRetract;
+import frc.robot.commands.intake.Retract;
 import frc.robot.commands.macros.ShootAndIndex;
 import frc.robot.commands.turret.AimTurret;
 import frc.robot.subsystems.IndexerSubsystem;
@@ -30,7 +25,7 @@ public class TwoBall1 extends SequentialCommandGroup {
                 new ExtendAndIntake(intake)
             ).withTimeout(6.5),
 
-            new StopAndRetract(intake).withTimeout(0.1),
+            new Retract(intake).withTimeout(0.1),
 
             new ParallelCommandGroup(
                 new RunIndexer(indexer),

@@ -1,7 +1,6 @@
 package frc.robot.commands.climber;
 
 import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ClimberSubsystem;
 
@@ -19,7 +18,7 @@ public class ControlLeanboiMotors extends CommandBase {
 
     @Override
     public void execute() {
-        climber.setPower(leftPower.getAsDouble() * 0.8, rightPower.getAsDouble() * 0.8);
+        climber.setPower(leftPower.getAsDouble() * 0.4, rightPower.getAsDouble() * 0.4);
     }
 
 }

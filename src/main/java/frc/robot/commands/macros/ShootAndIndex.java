@@ -18,11 +18,6 @@ public class ShootAndIndex extends CommandBase {
     }
 
     @Override
-    public void initialize() {
-        indexer.enableIndexing();
-    }
-
-    @Override
     public void execute() {
         indexer.enableIndexing();
         // double calculatedRPM = turret.calculateShooterRPM();

@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakeSubsystem extends SubsystemBase {
 
-    private final double DEFAULT_SPEED = 0.33;
+    private final double DEFAULT_SPEED = 0.65; // 0.33
 
     private enum XFactorState { RETRACTED, EXTENDED }
     private XFactorState currentXFactorState = XFactorState.RETRACTED;

@@ -16,13 +16,13 @@ import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 
-public class ControlClimberStepper extends SequentialCommandGroup {
+public class RunClimbStep extends SequentialCommandGroup {
 
     private TurretSubsystem turret;
     private ClimberSubsystem climber;
     private ShooterSubsystem shooter;
 
-    public ControlClimberStepper (TurretSubsystem turret, ClimberSubsystem climber, ShooterSubsystem shooter) {
+    public RunClimbStep (TurretSubsystem turret, ClimberSubsystem climber, ShooterSubsystem shooter) {
         this.turret = turret;
         this.climber = climber;
         this.shooter = shooter;

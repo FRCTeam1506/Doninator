@@ -5,6 +5,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 
 public class ExtendAndIntake extends CommandBase {
 
+    // * subsystems
     private IntakeSubsystem intake;
     
     public ExtendAndIntake (IntakeSubsystem intake) {

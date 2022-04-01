@@ -5,7 +5,6 @@
 package frc.robot;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
-
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PS4Controller;
@@ -20,35 +19,27 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
-import frc.robot.commands.autons.FourBall1;
-import frc.robot.commands.autons.TwoBall1;
+import frc.robot.commands.autons.FiveBallR1;
 import frc.robot.commands.autons.TwoBallB1;
 import frc.robot.commands.autons.TwoBallB2;
 import frc.robot.commands.autons.TwoBallB3;
 import frc.robot.commands.autons.TwoBallR1;
 import frc.robot.commands.autons.TwoBallR2;
 import frc.robot.commands.autons.TwoBallR3;
-import frc.robot.commands.climber.ControlClimberStepper;
+import frc.robot.commands.climber.RunClimbStep;
 import frc.robot.commands.climber.ControlLeanboiMotors;
-import frc.robot.commands.climber.MoveClimberDown;
-import frc.robot.commands.climber.MoveClimberUp;
-import frc.robot.commands.climber.ProgressClimber;
-import frc.robot.commands.climber.RegressClimber;
+import frc.robot.commands.climber.ProgressClimbStep;
+import frc.robot.commands.climber.RegressClimbStep;
 import frc.robot.commands.climber.StopClimber;
-import frc.robot.commands.drivetrain.RunPathPlannerTrajectory;
 import frc.robot.commands.drivetrain.SwerveTeleop;
-import frc.robot.commands.indexer.RunIndexer;
 import frc.robot.commands.indexer.StopIndexer;
-import frc.robot.commands.intake.ExtendAndIntake;
+import frc.robot.commands.intake.Retract;
 import frc.robot.commands.macros.ExtendAndOuttake;
-import frc.robot.commands.intake.StopAndRetract;
 import frc.robot.commands.macros.IntakeAndIndex;
 import frc.robot.commands.macros.ShootAndIndex;
 import frc.robot.commands.shooter.IdleShooter;
-import frc.robot.commands.shooter.RunShooter;
 import frc.robot.commands.shooter.StopShooter;
 import frc.robot.commands.turret.AimTurret;
-import frc.robot.commands.turret.StopTurret;
 import frc.robot.commands.turret.ToggleTurretControlState;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
@@ -60,60 +51,91 @@ import frc.robot.utils.TrajectoryHelper;
 
 public class RobotContainer {
 
-  public static PneumaticHub hub = new PneumaticHub();
-  // private Compressor compressor = hub.makeCompressor();
+  public static PneumaticHub hub      = new PneumaticHub();
   public static Compressor compressor = new Compressor(1, PneumaticsModuleType.REVPH);
 
   /* Controllers */
-  private final PS4Controller driver = new PS4Controller(0);
-  private final PS4Controller operator = new PS4Controller(1);
+  private final PS4Controller driver    = new PS4Controller(0);
+  // private final PS4Controller operator  = new PS4Controller(1);
+  // private final PS4Controller superman  = new PS4Controller(2);
 
   /* Buttons */
   // * driver
-  private final JoystickButton zeroGyro = new JoystickButton(driver, PS4Controller.Button.kCircle.value);
-  // private final JoystickButton extendAndOuttake = new JoystickButton(driver, PS4Controller.Button.kSquare.value);
+  private final JoystickButton DR_circle = new JoystickButton(driver, PS4Controller.Button.kCircle.value);
+  private final POVButton DR_up = new POVButton(driver, 0);
 
   // * operator
-  private final JoystickButton intakeAndIndex = new JoystickButton(operator, PS4Controller.Button.kL1.value);
-  private final JoystickButton toggleTurretControl = new JoystickButton(operator, PS4Controller.Button.kTriangle.value);
-  private final JoystickButton shootAndIndex = new JoystickButton(operator, PS4Controller.Button.kR1.value);
-  private final JoystickButton progressClimb = new JoystickButton(operator, PS4Controller.Button.kCircle.value);
-  private final JoystickButton extendAndOutake = new JoystickButton(operator, PS4Controller.Button.kSquare.value);
-  private final JoystickButton runClimbStep = new JoystickButton(operator, PS4Controller.Button.kCross.value);
+  // private final JoystickButton OP_leftBumper  = new JoystickButton(operator, PS4Controller.Button.kL1.value);
+  // private final JoystickButton OP_rightBumper = new JoystickButton(operator, PS4Controller.Button.kR1.value);
+  // private final JoystickButton OP_circle      = new JoystickButton(operator, PS4Controller.Button.kCircle.value);
+  // private final JoystickButton OP_triangle    = new JoystickButton(operator, PS4Controller.Button.kTriangle.value);
+  // private final JoystickButton OP_square      = new JoystickButton(operator, PS4Controller.Button.kSquare.value);
+  // private final JoystickButton OP_cross       = new JoystickButton(operator, PS4Controller.Button.kCross.value);
+
+  // private final POVButton OP_up     = new POVButton(operator, 0);
+  // private final POVButton OP_right  = new POVButton(operator, 90);
+  // private final POVButton OP_down   = new POVButton(operator, 180);
+  // private final POVButton OP_left   = new POVButton(operator, 270);
+
+  // * superman
+  // private final JoystickButton S_square   = new JoystickButton(superman, PS4Controller.Button.kSquare.value);
+  // private final JoystickButton S_circle   = new JoystickButton(superman, PS4Controller.Button.kCircle.value);
+  // private final JoystickButton S_triangle = new JoystickButton(superman, PS4Controller.Button.kTriangle.value);
 
   /* Subsystems */
   private final SwerveDrivetrain drivetrain = new SwerveDrivetrain();
-  private final ShooterSubsystem shooter = new ShooterSubsystem(hub);
-  private final IntakeSubsystem intake = new IntakeSubsystem(hub);
-  private final IndexerSubsystem indexer = new IndexerSubsystem();
-  private final TurretSubsystem turret = new TurretSubsystem(hub);
-  private final ClimberSubsystem climber = new ClimberSubsystem(hub);
+  // private final ShooterSubsystem shooter    = new ShooterSubsystem(hub);
+  // private final IntakeSubsystem intake      = new IntakeSubsystem(hub);
+  // private final IndexerSubsystem indexer    = new IndexerSubsystem();
+  // private final TurretSubsystem turret      = new TurretSubsystem(hub);
+  // private final ClimberSubsystem climber    = new ClimberSubsystem(hub);
 
   /* Commands */
   // * primitives
+  // ? Drivetrain
   private final Command c_zeroGyro = new InstantCommand( () -> drivetrain.zeroGyro() );
-  private final Command c_stopAndRetract = new StopAndRetract(intake);
-  private final Command c_idleShooter = new IdleShooter(shooter);
-  private final Command c_stopIndexer = new StopIndexer(indexer);
-  private final Command c_stopClimber = new StopClimber(climber);
-  private final Command c_progressClimb = new ProgressClimber(climber);
-  private final Command c_aimTurret = new AimTurret(turret, () -> operator.getRightX());
-  private final Command c_controlClimbMotors = new ControlLeanboiMotors(climber, () -> operator.getLeftY(), () -> operator.getRightY());
-  private final Command c_toggleTurretControl = new ToggleTurretControlState(turret);
 
-  // * macros
-  private final Command c_runIndexer = new IntakeAndIndex(intake, indexer);
-  private final Command c_runShooter = new ShootAndIndex(shooter, indexer, 1760.0); // 700.0 1850.0 1770.0 550.0 1970.0
-  private final Command c_runShooterLow = new ShootAndIndex(shooter, indexer, 760.0);
-  private final Command c_extendAndOuttake = new ExtendAndOuttake(intake, indexer);
+  // // ? Intake
+  // private final Command c_retract = new Retract(intake);
+
+  // // ? Shooter
+  // private final Command c_idleShooter = new IdleShooter(shooter);
+  // private final Command c_stopShooter = new StopShooter(shooter).perpetually();
+  // private final Command c_idleShooterPerpetual = c_idleShooter.perpetually();
+
+  // // ? Indexer
+  // private final Command c_stopIndexer = new StopIndexer(indexer);
+
+  // // ? Climber
+  // private final Command c_progressClimbStep   = new ProgressClimbStep(climber);
+  // private final Command c_regressClimbStep    = new RegressClimbStep(climber);
+  // private final Command c_stopClimber         = new StopClimber(climber);
+  // private final Command c_controlClimbMotors  = new ControlLeanboiMotors(climber, () -> operator.getLeftY(), () -> operator.getRightY());
+
+  // // ? Turret
+  // private final Command c_aimTurret           = new AimTurret(turret, () -> operator.getRightX());
+  // private final Command c_toggleTurretControl = new ToggleTurretControlState(turret);
+
+  // // * macros
+  // private final Command c_runIntake = new IntakeAndIndex(intake, indexer);
+  // private final Command c_runOutake = new ExtendAndOuttake(intake, indexer);
+
+  // private final Command c_runShooterLow   = new ShootAndIndex(shooter, indexer, 760.0);
+  // private final Command c_runShooterClose = new ShootAndIndex(shooter, indexer, 1200.0);
+  // private final Command c_runShooterMid   = new ShootAndIndex(shooter, indexer, 1600.0);
+  // private final Command c_runShooterPZ    = new ShootAndIndex(shooter, indexer, 2100.0);
+  // private final Command c_runShooterFar   = new ShootAndIndex(shooter, indexer, 2500.0);
+
+  // private final Command c_runClimbStep = new RunClimbStep(turret, climber, shooter);
 
   /* Trajectories */
   private PathPlannerTrajectory tr_test_1, tr_test_2,
     tr_two_ball_r1, tr_two_ball_r2, tr_two_ball_r3,
     tr_two_ball_b1, tr_two_ball_b2, tr_two_ball_b3,
-    tr_four_ball_r1_1, tr_four_ball_r1_2, tr_four_ball_r1_3;
+    tr_four_ball_r1_1, tr_four_ball_r1_2, tr_four_ball_r1_3,
+    tr_five_ball_r1_1, tr_five_ball_r1_2, tr_five_ball_r1_3, tr_five_ball_r1_4;
 
-  private enum Autons { Nothing, TwoBall_R1, TwoBall_R2, TwoBall_R3, TwoBall_B1, TwoBall_B2, TwoBall_B3 }
+  private enum Autons { Nothing, TwoBall_R1, TwoBall_R2, TwoBall_R3, TwoBall_B1, TwoBall_B2, TwoBall_B3, FiveBall_R1 }
   private SendableChooser<Autons> autonChooser = new SendableChooser<>();
 
 
@@ -123,7 +145,6 @@ public class RobotContainer {
     DriverStation.silenceJoystickConnectionWarning(true);
 
     hub.enableCompressorAnalog(100, 120);
-    // compressor.enableAnalog(100, 120);
 
     setDefaultCommands();
     configureButtonBindings();
@@ -136,39 +157,46 @@ public class RobotContainer {
     drivetrain.setDefaultCommand(
       new SwerveTeleop(
         drivetrain,
+        // superman,
         driver,
         true, true
       )
     );
 
-    shooter.setDefaultCommand(c_idleShooter);
+    // shooter.setDefaultCommand(c_idleShooter);
 
-    intake.setDefaultCommand(c_stopAndRetract);
+    // intake.setDefaultCommand(c_retract);
 
-    indexer.setDefaultCommand(c_stopIndexer);
+    // indexer.setDefaultCommand(c_stopIndexer);
 
-    turret.setDefaultCommand(c_aimTurret);
+    // turret.setDefaultCommand(c_aimTurret);
 
-    climber.setDefaultCommand(c_controlClimbMotors); // c_stopClimber
+    // climber.setDefaultCommand(c_stopClimber); // c_controlClimbMotors
   }
 
   private void configureButtonBindings () {
-    zeroGyro.whenPressed(c_zeroGyro);
-    shootAndIndex.whileHeld(c_runShooter);
-    intakeAndIndex.whileHeld(c_runIndexer);
-    extendAndOutake.whileHeld(c_extendAndOuttake);
-    progressClimb.whenPressed(c_progressClimb);
-    runClimbStep.whenPressed(
-      new ControlClimberStepper(turret, climber, shooter)
-    );
-    toggleTurretControl.whenPressed(c_toggleTurretControl);
 
-    new POVButton(operator, 0).whileHeld(c_runShooterLow);
-    new POVButton(operator, 180).whenPressed(new RegressClimber(climber));
-    new POVButton(operator, 90).whenPressed(new StopShooter(shooter).perpetually());
-    new POVButton(operator, 270).whenPressed(new IdleShooter(shooter).perpetually());
+    // * driver
+    DR_circle.whenPressed(c_zeroGyro);
+    DR_up.whenPressed(new InstantCommand(() -> hub.enableCompressorAnalog(100, 120)));
+    
+    // // * operator
+    // OP_leftBumper.whileHeld(c_runIntake);
+    // OP_rightBumper.whenPressed(c_toggleTurretControl);
+    // OP_circle.whenPressed(c_progressClimbStep);
+    // OP_triangle.whileHeld(c_runShooterPZ);
+    // OP_square.whileHeld(c_runOutake);
+    // OP_cross.whenPressed(c_runClimbStep);
 
-    new POVButton(driver, 0).whenPressed(new InstantCommand(() -> hub.enableCompressorAnalog(100, 120)));
+    // OP_up.whileHeld(c_runShooterLow);
+    // OP_right.whenPressed(c_stopShooter);
+    // OP_down.whenPressed(c_regressClimbStep);
+    // OP_left.whenPressed(c_idleShooterPerpetual);
+
+    // // * superman
+    // S_square.whileHeld(c_runIntake);
+    // S_circle.whileHeld(c_runShooterPZ);
+    // S_triangle.whenPressed(c_zeroGyro);
   }
 
   private void loadTrajectories () {
@@ -186,6 +214,11 @@ public class RobotContainer {
     tr_four_ball_r1_1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("four_ball_r1_1", 1.0, 1.0);
     tr_four_ball_r1_2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("four_ball_r1_2", 1.0, 1.0);
     tr_four_ball_r1_3 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("four_ball_r1_3", 1.0, 1.0);
+
+    tr_five_ball_r1_1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("five_ball_r1_1", 1.0, 1.0);
+    tr_five_ball_r1_2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("five_ball_r1_2", 3.0, 2.4);
+    tr_five_ball_r1_3 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("five_ball_r1_3", 3.0, 2.4);
+    tr_five_ball_r1_4 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("five_ball_r1_4", 4.0, 4.0);
   }
 
   private void configureAuton () {
@@ -196,6 +229,7 @@ public class RobotContainer {
     autonChooser.addOption("2Ball B1", Autons.TwoBall_B1);
     autonChooser.addOption("2Ball B2", Autons.TwoBall_B2);
     autonChooser.addOption("2Ball B3", Autons.TwoBall_B3);
+    autonChooser.addOption("5Ball R1", Autons.TwoBall_R1);
 
     ShuffleboardTab tab = Shuffleboard.getTab("Autonomous");
     tab.add(autonChooser);
@@ -207,30 +241,37 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand () {
-    switch (autonChooser.getSelected()) {
-      case Nothing:
-        return new WaitCommand(15.0);
-
-      case TwoBall_R1:
-        return new TwoBallR1(drivetrain, intake, indexer, shooter, tr_two_ball_r1);
-
-      case TwoBall_R2:
-        return new TwoBallR2(drivetrain, intake, indexer, shooter, tr_two_ball_r2);
-
-      case TwoBall_R3:
-        return new TwoBallR3(drivetrain, intake, indexer, shooter, tr_two_ball_r3);
-
-      case TwoBall_B1:
-        return new TwoBallB1(drivetrain, intake, indexer, shooter, tr_two_ball_b1);
-
-      case TwoBall_B2:
-        return new TwoBallB2(drivetrain, intake, indexer, shooter, tr_two_ball_b2);
-
-      case TwoBall_B3:
-        return new TwoBallB3(drivetrain, intake, indexer, shooter, tr_two_ball_b3);
-    
-      default:
-        return new WaitCommand(15.0);
-    }
+    return null;
   }
+
+  // public Command getAutonomousCommand () {
+  //   switch (autonChooser.getSelected()) {
+  //     case Nothing:
+  //       return new WaitCommand(15.0);
+
+  //     case TwoBall_R1:
+  //       return new TwoBallR1(drivetrain, intake, indexer, shooter, tr_two_ball_r1);
+
+  //     case TwoBall_R2:
+  //       return new TwoBallR2(drivetrain, intake, indexer, shooter, tr_two_ball_r2);
+
+  //     case TwoBall_R3:
+  //       return new TwoBallR3(drivetrain, intake, indexer, shooter, tr_two_ball_r3);
+
+  //     case TwoBall_B1:
+  //       return new TwoBallB1(drivetrain, intake, indexer, shooter, tr_two_ball_b1);
+
+  //     case TwoBall_B2:
+  //       return new TwoBallB2(drivetrain, intake, indexer, shooter, tr_two_ball_b2);
+
+  //     case TwoBall_B3:
+  //       return new TwoBallB3(drivetrain, intake, indexer, shooter, tr_two_ball_b3);
+
+  //     case FiveBall_R1:
+  //       return new FiveBallR1(drivetrain, intake, indexer, shooter, tr_five_ball_r1_1, tr_five_ball_r1_2, tr_five_ball_r1_3, tr_five_ball_r1_4);
+    
+  //     default:
+  //       return new WaitCommand(15.0);
+  //   }
+  // }
 }

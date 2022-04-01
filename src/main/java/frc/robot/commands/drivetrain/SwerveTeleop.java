@@ -30,20 +30,24 @@ public class SwerveTeleop extends CommandBase {
 
     @Override
     public void execute() {
-        // double yAxis = -controller.getLeftY();
-        // double xAxis = -controller.getLeftX();
-        // double rAxis = -controller.getRightX();
 
-        double yAxis = controller.getRawAxis(1) * 0.48; // 0.55
-        double xAxis = controller.getRawAxis(0) * 0.48; // 0.55
-        double rAxis = -controller.getRawAxis(2);
-        
+        double xAxis, yAxis, rAxis;
+        if (controller.getL1Button()) {
+            xAxis =  controller.getRawAxis(1) * 0.61; // 0.55 0.48
+            yAxis =  controller.getRawAxis(0) * 0.71; // 0.55 0.48
+            rAxis = -controller.getRawAxis(2) * 0.85;
+        } else {
+            xAxis =  controller.getRawAxis(1) * 0.49;
+            yAxis =  controller.getRawAxis(0) * 0.55;
+            rAxis = -controller.getRawAxis(2) * 0.77;
+        }
+
         /* Deadbands */
-        yAxis = (Math.abs(yAxis) < DEADBAND) ? 0 : yAxis;
         xAxis = (Math.abs(xAxis) < DEADBAND) ? 0 : xAxis;
+        yAxis = (Math.abs(yAxis) < DEADBAND) ? 0 : yAxis;
         rAxis = (Math.abs(rAxis) < DEADBAND) ? 0 : rAxis;
 
-        translation = new Translation2d(yAxis, xAxis).times(Constants.SwerveDrivetrain.MAX_SPEED);
+        translation = new Translation2d(xAxis, yAxis).times(Constants.SwerveDrivetrain.MAX_SPEED);
         rotation = rAxis * Constants.SwerveDrivetrain.MAX_ANGULAR_VELOCITY;
         s_Swerve.drive(translation, rotation, fieldRelative, openLoop);
     }

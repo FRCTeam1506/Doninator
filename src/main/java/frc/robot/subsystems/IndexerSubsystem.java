@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import frc.robot.Constants;
+
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
@@ -12,26 +14,32 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IndexerSubsystem extends SubsystemBase {
 
-    private static final double DEFAULT_BOTTOM_SPEED = 0.20;  // 0.77 0.10 0.25 0.21 0.15
-    private static final double DEFAULT_TOP_SPEED = 0.15;     // 0.48 0.13 0.35 0.21 0.15
+    private static final double TOP_SPEED_INDEXING      = 0.30;
+    private static final double BOTTOM_SPEED_INDEXING   = 0.50;
 
-    private enum IndexerState { EMPTY, LOW, HIGH, FULL}
+    private static final double TOP_SPEED_SHOOTING      = 0.20; // 0.15
+
+    private enum IndexerState { EMPTY, LOW, HIGH, FULL }
     private IndexerState currentIndexerState = IndexerState.EMPTY;
 
     private enum ShootingState { NO_SHOOT, SHOOT }
     private ShootingState currentShootingState = ShootingState.NO_SHOOT;
 
+    private TalonFX topMotor    = new TalonFX(Constants.Indexer.TOP_MOTOR_ID, "canivore");
     private TalonFX bottomMotor = new TalonFX(Constants.Indexer.BOTTOM_MOTOR_ID, "canivore");
-    private TalonFX topMotor = new TalonFX(Constants.Indexer.TOP_MOTOR_ID, "canivore");
 
-    private DigitalInput lowSensor = new DigitalInput(2);
-    private DigitalInput highSensor = new DigitalInput(1);
+    private DigitalInput topSensor      = new DigitalInput(1);
+    private DigitalInput bottomSensor   = new DigitalInput(2);
 
     private boolean isRunning = false;
 
     public IndexerSubsystem () {
-        bottomMotor.setInverted(TalonFXInvertType.Clockwise);
         topMotor.setInverted(TalonFXInvertType.CounterClockwise);
+        bottomMotor.setInverted(TalonFXInvertType.Clockwise);
+
+        topMotor.setNeutralMode(NeutralMode.Brake);
+        bottomMotor.setNeutralMode(NeutralMode.Brake);
+
         dashboard();
     }
 
@@ -48,7 +56,7 @@ public class IndexerSubsystem extends SubsystemBase {
                 case HIGH:
                     //? low index until low sensor detects it
                     if (this.currentShootingState == ShootingState.SHOOT) {
-                        highIndex();
+                        highIndexShooting();
                     } else {
                         lowIndex();
                     }
@@ -56,7 +64,7 @@ public class IndexerSubsystem extends SubsystemBase {
 
                 case FULL:
                     if (this.currentShootingState == ShootingState.SHOOT) {
-                        highIndex();
+                        highIndexShooting();
                     } else {
                         stop();
                     }
@@ -71,28 +79,28 @@ public class IndexerSubsystem extends SubsystemBase {
     public void disableIndexing () { isRunning = false; }
 
     private void lowIndex () {
-        bottomMotor.set(TalonFXControlMode.PercentOutput, DEFAULT_BOTTOM_SPEED);
         topMotor.set(TalonFXControlMode.PercentOutput, 0.0);
+        bottomMotor.set(TalonFXControlMode.PercentOutput, BOTTOM_SPEED_INDEXING);
     }
 
-    private void highIndex () {
-        topMotor.set(TalonFXControlMode.PercentOutput, DEFAULT_TOP_SPEED);
+    private void highIndexShooting () {
+        topMotor.set(TalonFXControlMode.PercentOutput, TOP_SPEED_SHOOTING);
         bottomMotor.set(TalonFXControlMode.PercentOutput, 0.0);
     }
 
     private void fullIndex () {
-        bottomMotor.set(TalonFXControlMode.PercentOutput, DEFAULT_BOTTOM_SPEED);
-        topMotor.set(TalonFXControlMode.PercentOutput, DEFAULT_TOP_SPEED);
+        topMotor.set(TalonFXControlMode.PercentOutput, TOP_SPEED_INDEXING);
+        bottomMotor.set(TalonFXControlMode.PercentOutput, BOTTOM_SPEED_INDEXING);
     }
 
     public void reverse () {
-        bottomMotor.set(TalonFXControlMode.PercentOutput, -0.20);
-        topMotor.set(TalonFXControlMode.PercentOutput, -0.20);
+        topMotor.set(TalonFXControlMode.PercentOutput, -0.35);
+        bottomMotor.set(TalonFXControlMode.PercentOutput, -0.35);
     }
 
     public void stop () {
-        bottomMotor.set(TalonFXControlMode.PercentOutput, 0.0);
         topMotor.set(TalonFXControlMode.PercentOutput, 0.0);
+        bottomMotor.set(TalonFXControlMode.PercentOutput, 0.0);
     }
 
     private void setShootingState (ShootingState state) { this.currentShootingState = state; }
@@ -102,8 +110,8 @@ public class IndexerSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         //? use sensor data to determine indexer state
-        boolean isLowSensorBlocked  = !lowSensor.get();
-        boolean isHighSensorBlocked = !highSensor.get();
+        boolean isLowSensorBlocked  = !bottomSensor.get();
+        boolean isHighSensorBlocked = !topSensor.get();
 
         if (isLowSensorBlocked && isHighSensorBlocked) setIndexerState(IndexerState.FULL);
         else if (isLowSensorBlocked) setIndexerState(IndexerState.LOW);
@@ -116,8 +124,8 @@ public class IndexerSubsystem extends SubsystemBase {
         tab.add(this);
         tab.addString("Indexer State", () -> this.currentIndexerState.name());
         tab.addString("Shooting State", () -> this.currentShootingState.name());
-        tab.addBoolean("Low Sensor", lowSensor::get);
-        tab.addBoolean("High Sensor", highSensor::get);
+        tab.addBoolean("Bottom Sensor", bottomSensor::get);
+        tab.addBoolean("Top Sensor", topSensor::get);
     }
     
 }

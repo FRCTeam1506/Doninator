@@ -2,8 +2,8 @@ package frc.robot.subsystems;
 
 import java.util.Map;
 
-import frc.lib.math.Conversions;
 import frc.robot.Constants;
+import frc.lib.math.Conversions;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
@@ -27,12 +27,12 @@ public class ShooterSubsystem extends SubsystemBase {
     private static final double GEAR_RATIO = 1.5;
     private static final double VELOCITY_DELTA = 50.0;
 
-    private static final double IDLE_RPM = 800.0; // 2000.0 1000.0
+    private static final double IDLE_RPM = 1800.0; // 2000.0 1000.0
     private static final double MAX_RPM = 2450.0;
     private static final double MAX_SENSOR_VELOCITY = Conversions.RPMToFalcon(MAX_RPM, GEAR_RATIO);
 
-    private TalonFX leftMotor = new TalonFX(Constants.Shooter.LEFT_MOTOR_ID, "canivore");
-    private TalonFX rightMotor = new TalonFX(Constants.Shooter.RIGHT_MOTOR_ID, "canivore");
+    private TalonFX leftMotor   = new TalonFX(Constants.Shooter.LEFT_MOTOR_ID, "canivore");
+    private TalonFX rightMotor  = new TalonFX(Constants.Shooter.RIGHT_MOTOR_ID, "canivore");
     
     // TODO: Remove after testing
     private NetworkTableEntry velocity_dash;
@@ -85,24 +85,22 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public boolean isShooterReady () {
         double actual_velocity_rpm = getVelocity();
-
         //? target-delta <= actual <= target+delta
         if ( actual_velocity_rpm >= this.targetVelocityRPM - VELOCITY_DELTA && actual_velocity_rpm <= this.targetVelocityRPM + VELOCITY_DELTA ) {
             return true;
-        } else { return false; }
+        }
+        return false;
     }
 
     public boolean isShooterReady2 () {
         double actual_velocity_rpm = getVelocity();
-        
         if (velocity_dash != null) {
             //? target-delta <= actual <= target+delta
             if ( actual_velocity_rpm >= this.velocity_dash.getDouble(0.0) - VELOCITY_DELTA && actual_velocity_rpm <= this.velocity_dash.getDouble(0.0) + VELOCITY_DELTA ) {
                 return true;
-            } else { return false; }
-        } else {
-            return false;
+            }
         }
+        return false;
     }
 
     

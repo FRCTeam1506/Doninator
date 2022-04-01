@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
@@ -144,6 +145,10 @@ public class TurretSubsystem extends SubsystemBase {
         }
     }
 
+    public double getVelocity () {
+        return motor.getSelectedSensorVelocity();
+    }
+
 
     /* 
     * ####################### 
@@ -186,15 +191,23 @@ public class TurretSubsystem extends SubsystemBase {
     }
 
     public double calculateShooterRPM () {
-        double x = limelightData.getDistance(currentHoodState);
-        double m = 3.97411;
-        double b = 1178.94;
-        return (m * x) + b;
+        double distance = limelightData.getDistance(currentHoodState);
+
+        int zone;
+        if (distance <= 0) { zone = 0; }
+        else if (distance > 0 && distance < 2.0) { zone = 1; }
+        else { zone = 16; }
+
+        switch (zone) {
+            case 0:
+                return 1000.0;
+        
+            default:
+                return 1000.0;
+        }
     }
 
-    public boolean isTracking () {
-        return limelightData.isTargeting;
-    }
+    public boolean isTracking () { return limelightData.isTargeting; }
 
 
     /* 
