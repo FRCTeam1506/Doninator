@@ -3,18 +3,18 @@ package frc.robot.commands.macros.climb;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ClimberSubsystem;
 
-public class Step6 extends CommandBase {
+public class HangTraversal extends CommandBase {
 
     private ClimberSubsystem climber;
 
-    public Step6 (ClimberSubsystem climber) {
+    public HangTraversal (ClimberSubsystem climber) {
         this.climber = climber;
         addRequirements(this.climber);
     }
 
     @Override
     public void execute() {
-        climber.setMotorPosition(climber.FULL_EXTEND);
+        climber.setMotorPosition(142_000.0, true);
     }
     
 }

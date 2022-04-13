@@ -77,7 +77,7 @@ public class TurretSubsystem extends SubsystemBase {
         }
     }
 
-    private static final double TURRET_MAX_TICKS = 25_000.0;
+    private static final double TURRET_MAX_TICKS = 75_000.0;
 
     private TalonFX motor = new TalonFX(Constants.Turret.MOTOR_ID, "canivore");
 
@@ -92,8 +92,8 @@ public class TurretSubsystem extends SubsystemBase {
 
         motor.configFactoryDefault();
 
-        motor.setNeutralMode(NeutralMode.Brake);
-        // motor.setNeutralMode(NeutralMode.Coast);
+        // motor.setNeutralMode(NeutralMode.Brake);
+        motor.setNeutralMode(NeutralMode.Coast);
 
         //? pid for motion magic
         motor.config_kP(0, 1.0);
@@ -167,8 +167,20 @@ public class TurretSubsystem extends SubsystemBase {
                 break;
         }
     }
-    public void putHoodUp () { setHoodState(HoodState.UP); }
-    public void putHoodDown () { setHoodState(HoodState.DOWN); }
+    public void putHoodUp () { if (currentHoodState != HoodState.UP) setHoodState(HoodState.UP); }
+    public void putHoodDown () { if (currentHoodState != HoodState.DOWN) setHoodState(HoodState.DOWN); }
+
+    private void hoodPeriodic () {
+        switch (currentHoodState) {
+            case UP:
+                if (limelightData.y >= 20.0) { putHoodDown(); }
+                break;
+            
+            case DOWN:
+                if (limelightData.y <= 0.0) { putHoodUp(); }
+                break;
+        }
+    }
 
 
     /* 
@@ -191,19 +203,124 @@ public class TurretSubsystem extends SubsystemBase {
     }
 
     public double calculateShooterRPM () {
-        double distance = limelightData.getDistance(currentHoodState);
+        double distance = limelightData.getDistance(currentHoodState); // 60 - 200
 
         int zone;
-        if (distance <= 0) { zone = 0; }
-        else if (distance > 0 && distance < 2.0) { zone = 1; }
-        else { zone = 16; }
+        if (distance <= 60) { zone = 0; }
+        else if (distance > 60 && distance <= 65) { zone = 1; }
+        else if (distance > 65 && distance <= 70) { zone = 2; }
+        else if (distance > 70 && distance <= 75) { zone = 3; }
+        else if (distance > 75 && distance <= 80) { zone = 4; }
+        else if (distance > 80 && distance <= 85) { zone = 5; }
+        else if (distance > 85 && distance <= 90) { zone = 6; }
+        else if (distance > 90 && distance <= 95) { zone = 7; }
+        else if (distance > 95 && distance <= 100) { zone = 8; }
+        else if (distance > 100 && distance <= 105) { zone = 9; }
+        else if (distance > 105 && distance <= 110) { zone = 10; }
+        else if (distance > 110 && distance <= 115) { zone = 11; }
+        else if (distance > 115 && distance <= 120) { zone = 12; }
+        else if (distance > 120 && distance <= 125) { zone = 13; }
+        else if (distance > 125 && distance <= 130) { zone = 14; }
+        else if (distance > 130 && distance <= 135) { zone = 15; }
+        else if (distance > 135 && distance <= 140) { zone = 16; }
+        else if (distance > 140 && distance <= 145) { zone = 17; }
+        else if (distance > 145 && distance <= 150) { zone = 18; }
+        else if (distance > 150 && distance <= 155) { zone = 19; }
+        else if (distance > 155 && distance <= 160) { zone = 20; }
+        else if (distance > 160 && distance <= 165) { zone = 21; }
+        else if (distance > 165 && distance <= 170) { zone = 22; }
+        else if (distance > 170 && distance <= 175) { zone = 23; }
+        else if (distance > 175 && distance <= 180) { zone = 24; }
+        else if (distance > 180 && distance <= 185) { zone = 25; }
+        else if (distance > 185 && distance <= 190) { zone = 26; }
+        else if (distance > 190 && distance <= 195) { zone = 27; }
+        else { zone = 28; }
+
+        // return zone;
 
         switch (zone) {
             case 0:
-                return 1000.0;
+                return 1800.0;
+
+            case 1:
+                return 1750.0;
+
+            case 2:
+                return 1700.0;
+
+            case 3:
+                return 1720.0;
+
+            case 4:
+                return 1730.0;
+
+            case 5:
+                return 1740.0;
+
+            case 6:
+                return 1750.0;
+
+            case 7:
+                return 1760.0;
+
+            case 8:
+                return 1780.0;
+
+            case 9:
+                return 1790.0;
+
+            case 10:
+                return 1820.0;
+
+            case 11:
+                return 1840.0;
+
+            case 12:
+                return 1900.0;
+
+            case 13:
+                return 1960.0;
+
+            case 14:
+                return 2030.0;
+
+            case 15:
+            case 16:
+            case 17:
+                return 2040.0;
+
+            case 18:
+                return 2060.0;
+
+            case 19:
+                return 2070.0;
+
+            case 20:
+                return 2080.0;
+
+            case 21:
+                return 2090.0;
+
+            case 22:
+                return 2100.0;
+
+            case 23:
+                return 2130.0;
+
+            case 24:
+                return 2150.0;
+
+            case 25:
+                return 2240.0;
+
+            case 26:
+                return 2300.0;
+
+            case 27:
+                return 2330.0;
         
             default:
-                return 1000.0;
+                return 1800.0;
         }
     }
 
@@ -230,6 +347,7 @@ public class TurretSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        hoodPeriodic();
         limelightPeriodic();
     }
 

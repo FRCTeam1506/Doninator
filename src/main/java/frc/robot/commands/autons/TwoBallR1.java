@@ -21,7 +21,7 @@ public class TwoBallR1 extends SequentialCommandGroup {
                 new ExtendAndIntake(intake)
             ),
 
-            new ShootAndIndex(shooter, indexer, 1720.0).perpetually().withTimeout(4)
+            new ShootAndIndex(shooter, indexer, 1750.0).perpetually().withTimeout(4) // 1720
         );
     }
     

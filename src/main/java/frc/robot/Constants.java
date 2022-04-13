@@ -16,12 +16,12 @@ public final class Constants {
 
         /* Gyro */
         public static final int GYRO_ID = 10;
-        public static final boolean INVERT_GYRO = false;
+        public static final boolean INVERT_GYRO = false; // false
 
         /* Drivetrain */
         public static final double TRACK_WIDTH          = Units.inchesToMeters(21.25);
         public static final double WHEEL_BASE           = Units.inchesToMeters(21.25);
-        public static final double WHEEL_DIAMETER       = Units.inchesToMeters(3.58);
+        public static final double WHEEL_DIAMETER       = Units.inchesToMeters(3.88); // 3.58
         public static final double WHEEL_CIRCUMFERENCE  = WHEEL_DIAMETER * Math.PI;
 
         public static final double OPEN_LOOP_RAMP   = 0.25;
@@ -86,7 +86,7 @@ public final class Constants {
             public static final int CAN_CODER_ID    = 10;
             public static final int ANGLE_MOTOR_ID  = 11;
             public static final int DRIVE_MOTOR_ID  = 12;
-            public static final double ANGLE_OFFSET = 143.965;
+            public static final double ANGLE_OFFSET = 145.986;
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(DRIVE_MOTOR_ID, ANGLE_MOTOR_ID, CAN_CODER_ID, ANGLE_OFFSET);
         }
@@ -96,7 +96,7 @@ public final class Constants {
             public static final int CAN_CODER_ID    = 20;
             public static final int ANGLE_MOTOR_ID  = 21;
             public static final int DRIVE_MOTOR_ID  = 22;
-            public static final double ANGLE_OFFSET = 235.547;
+            public static final double ANGLE_OFFSET = 237.041;
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(DRIVE_MOTOR_ID, ANGLE_MOTOR_ID, CAN_CODER_ID, ANGLE_OFFSET);
         }
@@ -106,7 +106,7 @@ public final class Constants {
             public static final int CAN_CODER_ID    = 30;
             public static final int ANGLE_MOTOR_ID  = 31;
             public static final int DRIVE_MOTOR_ID  = 32;
-            public static final double ANGLE_OFFSET = 23.994;
+            public static final double ANGLE_OFFSET = 26.455;
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(DRIVE_MOTOR_ID, ANGLE_MOTOR_ID, CAN_CODER_ID, ANGLE_OFFSET);
         }
@@ -116,7 +116,7 @@ public final class Constants {
             public static final int CAN_CODER_ID    = 40;
             public static final int ANGLE_MOTOR_ID  = 41;
             public static final int DRIVE_MOTOR_ID  = 42;
-            public static final double ANGLE_OFFSET = 111.006;
+            public static final double ANGLE_OFFSET = 111.973;
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(DRIVE_MOTOR_ID, ANGLE_MOTOR_ID, CAN_CODER_ID, ANGLE_OFFSET);
         }
@@ -129,30 +129,24 @@ public final class Constants {
 
     public static final class Intake {
         public static final int MOTOR_ID = 52;
-        public static final int XFACTOR_ID = 8;
+        public static final int XFACTOR_ID = 10; // 8
     }
 
     public static final class Indexer {
-        public static final int BOTTOM_MOTOR_ID = 53;
-        public static final int TOP_MOTOR_ID = 54;
+        public static final int TOP_MOTOR_ID = 53;
+        public static final int BOTTOM_MOTOR_ID = 54;
     }
 
     public static final class Climber {
         public static final int LEFT_MOTOR_ID = 61;
         public static final int RIGHT_MOTOR_ID = 62;
 
-        public static final int LEFT_LEANBOI_ID = 11;
-        public static final int RIGHT_LEANBOI_ID = 12;
-
-        public static final int LEFT_TRIGGER_ID = 9;
-        public static final int RIGHT_TRIGGER_ID = 10;
-
-        public static final int LEFT_EXTENDO_ID = 13;
-        public static final int RIGHT_EXTENDO_ID = 14;
+        public static final int LEFT_LEANBOI_ID = 8;
+        public static final int RIGHT_LEANBOI_ID = 9;
     }
 
     public static final class Turret {
-        public static final int HOOD_ID = 15;
+        public static final int HOOD_ID = 11; // 15
         public static final int MOTOR_ID = 55;
         public static final double AUTO_kP = 0.05;  // 0.023
         public static final double AUTO_kI = 0.005; // 0.005

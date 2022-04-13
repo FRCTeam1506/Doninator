@@ -16,5 +16,10 @@ public class StopTurret extends CommandBase {
     public void initialize () {
         this.turret.stop();
     }
+
+    @Override
+    public void execute() {
+        this.turret.putHoodDown();
+    }
     
 }

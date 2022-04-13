@@ -19,15 +19,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ShooterSubsystem extends SubsystemBase {
 
-    private static final double kP = 0.17;
+    private static final double kP = 0.135; // 0.17
     private static final double kI = 0.0;
-    private static final double kD = 0.0;
-    private static final double kF = 0.05; // 0.188 0.673
+    private static final double kD = 8.925;
+    private static final double kF = 0.05;
 
     private static final double GEAR_RATIO = 1.5;
     private static final double VELOCITY_DELTA = 50.0;
 
-    private static final double IDLE_RPM = 1800.0; // 2000.0 1000.0
+    private static final double IDLE_RPM = 2400.0; // 2000.0 1000.0 1800.0
     private static final double MAX_RPM = 2450.0;
     private static final double MAX_SENSOR_VELOCITY = Conversions.RPMToFalcon(MAX_RPM, GEAR_RATIO);
 
@@ -56,6 +56,10 @@ public class ShooterSubsystem extends SubsystemBase {
         rightMotor.config_kF(0, kF);
         rightMotor.configClosedloopRamp(0.5);
 
+        leftMotor.setSelectedSensorPosition(0);
+        rightMotor.setSelectedSensorPosition(0);
+
+
         dashboard();
     }
 
@@ -82,6 +86,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void idle () { setVelocity(IDLE_RPM); }
+    public void stop () { setVelocity(0); }
 
     public boolean isShooterReady () {
         double actual_velocity_rpm = getVelocity();
@@ -119,7 +124,7 @@ public class ShooterSubsystem extends SubsystemBase {
         
         this.velocity_dash = tab.add("Set Velocity (RPM)", this.targetVelocityRPM)
             .withWidget(BuiltInWidgets.kNumberSlider)
-            .withProperties(Map.of("min", 500, "max", 2500, "blockIncrement", 50))
+            .withProperties(Map.of("min", 500, "max", 3000, "blockIncrement", 50))
             .getEntry();
 
         // low goal: 760.0

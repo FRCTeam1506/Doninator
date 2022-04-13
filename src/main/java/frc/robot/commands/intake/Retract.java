@@ -18,9 +18,9 @@ public class Retract extends CommandBase {
         intake.stop();
     }
 
-    @Override
-    public boolean isFinished() {
-        return true;
-    }
+    // @Override
+    // public boolean isFinished() {
+    //     return true;
+    // }
     
 }

@@ -27,7 +27,7 @@ public class IntakeSubsystem extends SubsystemBase {
         xFactor = hub.makeSolenoid(Constants.Intake.XFACTOR_ID);
         motor.configFactoryDefault();
         motor.setControlFramePeriod(ControlFrame.Control_3_General, 100);
-        motor.setInverted(TalonFXInvertType.Clockwise);
+        motor.setInverted(TalonFXInvertType.CounterClockwise);
         dashboard();
     }
 
@@ -36,7 +36,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void outtake () {
-        motor.set(TalonFXControlMode.PercentOutput, -DEFAULT_SPEED);
+        motor.set(TalonFXControlMode.PercentOutput, -0.45);
     }
 
     public void stop () {

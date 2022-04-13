@@ -15,46 +15,34 @@ import frc.robot.Constants;
 
 public class ClimberSubsystem extends SubsystemBase {
 
-    private static final double kP = 0.84;   // 0.84
+    private static final double kP = 0.61; // 0.84
     private static final double kI = 0.0;
     private static final double kD = 0.0;
     private static final double kF = 0.4;  // 0.4
 
-    private static final double kVelocity = 62_000.0;       // 70_000.0
-    private static final double kAcceleration = 44_000.0;   // 50_000.0
+    private static final double kVelocity = 40_000.0;       // 62_000.0
+    private static final double kAcceleration = 30_000.0;   // 44_000.0
 
-    private static final double MIN_POSITION = -1_000.0;
-    private static final double MAX_POSITION = 150_000.0; // 110_000
+    private static final double MIN_POSITION = -1_500.0;
+    private static final double MAX_POSITION = 200_000.0; // 110_000
     public static final double FIRST_RUNG_HEIGHT = 130_000.0; // 90_000
     public static final double ABOVE_RUNG_HEIGHT = 25_000.0; // 25_000
     public static final double FULL_EXTEND = MAX_POSITION;
 
-    private static final ExtendoState DEFAULT_EXTENDO_STATE = ExtendoState.RETRACTED;
     private static final LeanboiState DEFAULT_LEANBOI_STATE = LeanboiState.EXTENDED;
-    private static final TriggerState DEFAULT_TRIGGER_STATE = TriggerState.RETRACTED;
 
     private TalonFX leftMotor = new TalonFX(Constants.Climber.LEFT_MOTOR_ID, "canivore");
     private TalonFX rightMotor = new TalonFX(Constants.Climber.RIGHT_MOTOR_ID, "canivore");
 
-    private DoubleSolenoid extendo;
     private DoubleSolenoid leanboi;
-    private DoubleSolenoid trigger;
-
-    private enum ExtendoState { EXTENDED, RETRACTED }
-    private ExtendoState currentExtendoState = DEFAULT_EXTENDO_STATE;
 
     private enum LeanboiState { EXTENDED, RETRACTED }
     private LeanboiState currentLeanboiState = DEFAULT_LEANBOI_STATE;
 
-    private enum TriggerState { EXTENDED, RETRACTED }
-    private TriggerState currentTriggerState = DEFAULT_TRIGGER_STATE;
-
     public int currentClimbState = 0;
 
     public ClimberSubsystem (PneumaticHub hub) {
-        extendo = hub.makeDoubleSolenoid(Constants.Climber.LEFT_EXTENDO_ID, Constants.Climber.RIGHT_EXTENDO_ID);
         leanboi = hub.makeDoubleSolenoid(Constants.Climber.LEFT_LEANBOI_ID, Constants.Climber.RIGHT_LEANBOI_ID);
-        trigger = hub.makeDoubleSolenoid(Constants.Climber.LEFT_TRIGGER_ID, Constants.Climber.RIGHT_TRIGGER_ID);
 
         leftMotor.configFactoryDefault();
         rightMotor.configFactoryDefault();
@@ -62,8 +50,8 @@ public class ClimberSubsystem extends SubsystemBase {
         leftMotor.setNeutralMode(NeutralMode.Brake);
         rightMotor.setNeutralMode(NeutralMode.Brake);
 
-        leftMotor.setInverted(TalonFXInvertType.Clockwise);
-        rightMotor.setInverted(TalonFXInvertType.CounterClockwise);
+        leftMotor.setInverted(TalonFXInvertType.CounterClockwise);
+        rightMotor.setInverted(TalonFXInvertType.Clockwise);
 
         leftMotor.config_kP(0, kP);
         leftMotor.config_kI(0, kI);
@@ -81,8 +69,6 @@ public class ClimberSubsystem extends SubsystemBase {
         rightMotor.configMotionAcceleration(kAcceleration);
 
         setLeanboiState(LeanboiState.EXTENDED);
-        setTriggerState(TriggerState.EXTENDED);
-        setExtendoState(ExtendoState.RETRACTED);
 
         resetMotors();
         dashboard();
@@ -106,15 +92,40 @@ public class ClimberSubsystem extends SubsystemBase {
 
     public void setMotorPosition (double pos) {
         if (Math.abs(pos) <= MAX_POSITION && pos >= MIN_POSITION) {
-            // double leftPos = leftMotor.getSelectedSensorPosition();
-            // double rightPos = rightMotor.getSelectedSensorPosition();
-            // while (!(leftPos <= pos - 50 && leftPos >= pos + 50 && rightPos <= pos - 50 && rightPos >= pos + 50)) {
-                leftMotor.set(TalonFXControlMode.MotionMagic, pos);
-                rightMotor.set(TalonFXControlMode.MotionMagic, pos);
-            // }
+            leftMotor.set(TalonFXControlMode.MotionMagic, -pos);
+            rightMotor.set(TalonFXControlMode.MotionMagic, -pos);
         } else {
             stopMotors();
         }
+    }
+
+    public void setMotorPosition (double pos, boolean fast) {
+        if (Math.abs(pos) <= MAX_POSITION && pos >= MIN_POSITION) {
+            if (fast) {
+                leftMotor.config_kP(0, 0.84);
+                rightMotor.config_kP(0, 0.84);
+                leftMotor.configMotionCruiseVelocity(62_000.0);
+                rightMotor.configMotionCruiseVelocity(62_000.0);
+                leftMotor.configMotionAcceleration(44_000.0);
+                rightMotor.configMotionAcceleration(44_000.0);
+            } else {
+                leftMotor.config_kP(0, 0.61);
+                rightMotor.config_kP(0, 0.61);
+                leftMotor.configMotionCruiseVelocity(40_000.0);
+                rightMotor.configMotionCruiseVelocity(40_000.0);
+                leftMotor.configMotionAcceleration(30_000.0);
+                rightMotor.configMotionAcceleration(30_000.0);
+            }
+
+            leftMotor.set(TalonFXControlMode.MotionMagic, -pos);
+            rightMotor.set(TalonFXControlMode.MotionMagic, -pos);
+        } else {
+            stopMotors();
+        }
+    }
+
+    public double getMotorPosition () {
+        return leftMotor.getSelectedSensorPosition();
     }
 
     public void setPower (double leftPower, double rightPower) {
@@ -135,29 +146,6 @@ public class ClimberSubsystem extends SubsystemBase {
 
 
     /*
-    * #######################
-    *   Extendo Functions
-    * #######################
-    */
-    private void setExtendoState (ExtendoState state) {
-        currentExtendoState = state;
-        switch (state) {
-            case RETRACTED:
-                extendo.set(Value.kForward);
-                break;
-
-            case EXTENDED:
-                extendo.set(Value.kReverse);
-                break;
-        }
-    }
-    private String getExtendoStateName () { return currentExtendoState.name(); }
-
-    public void extendExtendo () { setExtendoState(ExtendoState.EXTENDED); }
-    public void retractExtendo () { setExtendoState(ExtendoState.RETRACTED); }
-
-
-    /*
     * ####################### 
     *   Leanboi Functions
     * #######################
@@ -166,11 +154,11 @@ public class ClimberSubsystem extends SubsystemBase {
         currentLeanboiState = state;
         switch (state) {
             case RETRACTED:
-                leanboi.set(Value.kForward);
+                leanboi.set(Value.kReverse);
                 break;
 
             case EXTENDED:
-                leanboi.set(Value.kReverse);
+                leanboi.set(Value.kForward);
                 break;
         }
     }
@@ -178,92 +166,6 @@ public class ClimberSubsystem extends SubsystemBase {
 
     public void extendLeanboi () { setLeanboiState(LeanboiState.EXTENDED); }
     public void retractLeanboi () { setLeanboiState(LeanboiState.RETRACTED); }
-
-
-    /* 
-    * ####################### 
-    *   Trigger Functions
-    * #######################
-    */
-    private void setTriggerState (TriggerState state) {
-        currentTriggerState = state;
-        switch (state) {
-            case RETRACTED:
-                trigger.set(Value.kReverse);
-                break;
-
-            case EXTENDED:
-                trigger.set(Value.kForward);
-                break;
-        }
-    }
-    private String getTriggerStateName () { return currentTriggerState.name(); }
-
-    public void extendTrigger () { setTriggerState(TriggerState.EXTENDED); }
-    public void retractTrigger () { setTriggerState(TriggerState.RETRACTED); }
-
-
-    private void setClimbState (int state) {
-        currentClimbState = state;
-        switch (state) {
-            case 0:
-                break;
-
-            case 1:
-                extendExtendo();
-                retractLeanboi();
-                retractTrigger();
-                break;
-
-            case 2:
-                setMotorPosition(FIRST_RUNG_HEIGHT);
-                break;
-
-            case 3:
-                setMotorPosition(0.0);
-                break;
-
-            case 4:
-                setMotorPosition(ABOVE_RUNG_HEIGHT);
-                break;
-
-            case 5:
-                setLeanboiState(LeanboiState.RETRACTED);
-                break;
-
-            case 6:
-                setMotorPosition(FULL_EXTEND);
-                break;
-
-            case 7:
-                setLeanboiState(LeanboiState.EXTENDED);
-                break;
-
-            case 8:
-                setMotorPosition(ABOVE_RUNG_HEIGHT);
-                break;
-
-            case 9:
-                setMotorPosition(0.0);
-                break;
-
-            case 10:
-                setMotorPosition(ABOVE_RUNG_HEIGHT);
-                break;
-
-            case 11:
-                setLeanboiState(LeanboiState.RETRACTED);
-                break;
-
-            case 12:
-                setMotorPosition(FULL_EXTEND);
-                break;
-
-            case 13:
-                setLeanboiState(LeanboiState.EXTENDED);
-                break;
-        }
-    }
 
     public void progressClimb () {
         currentClimbState++;
@@ -283,9 +185,7 @@ public class ClimberSubsystem extends SubsystemBase {
     private void dashboard () {
         ShuffleboardTab tab = Shuffleboard.getTab("Climber");
         tab.add(this);
-        tab.addString("Extendo State", this::getExtendoStateName);
         tab.addString("Leanboi State", this::getLeanboiStateName);
-        tab.addString("Trigger State", this::getTriggerStateName);
 
         tab.addNumber("Left Motor Pos", leftMotor::getSelectedSensorPosition);
         tab.addNumber("Right Motor Pos", rightMotor::getSelectedSensorPosition);

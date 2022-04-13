@@ -2,16 +2,14 @@ package frc.robot.commands.climber;
 
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.macros.climb.Step1;
-import frc.robot.commands.macros.climb.Step10;
-import frc.robot.commands.macros.climb.Step2;
-import frc.robot.commands.macros.climb.Step3;
-import frc.robot.commands.macros.climb.Step4;
-import frc.robot.commands.macros.climb.Step5;
-import frc.robot.commands.macros.climb.Step6;
-import frc.robot.commands.macros.climb.Step7;
-import frc.robot.commands.macros.climb.Step8;
-import frc.robot.commands.macros.climb.Step9;
+import frc.robot.commands.macros.climb.HangTraversal;
+import frc.robot.commands.macros.climb.Stay;
+import frc.robot.commands.macros.climb.UpLittle;
+import frc.robot.commands.macros.climb.RetractLeanboi;
+import frc.robot.commands.macros.climb.StartClimb;
+import frc.robot.commands.macros.climb.UpHigh;
+import frc.robot.commands.macros.climb.ExtendLeanboi;
+import frc.robot.commands.macros.climb.PullDown;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
@@ -34,63 +32,55 @@ public class RunClimbStep extends SequentialCommandGroup {
         int currentState = climber.currentClimbState;
         switch (currentState) {
             case 1:
-                CommandScheduler.getInstance().schedule(new Step1(turret, climber, shooter));
+                CommandScheduler.getInstance().schedule(new StartClimb(turret, climber, shooter));
                 break;
 
             case 2:
-                CommandScheduler.getInstance().schedule(new Step2(climber));
+                CommandScheduler.getInstance().schedule(new PullDown(climber));
                 break;
 
             case 3:
-                CommandScheduler.getInstance().schedule(new Step3(climber));
+                CommandScheduler.getInstance().schedule(new UpLittle(climber));
                 break;
 
             case 4:
-                CommandScheduler.getInstance().schedule(new Step4(climber));
+                CommandScheduler.getInstance().schedule(new RetractLeanboi(climber));
                 break;
-
+                
             case 5:
-                CommandScheduler.getInstance().schedule(new Step5(climber));
+                CommandScheduler.getInstance().schedule(new UpHigh(climber));
                 break;
 
             case 6:
-                CommandScheduler.getInstance().schedule(new Step6(climber));
+                CommandScheduler.getInstance().schedule(new ExtendLeanboi(climber));
                 break;
 
             case 7:
-                CommandScheduler.getInstance().schedule(new Step7(climber));
+                CommandScheduler.getInstance().schedule(new PullDown(climber));
                 break;
 
             case 8:
-                CommandScheduler.getInstance().schedule(new Step8(climber));
+                CommandScheduler.getInstance().schedule(new UpLittle(climber));
                 break;
 
             case 9:
-                CommandScheduler.getInstance().schedule(new Step10(climber));
+                CommandScheduler.getInstance().schedule(new RetractLeanboi(climber));
                 break;
 
             case 10:
-                CommandScheduler.getInstance().schedule(new Step4(climber));
+                CommandScheduler.getInstance().schedule(new UpHigh(climber));
                 break;
 
             case 11:
-                CommandScheduler.getInstance().schedule(new Step5(climber));
+                CommandScheduler.getInstance().schedule(new ExtendLeanboi(climber));
                 break;
 
             case 12:
-                CommandScheduler.getInstance().schedule(new Step6(climber));
+                CommandScheduler.getInstance().schedule(new HangTraversal(climber));
                 break;
 
             case 13:
-                CommandScheduler.getInstance().schedule(new Step7(climber));
-                break;
-
-            case 14:
-                CommandScheduler.getInstance().schedule(new Step8(climber));
-                break;
-
-            case 15:
-                CommandScheduler.getInstance().schedule(new Step9(climber));
+                CommandScheduler.getInstance().schedule(new Stay(climber));
                 break;
         
             default:

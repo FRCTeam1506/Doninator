@@ -1,5 +1,6 @@
 {
   "SysId": {
-    "Analysis Type": "General Mechanism"
+    "Analysis Type": "General Mechanism",
+    "mode": "Client"
   }
 }
