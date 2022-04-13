@@ -10,19 +10,41 @@ public class AutoShootAndIndex extends CommandBase {
     private ShooterSubsystem shooter;
     private IndexerSubsystem indexer;
     private TurretSubsystem turret;
+
+    private boolean isAuto;
+    private double velocity_rpm;
     
     public AutoShootAndIndex (ShooterSubsystem shooter, IndexerSubsystem indexer, TurretSubsystem turret) {
         this.shooter = shooter;
         this.indexer = indexer;
         this.turret = turret;
         addRequirements(this.shooter, this.indexer, this.turret);
+
+        this.isAuto = true;
     }
+
+    public AutoShootAndIndex (ShooterSubsystem shooter, IndexerSubsystem indexer, TurretSubsystem turret, double velocity_rpm) {
+        this.shooter = shooter;
+        this.indexer = indexer;
+        this.turret = turret;
+        addRequirements(this.shooter, this.indexer, this.turret);
+
+        this.isAuto = false;
+        this.velocity_rpm = velocity_rpm;
+    } 
 
     @Override
     public void execute() {
         indexer.enableIndexing();
-        double calculatedRPM = turret.calculateShooterRPM();
-        shooter.shoot(calculatedRPM);
+
+        double rpm;
+        if (isAuto) {
+            rpm = turret.calculateShooterRPM();
+        } else {
+            rpm = this.velocity_rpm;
+        }
+
+        shooter.shoot(rpm);
         if (shooter.isShooterReady()) {
             indexer.enableShooting();
         }

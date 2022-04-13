@@ -63,27 +63,27 @@ public class RobotContainer {
   public static Compressor compressor = new Compressor(1, PneumaticsModuleType.REVPH);
 
   /* Controllers */
-  // private final PS4Controller driver    = new PS4Controller(0);
-  // private final PS4Controller operator  = new PS4Controller(1);
+  private final PS4Controller driver    = new PS4Controller(0);
+  private final PS4Controller operator  = new PS4Controller(1);
   private final PS4Controller superman  = new PS4Controller(2);
 
   /* Buttons */
   // * driver
-  // private final JoystickButton DR_circle = new JoystickButton(driver, PS4Controller.Button.kCircle.value);
-  // private final POVButton DR_up = new POVButton(driver, 0);
+  private final JoystickButton DR_circle = new JoystickButton(driver, PS4Controller.Button.kCircle.value);
+  private final POVButton DR_up = new POVButton(driver, 0);
 
   // * operator
-  // private final JoystickButton OP_leftBumper  = new JoystickButton(operator, PS4Controller.Button.kL1.value);
-  // private final JoystickButton OP_rightBumper = new JoystickButton(operator, PS4Controller.Button.kR1.value);
-  // private final JoystickButton OP_circle      = new JoystickButton(operator, PS4Controller.Button.kCircle.value);
-  // private final JoystickButton OP_triangle    = new JoystickButton(operator, PS4Controller.Button.kTriangle.value);
-  // private final JoystickButton OP_square      = new JoystickButton(operator, PS4Controller.Button.kSquare.value);
-  // private final JoystickButton OP_cross       = new JoystickButton(operator, PS4Controller.Button.kCross.value);
+  private final JoystickButton OP_leftBumper  = new JoystickButton(operator, PS4Controller.Button.kL1.value);
+  private final JoystickButton OP_rightBumper = new JoystickButton(operator, PS4Controller.Button.kR1.value);
+  private final JoystickButton OP_circle      = new JoystickButton(operator, PS4Controller.Button.kCircle.value);
+  private final JoystickButton OP_triangle    = new JoystickButton(operator, PS4Controller.Button.kTriangle.value);
+  private final JoystickButton OP_square      = new JoystickButton(operator, PS4Controller.Button.kSquare.value);
+  private final JoystickButton OP_cross       = new JoystickButton(operator, PS4Controller.Button.kCross.value);
 
-  // private final POVButton OP_up     = new POVButton(operator, 0);
-  // private final POVButton OP_right  = new POVButton(operator, 90);
-  // private final POVButton OP_down   = new POVButton(operator, 180);
-  // private final POVButton OP_left   = new POVButton(operator, 270);
+  private final POVButton OP_up     = new POVButton(operator, 0);
+  private final POVButton OP_right  = new POVButton(operator, 90);
+  private final POVButton OP_down   = new POVButton(operator, 180);
+  private final POVButton OP_left   = new POVButton(operator, 270);
 
   // * superman
   private final JoystickButton S_square   = new JoystickButton(superman, PS4Controller.Button.kSquare.value);
@@ -115,7 +115,7 @@ public class RobotContainer {
 
   // ? Shooter
   private final Command c_idleShooter = new IdleShooter(shooter);
-  // private final Command c_stopShooter = new StopShooter(shooter).perpetually();
+  private final Command c_stopShooter = new StopShooter(shooter).perpetually();
   // private final Command c_idleShooterPerpetual = c_idleShooter.perpetually();
 
   // ? Indexer
@@ -137,10 +137,10 @@ public class RobotContainer {
   private final Command c_runIntake = new IntakeAndIndex(intake, indexer);
   private final Command c_runOutake = new ExtendAndOuttake(intake, indexer);
 
-  // private final Command c_runShooterLow   = new ShootAndIndex(shooter, indexer, 760.0);
+  private final Command c_runShooterLow   = new AutoShootAndIndex(shooter, indexer, turret, 760.0);
   // private final Command c_runShooterClose = new ShootAndIndex(shooter, indexer, 1200.0);
   // private final Command c_runShooterMid   = new ShootAndIndex(shooter, indexer, 1600.0);
-  private final Command c_runShooterPZ    = new ShootAndIndex(shooter, indexer, 2100.0);
+  private final Command c_runShooterPZ    = new AutoShootAndIndex(shooter, indexer, turret, 2100.0);
   private final Command c_autoShoot       = new AutoShootAndIndex(shooter, indexer, turret);
   // private final Command c_runShooterFar   = new ShootAndIndex(shooter, indexer, 2500.0);
 
@@ -175,8 +175,8 @@ public class RobotContainer {
     drivetrain.setDefaultCommand(
       new SwerveTeleop(
         drivetrain,
-        superman,
-        // driver,
+        // superman,
+        driver,
         true, true
       )
     );
@@ -199,16 +199,17 @@ public class RobotContainer {
     // DR_up.whenPressed(new InstantCommand(() -> hub.enableCompressorAnalog(100, 120)));
     
     // * operator
-    // OP_leftBumper.whileHeld(c_runIntake);
-    // OP_rightBumper.whenPressed(c_toggleTurretControl);
-    // OP_circle.whenPressed(c_progressClimbStep);
-    // OP_triangle.whileHeld(c_runShooterPZ);
-    // OP_square.whileHeld(c_runOutake);
-    // OP_cross.whenPressed(c_runClimbStep);
+    OP_leftBumper.whileHeld(c_runIntake);
+    OP_rightBumper.whenPressed(c_runShooterPZ);
+    OP_circle.whenPressed(c_progressClimbStep);
+    OP_triangle.whileHeld(c_toggleTurretControl);
+    OP_square.whileHeld(c_runOutake);
+    // OP_cross.whenPressed(c_autoShoot);
+    OP_cross.whenPressed(c_runClimbStep);
 
-    // OP_up.whileHeld(c_runShooterLow);
-    // OP_right.whenPressed(c_stopShooter);
-    // OP_down.whenPressed(c_regressClimbStep);
+    OP_up.whileHeld(c_runShooterLow);
+    OP_right.whenPressed(c_stopShooter);
+    OP_down.whenPressed(c_regressClimbStep);
     // OP_left.whenPressed(c_idleShooterPerpetual);
 
     // * superman
