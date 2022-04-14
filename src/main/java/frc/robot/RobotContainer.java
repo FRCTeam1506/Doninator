@@ -65,11 +65,12 @@ public class RobotContainer {
   /* Controllers */
   private final PS4Controller driver    = new PS4Controller(0);
   private final PS4Controller operator  = new PS4Controller(1);
-  private final PS4Controller superman  = new PS4Controller(2);
+  // private final PS4Controller superman  = new PS4Controller(2);
 
   /* Buttons */
   // * driver
-  private final JoystickButton DR_circle = new JoystickButton(driver, PS4Controller.Button.kCircle.value);
+  private final JoystickButton DR_circle      = new JoystickButton(driver, PS4Controller.Button.kCircle.value);
+  private final JoystickButton DR_leftBumper  = new JoystickButton(driver, PS4Controller.Button.kL1.value);
   private final POVButton DR_up = new POVButton(driver, 0);
 
   // * operator
@@ -79,6 +80,7 @@ public class RobotContainer {
   private final JoystickButton OP_triangle    = new JoystickButton(operator, PS4Controller.Button.kTriangle.value);
   private final JoystickButton OP_square      = new JoystickButton(operator, PS4Controller.Button.kSquare.value);
   private final JoystickButton OP_cross       = new JoystickButton(operator, PS4Controller.Button.kCross.value);
+  private final JoystickButton OP_big         = new JoystickButton(operator, PS4Controller.Button.kTouchpad.value);
 
   private final POVButton OP_up     = new POVButton(operator, 0);
   private final POVButton OP_right  = new POVButton(operator, 90);
@@ -86,15 +88,15 @@ public class RobotContainer {
   private final POVButton OP_left   = new POVButton(operator, 270);
 
   // * superman
-  private final JoystickButton S_square   = new JoystickButton(superman, PS4Controller.Button.kSquare.value);
-  private final JoystickButton S_circle   = new JoystickButton(superman, PS4Controller.Button.kCircle.value);
-  private final JoystickButton S_triangle = new JoystickButton(superman, PS4Controller.Button.kTriangle.value);
-  private final JoystickButton S_cross    = new JoystickButton(superman, PS4Controller.Button.kCross.value);
+  // private final JoystickButton S_square   = new JoystickButton(superman, PS4Controller.Button.kSquare.value);
+  // private final JoystickButton S_circle   = new JoystickButton(superman, PS4Controller.Button.kCircle.value);
+  // private final JoystickButton S_triangle = new JoystickButton(superman, PS4Controller.Button.kTriangle.value);
+  // private final JoystickButton S_cross    = new JoystickButton(superman, PS4Controller.Button.kCross.value);
 
-  private final POVButton S_up     = new POVButton(superman, 0);
-  private final POVButton S_right  = new POVButton(superman, 90);
-  private final POVButton S_down   = new POVButton(superman, 180);
-  private final POVButton S_left   = new POVButton(superman, 270);
+  // private final POVButton S_up     = new POVButton(superman, 0);
+  // private final POVButton S_right  = new POVButton(superman, 90);
+  // private final POVButton S_down   = new POVButton(superman, 180);
+  // private final POVButton S_left   = new POVButton(superman, 270);
 
   /* Subsystems */
   private final SwerveDrivetrain drivetrain = new SwerveDrivetrain();
@@ -115,8 +117,6 @@ public class RobotContainer {
 
   // ? Shooter
   private final Command c_idleShooter = new IdleShooter(shooter);
-  private final Command c_stopShooter = new StopShooter(shooter).perpetually();
-  // private final Command c_idleShooterPerpetual = c_idleShooter.perpetually();
 
   // ? Indexer
   private final Command c_stopIndexer = new StopIndexer(indexer);
@@ -129,9 +129,9 @@ public class RobotContainer {
   // private final Command c_controlClimbMotors  = new ControlLeanboiMotors(climber, () -> operator.getLeftY(), () -> operator.getRightY());
 
   // ? Turret
-  // private final Command c_aimTurret           = new AimAndControlTurret(turret, () -> operator.getRightX());
+  private final Command c_aimTurret           = new AimAndControlTurret2(turret, () -> operator.getRightX());
   private final Command c_toggleTurretControl = new ToggleTurretControlState(turret);
-  private final Command c_aimTurret = new AimAndControlTurret2(turret, () -> superman.getRightX());
+  // private final Command c_aimTurret = new AimAndControlTurret2(turret, () -> superman.getRightX());
 
   // * macros
   private final Command c_runIntake = new IntakeAndIndex(intake, indexer);
@@ -146,6 +146,15 @@ public class RobotContainer {
 
   private final Command c_runClimbStep = new RunClimbStep(turret, climber, shooter);
 
+  // * Utility
+  private final Command c_stopShooterDefault = new InstantCommand(() -> shooter.setDefaultCommand(
+    new StopShooter(shooter)
+  ), shooter);
+
+  private final Command c_idleShooterDefault = new InstantCommand(() -> shooter.setDefaultCommand(
+    new IdleShooter(shooter)
+  ), shooter);
+
   /* Trajectories */
   private PathPlannerTrajectory tr_test_1, tr_test_2, tr_test_3,
     tr_two_ball_r1, tr_two_ball_r2, tr_two_ball_r3,
@@ -153,7 +162,7 @@ public class RobotContainer {
     tr_four_ball_r1_1, tr_four_ball_r1_2, tr_four_ball_r1_3,
     tr_five_ball_r1_1, tr_five_ball_r1_2, tr_five_ball_r1_3, tr_five_ball_r1_4;
 
-  private enum Autons { Nothing, TwoBall_R1, TwoBall_R2, TwoBall_R3, TwoBall_B1, TwoBall_B2, TwoBall_B3, FiveBall_R1 }
+  private enum Autons { Nothing, TwoBall, FiveBall_R1 }
   private SendableChooser<Autons> autonChooser = new SendableChooser<>();
 
 
@@ -189,39 +198,38 @@ public class RobotContainer {
 
     turret.setDefaultCommand(c_aimTurret);
 
-    climber.setDefaultCommand(c_stopClimber); // c_controlClimbMotors
+    climber.setDefaultCommand(c_stopClimber);
   }
 
   private void configureButtonBindings () {
 
     // * driver
-    // DR_circle.whenPressed(c_zeroGyro);
-    // DR_up.whenPressed(new InstantCommand(() -> hub.enableCompressorAnalog(100, 120)));
+    DR_circle.whenPressed(c_zeroGyro);
     
     // * operator
     OP_leftBumper.whileHeld(c_runIntake);
-    OP_rightBumper.whenPressed(c_runShooterPZ);
+    OP_rightBumper.whileHeld(c_runShooterPZ);
     OP_circle.whenPressed(c_progressClimbStep);
     OP_triangle.whileHeld(c_toggleTurretControl);
     OP_square.whileHeld(c_runOutake);
-    // OP_cross.whenPressed(c_autoShoot);
     OP_cross.whenPressed(c_runClimbStep);
+    OP_big.whileHeld(c_autoShoot);
 
     OP_up.whileHeld(c_runShooterLow);
-    OP_right.whenPressed(c_stopShooter);
     OP_down.whenPressed(c_regressClimbStep);
-    // OP_left.whenPressed(c_idleShooterPerpetual);
+    OP_left.whenPressed(c_idleShooterDefault);
+    OP_right.whenPressed(c_stopShooterDefault);
 
     // * superman
-    S_square.whileHeld(c_runIntake);
-    S_circle.whileHeld(c_runOutake);
+    // S_square.whileHeld(c_runIntake);
+    // S_circle.whileHeld(c_runOutake);
     // S_circle.whileHeld(c_runShooterPZ);
-    S_triangle.whenPressed(c_zeroGyro);
-    S_cross.whileHeld(c_autoShoot);
+    // S_triangle.whenPressed(c_zeroGyro);
+    // S_cross.whileHeld(c_autoShoot);
 
-    S_left.whenPressed(c_progressClimbStep);
-    S_right.whenPressed(c_runClimbStep);
-    S_down.whenPressed(c_regressClimbStep);
+    // S_left.whenPressed(c_progressClimbStep);
+    // S_right.whenPressed(c_runClimbStep);
+    // S_down.whenPressed(c_regressClimbStep);
 
     // S_down.whenPressed(new SetPosition(climber, 0.0));
     // S_up.whenPressed(new SetPosition(climber, 180_000.0));
@@ -254,16 +262,11 @@ public class RobotContainer {
 
   private void configureAuton () {
     autonChooser.setDefaultOption("Nothing", Autons.Nothing);
-    autonChooser.addOption("2Ball R1", Autons.TwoBall_R1);
-    autonChooser.addOption("2Ball R2", Autons.TwoBall_R2);
-    autonChooser.addOption("2Ball R3", Autons.TwoBall_R3);
-    autonChooser.addOption("2Ball B1", Autons.TwoBall_B1);
-    autonChooser.addOption("2Ball B2", Autons.TwoBall_B2);
-    autonChooser.addOption("2Ball B3", Autons.TwoBall_B3);
+    autonChooser.addOption("2Ball", Autons.TwoBall);
     autonChooser.addOption("5Ball R1", Autons.FiveBall_R1);
 
     ShuffleboardTab tab = Shuffleboard.getTab("Autonomous");
-    tab.add(autonChooser);
+    tab.add("Auton Chooser", autonChooser);
   }
 
   private void dashboardStuff () {
@@ -271,39 +274,24 @@ public class RobotContainer {
     tab.addNumber("PSI", () -> hub.getPressure(0));
   }
 
-  public Command getAutonomousCommand () {
-    // return new RunPathPlannerTrajectory(drivetrain, tr_test_3);
-    return new FiveBallR1(drivetrain, intake, indexer, shooter, tr_five_ball_r1_1, tr_five_ball_r1_2, tr_five_ball_r1_3, tr_five_ball_r1_4);
-  }
-
   // public Command getAutonomousCommand () {
-  //   switch (autonChooser.getSelected()) {
-  //     case Nothing:
-  //       return new WaitCommand(15.0);
-
-  //     case TwoBall_R1:
-  //       return new TwoBallR1(drivetrain, intake, indexer, shooter, tr_two_ball_r1);
-
-  //     case TwoBall_R2:
-  //       return new TwoBallR2(drivetrain, intake, indexer, shooter, tr_two_ball_r2);
-
-  //     case TwoBall_R3:
-  //       return new TwoBallR3(drivetrain, intake, indexer, shooter, tr_two_ball_r3);
-
-  //     case TwoBall_B1:
-  //       return new TwoBallB1(drivetrain, intake, indexer, shooter, tr_two_ball_b1);
-
-  //     case TwoBall_B2:
-  //       return new TwoBallB2(drivetrain, intake, indexer, shooter, tr_two_ball_b2);
-
-  //     case TwoBall_B3:
-  //       return new TwoBallB3(drivetrain, intake, indexer, shooter, tr_two_ball_b3);
-
-  //     case FiveBall_R1:
-  //       return new FiveBallR1(drivetrain, intake, indexer, shooter, tr_five_ball_r1_1, tr_five_ball_r1_2, tr_five_ball_r1_3, tr_five_ball_r1_4);
-    
-  //     default:
-  //       return new WaitCommand(15.0);
-  //   }
+  //   return new RunPathPlannerTrajectory(drivetrain, tr_test_3);
+  //   return new FiveBallR1(drivetrain, intake, indexer, shooter, tr_five_ball_r1_1, tr_five_ball_r1_2, tr_five_ball_r1_3, tr_five_ball_r1_4);
   // }
+
+  public Command getAutonomousCommand () {
+    switch (autonChooser.getSelected()) {
+      case Nothing:
+        return new WaitCommand(15.0);
+
+      case TwoBall:
+        return new TwoBallR1(drivetrain, intake, indexer, shooter, tr_two_ball_r1);
+
+      case FiveBall_R1:
+        return new FiveBallR1(drivetrain, intake, indexer, shooter, tr_five_ball_r1_1, tr_five_ball_r1_2, tr_five_ball_r1_3, tr_five_ball_r1_4);
+    
+      default:
+        return new WaitCommand(15.0);
+    }
+  }
 }
