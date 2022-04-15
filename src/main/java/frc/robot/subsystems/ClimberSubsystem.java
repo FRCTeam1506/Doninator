@@ -124,6 +124,14 @@ public class ClimberSubsystem extends SubsystemBase {
         }
     }
 
+    public double getLeftMotorPosition () {
+        return -leftMotor.getSelectedSensorPosition();
+    }
+
+    public double getRightMotorPosition () {
+        return -rightMotor.getSelectedSensorPosition();
+    }
+
     public double getMotorPosition () {
         return leftMotor.getSelectedSensorPosition();
     }
@@ -151,15 +159,17 @@ public class ClimberSubsystem extends SubsystemBase {
     * #######################
     */
     private void setLeanboiState (LeanboiState state) {
-        currentLeanboiState = state;
-        switch (state) {
-            case RETRACTED:
-                leanboi.set(Value.kReverse);
-                break;
+        if (currentLeanboiState != state) {
+            currentLeanboiState = state;
+            switch (state) {
+                case RETRACTED:
+                    leanboi.set(Value.kReverse);
+                    break;
 
-            case EXTENDED:
-                leanboi.set(Value.kForward);
-                break;
+                case EXTENDED:
+                    leanboi.set(Value.kForward);
+                    break;
+            }
         }
     }
     private String getLeanboiStateName () { return currentLeanboiState.name(); }
