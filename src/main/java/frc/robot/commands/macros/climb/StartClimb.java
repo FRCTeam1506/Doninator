@@ -27,6 +27,7 @@ public class StartClimb extends CommandBase {
         );
 
         turret.setPosition(0.0);
+        turret.stop();
 
         turret.setDefaultCommand(
             new StopTurret(turret)
