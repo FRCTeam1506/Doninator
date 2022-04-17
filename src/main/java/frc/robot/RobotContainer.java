@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.commands.autons.FiveBallAR1;
 import frc.robot.commands.autons.FiveBallR1;
 import frc.robot.commands.autons.TwoBallB1;
 import frc.robot.commands.autons.TwoBallB2;
@@ -164,9 +165,10 @@ public class RobotContainer {
     tr_two_ball_r1, tr_two_ball_r2, tr_two_ball_r3,
     tr_two_ball_b1, tr_two_ball_b2, tr_two_ball_b3,
     tr_four_ball_r1_1, tr_four_ball_r1_2, tr_four_ball_r1_3,
-    tr_five_ball_r1_1, tr_five_ball_r1_2, tr_five_ball_r1_3, tr_five_ball_r1_4, tr_five_ball_r1_5;
+    tr_five_ball_r1_1, tr_five_ball_r1_2, tr_five_ball_r1_3, tr_five_ball_r1_4, tr_five_ball_r1_5,
+    tr_five_ball_a_r1_1, tr_five_ball_a_r1_2, tr_five_ball_a_r1_3, tr_five_ball_a_r1_4;
 
-  private enum Autons { Nothing, TwoBall, FiveBall_R1 }
+  private enum Autons { Nothing, TwoBall, FiveBall_R1, FiveBall_A_R1 }
   private SendableChooser<Autons> autonChooser = new SendableChooser<>();
 
 
@@ -264,12 +266,18 @@ public class RobotContainer {
     tr_five_ball_r1_3 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("five_ball_r1_3", 5.0, 2.7); // 3.0 2.7
     tr_five_ball_r1_4 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("five_ball_r1_4", 6.0, 6.0); // 5.0 3.0
     tr_five_ball_r1_5 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("five_ball_r1_5", 8.0, 8.0);
+
+    tr_five_ball_a_r1_1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("five_ball_a_r1_1", 7.0, 7.0);
+    tr_five_ball_a_r1_2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("five_ball_a_r1_2", 10.0, 10.0);
+    tr_five_ball_a_r1_3 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("five_ball_a_r1_3", 10.0, 8.0);
+    tr_five_ball_a_r1_4 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("five_ball_a_r1_4", 12.0, 12.0);
   }
 
   private void configureAuton () {
     autonChooser.setDefaultOption("Nothing", Autons.Nothing);
     autonChooser.addOption("2Ball", Autons.TwoBall);
     autonChooser.addOption("5Ball R1", Autons.FiveBall_R1);
+    autonChooser.addOption("5Ball A R1", Autons.FiveBall_A_R1);
 
     ShuffleboardTab tab = Shuffleboard.getTab("Autonomous");
     tab.add("Auton Chooser", autonChooser);
@@ -296,6 +304,9 @@ public class RobotContainer {
       case FiveBall_R1:
         return new FiveBallR1(drivetrain, intake, indexer, shooter, tr_five_ball_r1_1, tr_five_ball_r1_2, tr_five_ball_r1_3, tr_five_ball_r1_4, tr_five_ball_r1_5);
     
+      case FiveBall_A_R1:
+        return new FiveBallAR1(drivetrain, intake, indexer, shooter, tr_five_ball_a_r1_1, tr_five_ball_a_r1_2, tr_five_ball_a_r1_3, tr_five_ball_a_r1_4);
+
       default:
         return new WaitCommand(15.0);
     }
