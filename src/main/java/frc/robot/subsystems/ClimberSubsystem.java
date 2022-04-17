@@ -100,21 +100,29 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public void setMotorPosition (double pos, boolean fast) {
+        double FAST_kP = 0.84;
+        double FAST_vel = 70_000.0; // 62_000.0
+        double FAST_acc = 44_000.0;
+
+        double SLOW_kP = 0.61;
+        double SLOW_vel = 46_000.0; // 40_000.0
+        double SLOW_acc = 30_000.0;
+
         if (Math.abs(pos) <= MAX_POSITION && pos >= MIN_POSITION) {
             if (fast) {
-                leftMotor.config_kP(0, 0.84);
-                rightMotor.config_kP(0, 0.84);
-                leftMotor.configMotionCruiseVelocity(62_000.0);
-                rightMotor.configMotionCruiseVelocity(62_000.0);
-                leftMotor.configMotionAcceleration(44_000.0);
-                rightMotor.configMotionAcceleration(44_000.0);
+                leftMotor.config_kP(0, FAST_kP);
+                rightMotor.config_kP(0, FAST_kP);
+                leftMotor.configMotionCruiseVelocity(FAST_vel);
+                rightMotor.configMotionCruiseVelocity(FAST_vel);
+                leftMotor.configMotionAcceleration(FAST_acc);
+                rightMotor.configMotionAcceleration(FAST_acc);
             } else {
-                leftMotor.config_kP(0, 0.61);
-                rightMotor.config_kP(0, 0.61);
-                leftMotor.configMotionCruiseVelocity(40_000.0);
-                rightMotor.configMotionCruiseVelocity(40_000.0);
-                leftMotor.configMotionAcceleration(30_000.0);
-                rightMotor.configMotionAcceleration(30_000.0);
+                leftMotor.config_kP(0, SLOW_kP);
+                rightMotor.config_kP(0, SLOW_kP);
+                leftMotor.configMotionCruiseVelocity(SLOW_vel);
+                rightMotor.configMotionCruiseVelocity(SLOW_vel);
+                leftMotor.configMotionAcceleration(SLOW_acc);
+                rightMotor.configMotionAcceleration(SLOW_acc);
             }
 
             leftMotor.set(TalonFXControlMode.MotionMagic, -pos);
@@ -123,6 +131,9 @@ public class ClimberSubsystem extends SubsystemBase {
             stopMotors();
         }
     }
+
+    public double getLeftMotorPosition () { return -leftMotor.getSelectedSensorPosition(); }
+    public double getRightMotorPosition () { return -rightMotor.getSelectedSensorPosition(); }
 
     public double getMotorPosition () {
         return leftMotor.getSelectedSensorPosition();
@@ -151,15 +162,17 @@ public class ClimberSubsystem extends SubsystemBase {
     * #######################
     */
     private void setLeanboiState (LeanboiState state) {
-        currentLeanboiState = state;
-        switch (state) {
-            case RETRACTED:
-                leanboi.set(Value.kReverse);
-                break;
+        if (currentLeanboiState != state) {
+            currentLeanboiState = state;
+            switch (state) {
+                case RETRACTED:
+                    leanboi.set(Value.kReverse);
+                    break;
 
-            case EXTENDED:
-                leanboi.set(Value.kForward);
-                break;
+                case EXTENDED:
+                    leanboi.set(Value.kForward);
+                    break;
+            }
         }
     }
     private String getLeanboiStateName () { return currentLeanboiState.name(); }

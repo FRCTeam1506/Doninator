@@ -347,7 +347,7 @@ public class TurretSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        hoodPeriodic();
+        // hoodPeriodic();
         limelightPeriodic();
     }
 

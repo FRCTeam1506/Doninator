@@ -27,6 +27,7 @@ import frc.robot.commands.autons.TwoBallR1;
 import frc.robot.commands.autons.TwoBallR2;
 import frc.robot.commands.autons.TwoBallR3;
 import frc.robot.commands.climber.RunClimbStep;
+import frc.robot.commands.climber.RunClimbStep2;
 import frc.robot.commands.climber.SetPosition;
 import frc.robot.commands.climber.ControlLeanboiMotors;
 import frc.robot.commands.climber.ProgressClimbStep;
@@ -81,6 +82,7 @@ public class RobotContainer {
   private final JoystickButton OP_square      = new JoystickButton(operator, PS4Controller.Button.kSquare.value);
   private final JoystickButton OP_cross       = new JoystickButton(operator, PS4Controller.Button.kCross.value);
   private final JoystickButton OP_big         = new JoystickButton(operator, PS4Controller.Button.kTouchpad.value);
+  private final JoystickButton OP_options     = new JoystickButton(operator, PS4Controller.Button.kOptions.value);
 
   private final POVButton OP_up     = new POVButton(operator, 0);
   private final POVButton OP_right  = new POVButton(operator, 90);
@@ -140,11 +142,13 @@ public class RobotContainer {
   private final Command c_runShooterLow   = new AutoShootAndIndex(shooter, indexer, turret, 760.0);
   // private final Command c_runShooterClose = new ShootAndIndex(shooter, indexer, 1200.0);
   // private final Command c_runShooterMid   = new ShootAndIndex(shooter, indexer, 1600.0);
-  private final Command c_runShooterPZ    = new AutoShootAndIndex(shooter, indexer, turret, 2100.0);
+  private final Command c_runShooterTarmak = new AutoShootAndIndex(shooter, indexer, turret, 1740.0);
+  private final Command c_runShooterPZ    = new AutoShootAndIndex(shooter, indexer, turret, 1930.0); // 2100.0
   private final Command c_autoShoot       = new AutoShootAndIndex(shooter, indexer, turret);
   // private final Command c_runShooterFar   = new ShootAndIndex(shooter, indexer, 2500.0);
 
   private final Command c_runClimbStep = new RunClimbStep(turret, climber, shooter);
+  private final Command c_runClimbStep2 = new RunClimbStep2(turret, climber, shooter);
 
   // * Utility
   private final Command c_stopShooterDefault = new InstantCommand(() -> shooter.setDefaultCommand(
@@ -160,7 +164,7 @@ public class RobotContainer {
     tr_two_ball_r1, tr_two_ball_r2, tr_two_ball_r3,
     tr_two_ball_b1, tr_two_ball_b2, tr_two_ball_b3,
     tr_four_ball_r1_1, tr_four_ball_r1_2, tr_four_ball_r1_3,
-    tr_five_ball_r1_1, tr_five_ball_r1_2, tr_five_ball_r1_3, tr_five_ball_r1_4;
+    tr_five_ball_r1_1, tr_five_ball_r1_2, tr_five_ball_r1_3, tr_five_ball_r1_4, tr_five_ball_r1_5;
 
   private enum Autons { Nothing, TwoBall, FiveBall_R1 }
   private SendableChooser<Autons> autonChooser = new SendableChooser<>();
@@ -208,12 +212,13 @@ public class RobotContainer {
     
     // * operator
     OP_leftBumper.whileHeld(c_runIntake);
-    OP_rightBumper.whileHeld(c_runShooterPZ);
+    OP_rightBumper.whileHeld(c_runShooterTarmak);
     OP_circle.whenPressed(c_progressClimbStep);
     OP_triangle.whileHeld(c_toggleTurretControl);
     OP_square.whileHeld(c_runOutake);
-    OP_cross.whenPressed(c_runClimbStep);
+    OP_cross.whenPressed(c_runClimbStep2);
     OP_big.whileHeld(c_autoShoot);
+    OP_options.whileHeld(c_runShooterPZ);
 
     OP_up.whileHeld(c_runShooterLow);
     OP_down.whenPressed(c_regressClimbStep);
@@ -255,9 +260,10 @@ public class RobotContainer {
     tr_four_ball_r1_3 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("four_ball_r1_3", 1.0, 1.0);
 
     tr_five_ball_r1_1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("five_ball_r1_1", 1.0, 1.0);
-    tr_five_ball_r1_2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("five_ball_r1_2", 3.0, 2.7);
-    tr_five_ball_r1_3 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("five_ball_r1_3", 3.0, 2.7);
-    tr_five_ball_r1_4 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("five_ball_r1_4", 5.0, 3.0);
+    tr_five_ball_r1_2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("five_ball_r1_2", 3.0, 2.7); // 3.0 2.7
+    tr_five_ball_r1_3 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("five_ball_r1_3", 5.0, 2.7); // 3.0 2.7
+    tr_five_ball_r1_4 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("five_ball_r1_4", 6.0, 6.0); // 5.0 3.0
+    tr_five_ball_r1_5 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("five_ball_r1_5", 8.0, 8.0);
   }
 
   private void configureAuton () {
@@ -288,7 +294,7 @@ public class RobotContainer {
         return new TwoBallR1(drivetrain, intake, indexer, shooter, tr_two_ball_r1);
 
       case FiveBall_R1:
-        return new FiveBallR1(drivetrain, intake, indexer, shooter, tr_five_ball_r1_1, tr_five_ball_r1_2, tr_five_ball_r1_3, tr_five_ball_r1_4);
+        return new FiveBallR1(drivetrain, intake, indexer, shooter, tr_five_ball_r1_1, tr_five_ball_r1_2, tr_five_ball_r1_3, tr_five_ball_r1_4, tr_five_ball_r1_5);
     
       default:
         return new WaitCommand(15.0);

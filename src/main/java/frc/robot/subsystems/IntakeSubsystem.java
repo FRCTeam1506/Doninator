@@ -44,15 +44,17 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     private void setXFactorState (XFactorState state) {
-        this.currentXFactorState = state;
-        switch (state) {
-            case RETRACTED:
-                this.xFactor.set(false);
-                break;
+        if (currentXFactorState != state) {
+            this.currentXFactorState = state;
+            switch (state) {
+                case RETRACTED:
+                    this.xFactor.set(false);
+                    break;
 
-            case EXTENDED:
-                this.xFactor.set(true);
-                break;
+                case EXTENDED:
+                    this.xFactor.set(true);
+                    break;
+            }
         }
     }
     private String getXFactorStateName () { return currentXFactorState.name(); }

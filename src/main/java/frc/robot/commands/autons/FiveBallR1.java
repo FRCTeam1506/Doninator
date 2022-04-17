@@ -18,7 +18,7 @@ import frc.robot.subsystems.SwerveDrivetrain;
 
 public class FiveBallR1 extends SequentialCommandGroup {
 
-    public FiveBallR1 (SwerveDrivetrain drivetrain, IntakeSubsystem intake, IndexerSubsystem indexer, ShooterSubsystem shooter, PathPlannerTrajectory trajectory1, PathPlannerTrajectory trajectory2, PathPlannerTrajectory trajectory3, PathPlannerTrajectory trajectory4) {
+    public FiveBallR1 (SwerveDrivetrain drivetrain, IntakeSubsystem intake, IndexerSubsystem indexer, ShooterSubsystem shooter, PathPlannerTrajectory trajectory1, PathPlannerTrajectory trajectory2, PathPlannerTrajectory trajectory3, PathPlannerTrajectory trajectory4, PathPlannerTrajectory trajectory5) {
         
         addCommands(
             new ParallelDeadlineGroup(
@@ -45,7 +45,7 @@ public class FiveBallR1 extends SequentialCommandGroup {
         );
 
         addCommands(
-            new ShootAndIndex(shooter, indexer, 1770.0).withTimeout(1.3),
+            new ShootAndIndex(shooter, indexer, 1825.0).withTimeout(1.3), // 1770.0
             new PrintCommand("step 4")
         );
 
@@ -54,16 +54,20 @@ public class FiveBallR1 extends SequentialCommandGroup {
             new ParallelCommandGroup(
                 new RunPathPlannerTrajectory(drivetrain, trajectory3),
                 new ExtendAndIntake(intake)
-            ).withTimeout(4.87),
+            ).withTimeout(3.0), // 4.87
+            new ParallelCommandGroup(
+                new RunPathPlannerTrajectory(drivetrain, trajectory4),
+                new ExtendAndIntake(intake)
+            ).withTimeout(2.2), // 2.5
             new ExtendAndIntake(intake).withTimeout(0.3),
             new InstantCommand(() -> intake.retract()),
             new PrintCommand("step 5")
         );
 
         addCommands(
-            new RunPathPlannerTrajectory(drivetrain, trajectory4),
+            new RunPathPlannerTrajectory(drivetrain, trajectory5),
             new InstantCommand(() -> drivetrain.zeroGyro()),
-            new ShootAndIndex(shooter, indexer, 1930.0),
+            new ShootAndIndex(shooter, indexer, 1960.0), // 1930.0
             new PrintCommand("step 6")
         );
     }
