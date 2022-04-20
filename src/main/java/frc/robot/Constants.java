@@ -153,6 +153,10 @@ public final class Constants {
         public static final double AUTO_kD = 0.0;   // 0.0
     }
 
+    public static final class Candle {
+        public static final int CAN_ID = 63;
+    }
+
     public static final class Auton {
         public static final double MAX_SPEED_MPS            = 1.0;    // meters per second          7.0
         public static final double MAX_ACCELERATION_MPSS    = 1.0;    // meters per second squared  5.0

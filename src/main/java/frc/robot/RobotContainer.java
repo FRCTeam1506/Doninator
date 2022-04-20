@@ -54,6 +54,7 @@ import frc.robot.commands.turret.ToggleTurretControlState;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LittyBoi;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.TurretSubsystem;
@@ -102,12 +103,13 @@ public class RobotContainer {
   // private final POVButton S_left   = new POVButton(superman, 270);
 
   /* Subsystems */
-  private final SwerveDrivetrain drivetrain = new SwerveDrivetrain();
-  private final ShooterSubsystem shooter    = new ShooterSubsystem(hub);
-  private final IntakeSubsystem intake      = new IntakeSubsystem(hub);
-  private final IndexerSubsystem indexer    = new IndexerSubsystem();
-  private final TurretSubsystem turret      = new TurretSubsystem(hub);
-  private final ClimberSubsystem climber    = new ClimberSubsystem(hub);
+  public final SwerveDrivetrain drivetrain = new SwerveDrivetrain();
+  public final ShooterSubsystem shooter    = new ShooterSubsystem(hub);
+  public final IntakeSubsystem intake      = new IntakeSubsystem(hub);
+  public final IndexerSubsystem indexer    = new IndexerSubsystem();
+  public final TurretSubsystem turret      = new TurretSubsystem(hub);
+  public final ClimberSubsystem climber    = new ClimberSubsystem(hub);
+  public final LittyBoi littyBoi           = new LittyBoi(this);
 
   /* Commands */
   // * primitives

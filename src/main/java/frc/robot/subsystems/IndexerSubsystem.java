@@ -19,7 +19,7 @@ public class IndexerSubsystem extends SubsystemBase {
 
     private static final double TOP_SPEED_SHOOTING      = 0.20; // 0.15
 
-    private enum IndexerState { EMPTY, LOW, HIGH, FULL }
+    public enum IndexerState { EMPTY, LOW, HIGH, FULL }
     private IndexerState currentIndexerState = IndexerState.EMPTY;
 
     private enum ShootingState { NO_SHOOT, SHOOT }
@@ -74,6 +74,7 @@ public class IndexerSubsystem extends SubsystemBase {
             stop();
         }
     }
+    public IndexerState getIndexerState () { return this.currentIndexerState; }
 
     public void enableIndexing () { isRunning = true; }
     public void disableIndexing () { isRunning = false; }

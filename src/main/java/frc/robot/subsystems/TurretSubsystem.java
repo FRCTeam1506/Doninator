@@ -84,7 +84,7 @@ public class TurretSubsystem extends SubsystemBase {
     private HoodState currentHoodState = HoodState.UP;
     private Solenoid hood;
 
-    private LimelightData limelightData = new LimelightData();
+    public LimelightData limelightData = new LimelightData();
     private NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
     
     public TurretSubsystem (PneumaticHub hub) {
@@ -195,7 +195,7 @@ public class TurretSubsystem extends SubsystemBase {
         limelightData.isTargeting       = table.getEntry("tv").getNumber(0).intValue() == 1 ? true : false;
         limelightData.currentPipeline   = table.getEntry("pipeline").getNumber(0).intValue();
 
-        limelightData.isAligned = Math.abs(limelightData.x) < 0.1 ? true : false;
+        limelightData.isAligned = Math.abs(limelightData.x) < 0.4 ? true : false;
     }
 
     public double getXError () {
