@@ -14,6 +14,7 @@ public class AimAndControlTurret2 extends PIDCommand {
     public AimAndControlTurret2 (TurretSubsystem turret, DoubleSupplier powerSupplier) {
         super(
             new PIDController(0.03, 0.001, 0.0),
+            // new PIDController(0.001, 0.0, 0.0),
             turret::getXError,
             -0.35,
             output -> {

@@ -7,6 +7,7 @@ import frc.robot.commands.macros.climb.HangTraversal2;
 import frc.robot.commands.macros.climb.Stay;
 import frc.robot.commands.macros.climb.UpLittle;
 import frc.robot.commands.macros.climb.UpLittle2;
+import frc.robot.commands.macros.climb.UpMid2;
 import frc.robot.commands.macros.climb.RetractLeanboi;
 import frc.robot.commands.macros.climb.StartClimb;
 import frc.robot.commands.macros.climb.UpHigh;
@@ -47,26 +48,38 @@ public class RunClimbStep2 extends SequentialCommandGroup {
                 CommandScheduler.getInstance().schedule(new SequentialCommandGroup(
                     new UpLittle2(climber),
                     new RetractLeanboi(climber).withTimeout(0.3),
-                    new UpHigh2(climber)
+                    new UpMid2(climber)
                 ));
                 break;
 
             case 4:
+            CommandScheduler.getInstance().schedule(new SequentialCommandGroup(
+                    new UpHigh2(climber)
+                ));
+                break;
+
+            case 5:
                 CommandScheduler.getInstance().schedule(new SequentialCommandGroup(
                     new ExtendLeanboi(climber).withTimeout(0.5),
                     new PullDown2(climber)
                 ));
                 break;
                 
-            case 5:
+            case 6:
                 CommandScheduler.getInstance().schedule(new SequentialCommandGroup(
                     new UpLittle2(climber),
                     new RetractLeanboi(climber).withTimeout(0.3),
+                    new UpMid2(climber)
+                ));
+                break;
+
+            case 7:
+                CommandScheduler.getInstance().schedule(new SequentialCommandGroup(
                     new UpHigh2(climber)
                 ));
                 break;
 
-            case 6:
+            case 8:
                 CommandScheduler.getInstance().schedule(new SequentialCommandGroup(
                     new ExtendLeanboi(climber).withTimeout(0.5),
                     new HangTraversal2(climber),

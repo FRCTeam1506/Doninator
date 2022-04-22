@@ -277,7 +277,7 @@ public class RobotContainer {
     autonChooser.setDefaultOption("Nothing", Autons.Nothing);
     autonChooser.addOption("2Ball", Autons.TwoBall);
     autonChooser.addOption("5Ball R1", Autons.FiveBall_R1);
-    autonChooser.addOption("5Ball A R1", Autons.FiveBall_A_R1);
+    // autonChooser.addOption("5Ball A R1", Autons.FiveBall_A_R1);
 
     ShuffleboardTab tab = Shuffleboard.getTab("Autonomous");
     tab.add("Auton Chooser", autonChooser);

@@ -3,21 +3,21 @@ package frc.robot.commands.macros.climb;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ClimberSubsystem;
 
-public class HangTraversal2 extends CommandBase {
+public class UpMid2 extends CommandBase {
 
-    private static final double SETPOINT = -1_500.0; // 142_000.0
+    private static final double SETPOINT = 120_000.0;
     private static final double DELTA = 50.0;
 
     private ClimberSubsystem climber;
 
-    public HangTraversal2 (ClimberSubsystem climber) {
+    public UpMid2 (ClimberSubsystem climber) {
         this.climber = climber;
         addRequirements(this.climber);
     }
 
     @Override
     public void execute() {
-        climber.setMotorPosition(SETPOINT, false);
+        climber.setMotorPosition(SETPOINT, true);
     }
 
     @Override
