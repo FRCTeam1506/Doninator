@@ -48,9 +48,9 @@ public class ShooterSubsystem extends SubsystemBase {
         tab.addNumber("Velocity (RPM)", this::getVelocity);
         tab.addNumber("Velocity Graph (RPM)", this::getVelocity).withWidget(BuiltInWidgets.kGraph);
         
-        this.velocity_dash = tab.add("Set Velocity (RPM)", this.velocity_rpm)
-            .withWidget(BuiltInWidgets.kNumberSlider)
-            .withProperties(Map.of("min", 1000, "max", 2500, "blockIncrement", 500))
-            .getEntry();
+        // this.velocity_dash = tab.add("Set Velocity (RPM)", this.velocity_rpm)
+        //     .withWidget(BuiltInWidgets.kNumberSlider)
+        //     .withProperties(Map.of("min", 1000, "max", 2500, "blockIncrement", 500))
+        //     .getEntry();
     }
 }

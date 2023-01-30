@@ -13,17 +13,17 @@ public class RunPathPlannerTrajectory2 extends SequentialCommandGroup {
     public RunPathPlannerTrajectory2 (SwerveDrivetrain drivetrain, PathPlannerTrajectory trajectory) {
         addRequirements(drivetrain);
         addCommands(
-            new InstantCommand(() -> drivetrain.setPose(trajectory.getInitialPose())),
-            new PPSwerveControllerCommand(
-                trajectory, 
-                drivetrain::getPose, 
-                Constants.SwerveDrivetrain.SWERVE_KINEMATICS, 
-                Constants.Auton.PX_CONTROLLER, 
-                Constants.Auton.PY_CONTROLLER,
-                Constants.Auton.THETA_CONTROLLER,
-                drivetrain::setModuleStates,
-                drivetrain
-            )
+            //new InstantCommand(() -> drivetrain.setPose(trajectory.getInitialPose())),
+            // new PPSwerveControllerCommand(
+            //     trajectory, 
+            //     drivetrain::getPose, 
+            //     Constants.SwerveDrivetrain.SWERVE_KINEMATICS, 
+            //     Constants.Auton.PX_CONTROLLER, 
+            //     Constants.Auton.PY_CONTROLLER,
+            //     Constants.Auton.THETA_CONTROLLER,
+            //     drivetrain::setModuleStates,
+            //     drivetrain
+            // )
         );
     }
     

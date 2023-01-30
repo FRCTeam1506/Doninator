@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -25,6 +26,7 @@ public class SwerveDrivetrain extends SubsystemBase {
     
     private SwerveDriveOdometry swerveOdometry;
     private SwerveModule[] swerveModules;
+    private SwerveModulePosition[] swerveModulePositions;
     private Pigeon2 gyro;
     private Field2d field;
 
@@ -33,7 +35,17 @@ public class SwerveDrivetrain extends SubsystemBase {
         this.gyro.configFactoryDefault();
         this.zeroGyro();
 
-        this.swerveOdometry = new SwerveDriveOdometry(Constants.SwerveDrivetrain.SWERVE_KINEMATICS, this.getYaw());
+        // this.SwerveModulesPosition = new SwerveModulePosition[] {
+        //     new SwerveModulePosition(1,Constants.SwerveDrivetrain.Mod0.ANGLE_OFFSET),
+        //     new SwerveModulePosition(1,Constants.SwerveDrivetrain.Mod1.ANGLE_OFFSET),
+        //     new SwerveModulePosition(1,Constants.SwerveDrivetrain.Mod2.ANGLE_OFFSET),
+        //     new SwerveModulePosition(1,Constants.SwerveDrivetrain.Mod3.ANGLE_OFFSET)
+        //         };
+
+        //this.swerveOdometry = new SwerveDriveOdometry(Constants.SwerveDrivetrain.SWERVE_KINEMATICS, this.getYaw());
+        this.swerveOdometry = new SwerveDriveOdometry(Constants.SwerveDrivetrain.SWERVE_KINEMATICS, this.getYaw(), this.swerveModulePositions);
+        //this.swerveOdometry = new SwerveDriveOdometry(kinematics: null, getYaw(), null)
+        //this.swerveOdometry = new SwerveDriveOdometry(null, getYaw(), null, getPose())
 
         this.swerveModules = new SwerveModule[] {
             new SwerveModule(0, Constants.SwerveDrivetrain.Mod0.constants),
@@ -41,6 +53,7 @@ public class SwerveDrivetrain extends SubsystemBase {
             new SwerveModule(2, Constants.SwerveDrivetrain.Mod2.constants),
             new SwerveModule(3, Constants.SwerveDrivetrain.Mod3.constants)
         };
+        
 
         this.field = new Field2d();
 
@@ -108,11 +121,11 @@ public class SwerveDrivetrain extends SubsystemBase {
     }
 
     public void setPose(Pose2d pose) {
-        this.swerveOdometry.resetPosition(pose, pose.getRotation());
+        this.swerveOdometry.resetPosition(pose.getRotation(), this.swerveModulePositions, pose);
     }
 
     public void resetOdometry(Pose2d pose) {
-        this.swerveOdometry.resetPosition(pose, this.getYaw());
+        this.swerveOdometry.resetPosition(this.getYaw(), this.swerveModulePositions , pose);
     }
 
     /* Module States */
@@ -143,7 +156,7 @@ public class SwerveDrivetrain extends SubsystemBase {
 
     @Override
     public void periodic() {
-        this.swerveOdometry.update(this.getYaw(), this.getStates());
+        this.swerveOdometry.update(this.getYaw(), this.swerveModulePositions);
         this.field.setRobotPose(this.swerveOdometry.getPoseMeters());
     }
 }
