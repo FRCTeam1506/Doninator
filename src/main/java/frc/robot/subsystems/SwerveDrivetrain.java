@@ -51,7 +51,9 @@ public class SwerveDrivetrain extends SubsystemBase {
         //this.swerveOdometry = new SwerveDriveOdometry(kinematics: null, getYaw(), null)
         //this.swerveOdometry = new SwerveDriveOdometry(null, getYaw(), null, getPose())
 
-        
+        for(SwerveModule mod : swerveModules){
+            System.out.println("CANcoder on Module " + mod.moduleNumber + " took " + mod.CANcoderInitTime + " ms to be ready.");
+        }
         
 
         this.field = new Field2d();
@@ -158,6 +160,16 @@ public class SwerveDrivetrain extends SubsystemBase {
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.SwerveDrivetrain.MAX_SPEED);
         for (SwerveModule mod : this.swerveModules) {
             mod.setDesiredState(desiredStates[mod.moduleNumber], false);
+        }
+    }
+
+    /*
+    * Can be mapped to button to reset mods to abs.
+    * (or put on dash as button)
+    */
+    public void resetModulesToAbsolute(){
+        for(SwerveModule mod : swerveModules){
+            mod.resetToAbsolute();
         }
     }
 
