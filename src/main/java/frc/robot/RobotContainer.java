@@ -50,7 +50,7 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
-    zeroGyro.whenPressed(c_zeroGyro);
+    zeroGyro.onTrue(c_zeroGyro);
     // new JoystickButton(driver, PS4Controller.Button.kTriangle.value).whileHeld(c_shoot);
     // shoot.whileHeld(c_shoot);
   }
