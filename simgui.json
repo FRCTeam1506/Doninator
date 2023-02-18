@@ -1,0 +1,22 @@
+{
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/Shuffleboard/Climber/ArmSubsystem": "Subsystem",
+      "/Shuffleboard/Drivetrain/SwerveDrivetrain": "Subsystem",
+      "/Shuffleboard/Intake/IntakeSubsystem": "Subsystem",
+      "/Shuffleboard/Intake/TelescopingSubsystem": "Subsystem",
+      "/SmartDashboard/Field": "Field2d"
+    }
+  },
+  "NetworkTables": {
+    "transitory": {
+      "SmartDashboard": {
+        "Field": {
+          "open": true
+        },
+        "open": true
+      }
+    }
+  }
+}

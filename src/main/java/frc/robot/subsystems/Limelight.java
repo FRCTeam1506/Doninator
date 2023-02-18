@@ -14,6 +14,28 @@ public class Limelight extends SubsystemBase {
     private Integer pipeline;
 
     private NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    SwerveDrivetrain swerve = new SwerveDrivetrain();
+
+    // Constants for control loop
+    double kP = 0.1;  // Proportional constant
+    double minSpeed = 0.1;  // Minimum speed for the robot to move
+    
+    public void turnToTarget() {
+        double x = table.getEntry("tx").getDouble(0);  // Horizontal offset of the target
+        double error = -x;  // Error is negative because we want to move in the opposite direction of the offset
+
+        // Calculate the turn rate based on the error
+        double turnRate = kP * error;
+
+        // If the turn rate is too small, set it to the minimum speed in the correct direction
+        if (Math.abs(turnRate) < minSpeed) {
+            turnRate = Math.signum(turnRate) * minSpeed;
+        }
+
+        // Set the robot's speed and turn rate
+        // swerve.driveCartesian(0, 0, turnRate);
+    }
+
 
     // public enum Piplelines {
     //     NearTargeting,

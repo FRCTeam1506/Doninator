@@ -145,7 +145,7 @@ public final class Constants {
         public static final TrapezoidProfile.Constraints THETA_CONTROLLER_CONTRAINTS = new TrapezoidProfile.Constraints(MAX_ANGULAR_SPEED_RPS, MAX_ANGULAR_SPEED_RPSS);
 
         // public static final ProfiledPIDController ROT_PID_CONTROLLER = new ProfiledPIDController(.13, 0, .39, THETA_CONTROLLER_CONTRAINTS);
-        public static final ProfiledPIDController THETA_CONTROLLER = new ProfiledPIDController(10.0, 0.0, 0.0, THETA_CONTROLLER_CONTRAINTS);
+        // public static final PIDController THETA_CONTROLLER = new PIDController(10.0, 0.0, 0.0, THETA_CONTROLLER_CONTRAINTS);
     }
 
     public static final class Limelight {
@@ -155,6 +155,29 @@ public final class Constants {
         public static final Double CONVERSION = 0.03355;
         public static final Double LIMIT = 0.4;
     }
+
+    public static final class ArmSubsystem {
+        public static final int SolenoidId1 = 2;
+        public static final int SolenoidId2 = 4;
+        public static final int SolenoidId3 = 0;
+        public static final int SolenoidId4 = 1;
+
+    }
+
+    public static final class IntakeSubsystem{
+        public static final int MOTOR_ID = 61;
+    }
+
+    public static final class TelescopingSubsystem{
+        public static final int MOTOR_ID = 60;
+    }
+
+    public static final class CandleSubsystem{
+        public static final int CANDLE_ID = 62;
+    }
+
+    // public static final class 
+
 
 
 }
