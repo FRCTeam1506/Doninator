@@ -23,6 +23,7 @@ public class TelescopingSubsystem extends SubsystemBase {
         motor.configFactoryDefault();
         motor.setControlFramePeriod(ControlFrame.Control_3_General, 100);
         motor.setInverted(TalonFXInvertType.CounterClockwise);
+        resetMotors();
         //set motor to brake
         this.motor.setNeutralMode(Constants.SwerveDrivetrain.DRIVE_NEUTRAL_MODE);
         dashboard();
@@ -44,7 +45,9 @@ public class TelescopingSubsystem extends SubsystemBase {
     }
 
     public void setMid(){
-        motor.set(TalonFXControlMode.MotionMagic, -21719);
+        // motor.set(TalonFXControlMode.MotionMagic, -21719);
+        motor.set(TalonFXControlMode.Velocity, Conversions.RPMToFalcon(rpm/2, 1));
+
         System.out.println("hello hello hello");
     }
     public void setHigh(){
@@ -54,6 +57,11 @@ public class TelescopingSubsystem extends SubsystemBase {
     public void printStuff(){
         System.out.println("Starting encoder count: " + startingEncoderCount);
         System.out.println("Current encoder count: " + encoderCount);
+    }
+
+    public void resetMotors(){
+        motor.setSelectedSensorPosition(0.00);
+        System.out.println("reset" + motor.getSelectedSensorPosition());
     }
 
     private void dashboard () {
