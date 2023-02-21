@@ -41,6 +41,11 @@ public class TrajectoryHelper {
         return PathPlanner.loadPath(filename, Constants.Auton.MAX_SPEED_MPS, Constants.Auton.MAX_ACCELERATION_MPSS, false);
     }
 
+    public static PathPlannerTrajectory loadHolonomicPathPlannerTrajectory (String filename, double maxVelocity, double maxAcceleration) {
+        return PathPlanner.loadPath(filename, maxVelocity, maxAcceleration, false);
+    }
+
+
     public static Trajectory createTrajectory (Pose2d initial,
                                                 List<Translation2d> interiorWaypoints,
                                                 Pose2d end,

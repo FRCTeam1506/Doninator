@@ -39,6 +39,14 @@ public class IntakeSubsystem extends SubsystemBase {
         System.out.println("Encoder: " + encoderCount);
     }
 
+    public void intakeDefSpeed(){
+        motor.set(TalonFXControlMode.PercentOutput, DEFAULT_SPEED);
+    }
+
+    public void outtakeDefSpeed(){
+        motor.set(TalonFXControlMode.PercentOutput, -DEFAULT_SPEED);
+    }
+
     public void intakeRPM(double rpm){        
         //gearratio is second number, set it equal to 1 for now
         motor.set(TalonFXControlMode.Velocity, Conversions.RPMToFalcon(rpm/2, 1));

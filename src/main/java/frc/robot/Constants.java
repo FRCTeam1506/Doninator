@@ -15,6 +15,7 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.utils.swerve.SwerveModuleConstants;
 
 public final class Constants {
+
     public static final class SwerveDrivetrain {
 
         /* Gyro */
@@ -69,8 +70,8 @@ public final class Constants {
         public static final double FF_kA    = (0.00337 / 12);   // 0.27
 
         /* Swerve Profiling Values */
-        public static final double MAX_SPEED            = 4.5;  // m/s
-        public static final double MAX_ANGULAR_VELOCITY = 11.5; // m/s
+        public static final double MAX_SPEED            = 4.5;  // m/s //4.5
+        public static final double MAX_ANGULAR_VELOCITY = 11.5; // m/s //11.5
 
         /* Neutral Modes */
         public static final NeutralMode ANGLE_NEUTRAL_MODE = NeutralMode.Coast;
@@ -140,12 +141,14 @@ public final class Constants {
         // public static final PIDController PY_CONTROLLER = new PIDController(5.25, 1, 0.4);
         public static final PIDController PX_CONTROLLER = new PIDController(6.0, 0, 0.1);
         public static final PIDController PY_CONTROLLER = new PIDController(6.0, 0, 0.1);
-        // public static final double PTHETA_CONTROLLER    = 1.0;
+        public static final double PTHETA_CONTROLLER    = 1.0;
 
         public static final TrapezoidProfile.Constraints THETA_CONTROLLER_CONTRAINTS = new TrapezoidProfile.Constraints(MAX_ANGULAR_SPEED_RPS, MAX_ANGULAR_SPEED_RPSS);
 
         // public static final ProfiledPIDController ROT_PID_CONTROLLER = new ProfiledPIDController(.13, 0, .39, THETA_CONTROLLER_CONTRAINTS);
         // public static final PIDController THETA_CONTROLLER = new PIDController(10.0, 0.0, 0.0, THETA_CONTROLLER_CONTRAINTS);
+        public static final PIDController THETA_CONTROLLER = new PIDController(10.0, 0.0, 0.0);
+
     }
 
     public static final class Limelight {
@@ -166,10 +169,12 @@ public final class Constants {
 
     public static final class IntakeSubsystem{
         public static final int MOTOR_ID = 61;
+        public static final double DEFAULT_SPEED = 0.6;
     }
 
     public static final class TelescopingSubsystem{
         public static final int MOTOR_ID = 60;
+        public static final double DEFAULT_SPEED = 0.4; // 0.33 //0.65
     }
 
     public static final class CandleSubsystem{

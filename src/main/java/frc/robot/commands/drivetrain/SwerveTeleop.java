@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class SwerveTeleop extends CommandBase {
 
-    private static final double DEADBAND = 0.50;
+    private static final double DEADSPACE = 0.10;
 
     private double rotation;
     private Translation2d translation;
@@ -33,14 +33,14 @@ public class SwerveTeleop extends CommandBase {
         // double yAxis = -controller.getLeftY();
         // double xAxis = -controller.getLeftX();
         // double rAxis = -controller.getRightX();
-        double yAxis = -controller.getRawAxis(1);
-        double xAxis = -controller.getRawAxis(0);
-        double rAxis = -controller.getRawAxis(2);
+        double yAxis = -controller.getRawAxis(1); //1.55
+        double xAxis = -controller.getRawAxis(0); //1.49
+        double rAxis = -controller.getRawAxis(2); //1.2
         
         /* Deadbands */
-        yAxis = (Math.abs(yAxis) < DEADBAND) ? 0 : yAxis;
-        xAxis = (Math.abs(xAxis) < DEADBAND) ? 0 : xAxis;
-        rAxis = (Math.abs(rAxis) < DEADBAND) ? 0 : rAxis;
+        yAxis = (Math.abs(yAxis) < DEADSPACE) ? 0 : yAxis;
+        xAxis = (Math.abs(xAxis) < DEADSPACE) ? 0 : xAxis;
+        rAxis = (Math.abs(rAxis) < DEADSPACE) ? 0 : rAxis;
 
         translation = new Translation2d(yAxis, xAxis).times(Constants.SwerveDrivetrain.MAX_SPEED);
         rotation = rAxis * Constants.SwerveDrivetrain.MAX_ANGULAR_VELOCITY;

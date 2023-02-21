@@ -13,13 +13,20 @@ import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj.GenericHID;
 import frc.robot.subsystems.TelescopingSubsystem;
-import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.drivetrain.RunPathPlannerTrajectory2;
 import frc.robot.commands.drivetrain.SwerveTeleop;
+import frc.robot.commands.macros.ground;
+import frc.robot.commands.macros.high;
+import frc.robot.commands.macros.mid;
+import frc.robot.commands.telescoping.SetLow;
 // import frc.robot.commands.shooter.IdleShooter;
 // import frc.robot.commands.shooter.Shoot;
 // import frc.robot.subsystems.ShooterSubsystem;
@@ -38,7 +45,8 @@ public class RobotContainer {
 
 
   /* Buttons */
-  private final JoystickButton zeroGyro = new JoystickButton(driver, PS4Controller.Button.kSquare.value);
+  private final JoystickButton zeroGyro = new JoystickButton(driver, PS4Controller.Button.kCircle.value);
+
   // private final JoystickButton shoot = new JoystickButton(driver, PS4Controller.Button.kTriangle.value);
   private final JoystickButton pneumaticButtonUp = new JoystickButton(operator, PS4Controller.Button.kTriangle.value);
   private final JoystickButton pneumaticButtonMid = new JoystickButton(operator, PS4Controller.Button.kCircle.value);
@@ -56,6 +64,13 @@ public class RobotContainer {
 
   private final JoystickButton candlePurple = new JoystickButton(operator, PS4Controller.Button.kL3.value);
   private final JoystickButton candleYellow = new JoystickButton(operator, PS4Controller.Button.kR3.value);
+  private final JoystickButton candleIncrement = new JoystickButton(driver, PS4Controller.Button.kTriangle.value);
+  private final JoystickButton candleRainbow = new JoystickButton(driver, PS4Controller.Button.kCross.value);
+
+  private final JoystickButton telescopeRun = new JoystickButton(operator, PS4Controller.Button.kPS.value);
+  private final JoystickButton telescopeZero = new JoystickButton(operator, PS4Controller.Button.kCross.value);
+
+  int operatorPOV = operator.getPOV();
 
 
   public double yAxis = -operator.getRawAxis(1);
@@ -83,24 +98,39 @@ public class RobotContainer {
   private final Command c_runPneumaticUp = new InstantCommand( () -> arm.setHigh());
   private final Command c_runPneumaticMid = new InstantCommand( () -> arm.setMid());
   private final Command c_runPneumaticDown = new InstantCommand( () -> arm.setLow());
-  double intakePower = 0.25;
-  public final Command c_runIntake = new InstantCommand( () -> intake.intake(intakePower));
-  private final Command c_outtakeIntake = new InstantCommand( () -> intake.intake(-intakePower));
+  double intakePower = 0.5;
+  public final Command c_runIntake = new InstantCommand( () -> intake.intakeDefSpeed());
+  private final Command c_outtakeIntake = new InstantCommand( () -> intake.outtakeDefSpeed());
   private final Command c_stopIntake = new InstantCommand( () -> intake.stop());
 
   private final Command c_TelescopeForward = new InstantCommand( () -> telescope.forward());
   private final Command c_TelescopeBack = new InstantCommand( () -> telescope.backward());
   private final Command c_TelescopeStop = new InstantCommand( () -> telescope.stop());
-  private final Command c_TelescopeMid = new InstantCommand( () -> telescope.setMid());
-  private final Command c_TelescopeHigh = new InstantCommand( () -> telescope.setHigh());
+  private final Command c_TelescopeReset = new InstantCommand( () -> telescope.resetMotors());
   private final Command c_TelescopePrintStuff = new InstantCommand( () -> telescope.printStuff());
+
+  private final Command c_TelescopeLow = new InstantCommand( () -> telescope.runZero());
+  private final Command c_TelescopeMid = new InstantCommand( () -> telescope.runMid());
+  private final Command c_TelescopeHigh = new InstantCommand( () -> telescope.runHigh());
+  private final Command c_TelescopeHP = new InstantCommand( () -> telescope.runHP());
 
   private final Command c_candleYellow = new InstantCommand( () -> candle.yellow());
   private final Command c_candlePurple = new InstantCommand( () -> candle.purple());
+  private final Command c_candleIncrement = new InstantCommand( () -> candle.incrementColor(-5));
+  private final Command c_candleRainbow = new InstantCommand( () -> candle.gsa());
 
+  private final Command c_timedTelescope = new InstantCommand( () -> telescope.testRun());
+
+
+  private final Command c_lowMacro   = new ground(telescope, arm);
+  private final Command c_midMacro   = new mid(telescope, arm);
+  private final Command c_highMacro   = new high(telescope, arm);
 
   /* Trajectories */
-  public PathPlannerTrajectory tr_test_2;
+  public PathPlannerTrajectory go_straight, one_one;
+  private enum Autons { Nothing, GoStraight, OneOne }
+  private SendableChooser<Autons> autonChooser = new SendableChooser<>();
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -114,6 +144,9 @@ public class RobotContainer {
     setDefaultCommands();
     configureButtonBindings();
     loadTrajectories();
+    configureAuton();
+    dashboardStuff();
+
   }
 
   private void configureButtonBindings() {
@@ -136,11 +169,36 @@ public class RobotContainer {
     telescopeForward.onFalse(c_TelescopeStop);
     telescopeBack.onFalse(c_TelescopeStop);
     telescopePrint.onTrue(c_TelescopePrintStuff);
+
+    telescopeRun.onTrue(c_TelescopeLow);
     telescopeMid.onTrue(c_TelescopeMid);
     telescopeHigh.onTrue(c_TelescopeHigh);
 
+    telescopeZero.onTrue(c_TelescopeHP);
+
+
     candleYellow.onTrue(c_candleYellow);
     candlePurple.onTrue(c_candlePurple);
+    candleIncrement.onTrue(c_TelescopeReset);
+    candleRainbow.onTrue(c_candleRainbow);
+
+    telescopeRun.onTrue(c_timedTelescope);
+
+    checkOperatorPOV();
+  }
+
+  public void checkOperatorPOV(){
+    if(operator.getPOV() == 180){
+      System.out.println("hello");
+      c_lowMacro.schedule();
+    }
+    else if(operator.getPOV() == 90){
+      c_midMacro.execute();
+    }
+    else if(operator.getPOV() == 0){
+      c_highMacro.schedule();
+    }
+
   }
 
   private void setDefaultCommands() {
@@ -159,19 +217,26 @@ public class RobotContainer {
 
   private void loadTrajectories() {
     // tr_test = TrajectoryHelper.loadWPILibTrajectoryFromFile("test1");
-    // tr_straight = TrajectoryHelper.loadWPILibTrajectoryFromFile("straight");
-    // tr_holotest = TrajectoryHelper.loadPathPlannerTrajectory("straight2");
-    tr_test_2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("test_2");
+    go_straight = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("testpark",3.0,3.0);
+    one_one = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("testpark",3.0,3.0);
+
   }
 
+  private void configureAuton() {
+    autonChooser.setDefaultOption("Nothing", Autons.OneOne);
+    autonChooser.addOption("GoStraight", Autons.GoStraight);
 
+    ShuffleboardTab tab = Shuffleboard.getTab("Autonomous");
+    tab.add("Auton Chooser", autonChooser);
+  }
+
+  private void dashboardStuff () {
+    ShuffleboardTab tab = Shuffleboard.getTab("LiftingArm");
+    tab.addNumber("PSI", () -> hub.getPressure(0));
+  }
 
   public Command getAutonomousCommand(PathPlannerTrajectory name) {
     return new RunPathPlannerTrajectory2(drivetrain, name);
   }
 
-  // @Override
-  // public void execute(){
-  //   configureButtonBindings();
-  // }
 }

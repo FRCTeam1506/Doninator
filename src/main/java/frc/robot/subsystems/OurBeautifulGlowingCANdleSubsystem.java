@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.CANdleConfiguration;
+import com.ctre.phoenix.led.RainbowAnimation;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.ctre.phoenix.motorcontrol.ControlFrame;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
@@ -20,6 +21,13 @@ public class OurBeautifulGlowingCANdleSubsystem extends SubsystemBase {
 
     CANdle candle = new CANdle(Constants.CandleSubsystem.CANDLE_ID); // creates a new CANdle with ID 0
     String color;
+    int rY = 199;
+    int gY = 179;
+    int bY = 2;
+    
+    int rP = 212;
+    int gP = 66;
+    int britishPetroleum = 245;
 
     public OurBeautifulGlowingCANdleSubsystem () {
         CANdleConfiguration config = new CANdleConfiguration();
@@ -30,18 +38,36 @@ public class OurBeautifulGlowingCANdleSubsystem extends SubsystemBase {
     }
 
     public void purple () {
-        candle.setLEDs(212, 66, 245); // set the CANdle LEDs to white
+        stopGSA();
+        candle.setLEDs(rP, gP, britishPetroleum); // set the CANdle LEDs to white
         color = "purple";
     }
 
     public void yellow () {
+        stopGSA();
         color = "yellow";
-        candle.setLEDs(199, 179, 2); // set the CANdle LEDs to white
+        candle.setLEDs(rY, gY, bY); // set the CANdle LEDs to white
 
     }
 
-    public void incrementOne(){
-        // candle
+    public void incrementColor(int x){
+        rY += x;
+        gY += x;
+        bY += x;
+        
+        rP += x;
+        gP += x;
+        britishPetroleum += x;
+    
+    }
+
+    public void gsa(){
+        RainbowAnimation rainbowAnim = new RainbowAnimation(1, 0.5, 64);
+        candle.animate(rainbowAnim);
+    }
+
+    public void stopGSA(){
+        candle.animate(null);
     }
 
     // public Supplier<String> getColor(){
