@@ -2,15 +2,9 @@ package frc.robot.subsystems;
 
 import frc.robot.Constants;
 
-import com.ctre.phoenix.motorcontrol.ControlFrame;
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
-import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.Solenoid;
 
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -32,36 +26,6 @@ public class ArmSubsystem extends SubsystemBase {
 
         dashboard();
     }
-
-    // private enum PneumaticState { Low, Mid, High }
-    // private PneumaticState currentPneumaticState = DEFAULT_PNEUMATIC_STATE;
-
-    // //setState not in use
-    // private void setState (PneumaticState state) {
-    //     if (currentPneumaticState != state) {
-    //         currentPneumaticState = state;
-    //         switch (state) {
-    //             case Low:
-    //                 stage1.set(Value.kReverse);
-    //                 stage2.set(Value.kReverse);
-    //                 break;
-
-    //             case Mid:
-    //                 stage1.set(Value.kForward);
-    //                 stage2.set(Value.kReverse);
-    //                 break;
-
-    //             case High:
-    //                 stage1.set(Value.kForward);
-    //                 stage2.set(Value.kForward);
-    //         }
-    //     }
-    // }
-    // private String getStateName () { return currentPneumaticState.name(); }
-
-    // public void extendStateMAX () { setState(PneumaticState.High); }
-    // public void retractStateMAX () { setState(PneumaticState.Low); }
-    // public void extendStateMID() { setState(PneumaticState.Mid); }
 
     public void setHigh () {      
         
@@ -88,28 +52,6 @@ public class ArmSubsystem extends SubsystemBase {
         // stage2.set(Value.kOff);
     }
 
-
-    // public void progress () {
-
-    //     if(getStateName().equals("Low")){
-    //         setState(PneumaticState.Mid);
-    //     }
-    //     if(getStateName().equals("Mid")){
-    //         setState(PneumaticState.High);
-    //     }
-
-    // }
-
-    // public void regress () {
-
-    //     if(getStateName().equals("High")){
-    //         setState(PneumaticState.Mid);
-    //     }
-    //     if(getStateName().equals("Mid")){
-    //         setState(PneumaticState.Low);
-    //     }
-
-    // }
 
     @Override
     public void periodic() {

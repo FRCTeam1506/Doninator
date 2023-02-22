@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import frc.robot.Constants;
 
 import com.ctre.phoenix.motorcontrol.ControlFrame;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
@@ -19,6 +20,19 @@ public class TelescopingSubsystem extends SubsystemBase {
     double encoderCount = motor.getSelectedSensorPosition();
     double startingEncoderCount = encoderCount;
     double speed = 0.3;
+    private static final double kP = 0.61; // 0.84
+    private static final double kI = 0.0;
+    private static final double kD = 0.0;
+    private static final double kF = 0.4;  // 0.4
+
+    private static final double kVelocity = 40_000.0;       // 62_000.0
+    private static final double kAcceleration = 30_000.0;   // 44_000.0
+
+    private static final double MIN_POSITION = -1_500.0;
+    private static final double MAX_POSITION = 230_000.0; // 200_000
+    public static final double FIRST_RUNG_HEIGHT = 130_000.0; // 90_000
+    public static final double ABOVE_RUNG_HEIGHT = 25_000.0; // 25_000
+    public static final double FULL_EXTEND = MAX_POSITION;
 
 
     public TelescopingSubsystem () {
@@ -27,8 +41,32 @@ public class TelescopingSubsystem extends SubsystemBase {
         motor.setInverted(TalonFXInvertType.CounterClockwise);
         resetMotors();
         //set motor to brake
-        this.motor.setNeutralMode(Constants.SwerveDrivetrain.DRIVE_NEUTRAL_MODE);
+        motor.configFactoryDefault();
+        motor.setNeutralMode(NeutralMode.Brake);
+
+        motor.setInverted(TalonFXInvertType.CounterClockwise);
+
+
+        motor.config_kP(0, kP);
+        motor.config_kI(0, kI);
+        motor.config_kD(0, kD);
+        motor.config_kF(0, kF);
+
+        motor.configMotionCruiseVelocity(kVelocity);
+        motor.configMotionAcceleration(kAcceleration);
+
+        resetMotors();
         dashboard();
+    }
+
+        /* 
+    * ####################### 
+    *   Motor Functions
+    * #######################
+    */
+    public void resetMotors () {
+        motor.setSelectedSensorPosition(0.0);
+        System.out.println("reset" + motor.getSelectedSensorPosition());
     }
 
     public void forward () {
@@ -61,64 +99,23 @@ public class TelescopingSubsystem extends SubsystemBase {
         System.out.println("Current encoder count: " + motor.getSelectedSensorPosition());
     }
 
-    public void resetMotors(){
-        motor.setSelectedSensorPosition(0.00);
-        System.out.println("reset" + motor.getSelectedSensorPosition());
-    }
 
+   //     while(c<190000){
     public void runHigh(){
-        double c = motor.getSelectedSensorPosition();
-        while(c<190000){
-            motor.set(TalonFXControlMode.PercentOutput, 0.3);
-            c = motor.getSelectedSensorPosition();
-        }
-        stop();
+        motor.set(TalonFXControlMode.MotionMagic, 190000);
     }
 
     public void runMid(){
-        double c = motor.getSelectedSensorPosition();
-        int num = 87191;
-        if(c>num){
-            while(c>num){
-                motor.set(TalonFXControlMode.PercentOutput, -0.3);
-                c = motor.getSelectedSensorPosition();
-            }
-        }
-        else if(c<num){
-            while(c<num){
-                motor.set(TalonFXControlMode.PercentOutput, 0.3);
-                c = motor.getSelectedSensorPosition();
-            }
-        }
-        stop();
+        motor.set(TalonFXControlMode.MotionMagic, 87191);
     }
 
     public void runHP(){
-        double c = motor.getSelectedSensorPosition();
-        int num = 166587;
-        if(c>num){
-            while(c>num){
-                motor.set(TalonFXControlMode.PercentOutput, -0.3);
-                c = motor.getSelectedSensorPosition();
-            }
-        }
-        else if(c<num){
-            while(c<num){
-                motor.set(TalonFXControlMode.PercentOutput, 0.3);
-                c = motor.getSelectedSensorPosition();
-            }
-        }
-        stop();
+        motor.set(TalonFXControlMode.MotionMagic, 166587);
     }
 
 
     public void runZero(){
-        double c = motor.getSelectedSensorPosition();
-        while(c>0){
-            motor.set(TalonFXControlMode.PercentOutput, -speed);
-            c = motor.getSelectedSensorPosition();
-        }
-        stop();
+        motor.set(TalonFXControlMode.MotionMagic, 0);
     }
 
 

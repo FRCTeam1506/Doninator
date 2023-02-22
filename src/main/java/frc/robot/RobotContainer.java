@@ -6,6 +6,8 @@ package frc.robot;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
@@ -18,6 +20,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj.GenericHID;
 import frc.robot.subsystems.TelescopingSubsystem;
@@ -122,9 +125,9 @@ public class RobotContainer {
   private final Command c_timedTelescope = new InstantCommand( () -> telescope.testRun());
 
 
-  private final Command c_lowMacro   = new ground(telescope, arm);
-  private final Command c_midMacro   = new mid(telescope, arm);
-  private final Command c_highMacro   = new high(telescope, arm);
+  //private final Command c_lowMacro   = new InstantCommand( () -> ground(telescope., arm));
+  //private final Command c_midMacro   = new InstantCommand( () -> mid(telescope, arm));
+  //private final Command c_highMacro   = new InstantCommand( () -> high(telescope, arm));
 
   /* Trajectories */
   public PathPlannerTrajectory go_straight, one_one;
@@ -147,12 +150,14 @@ public class RobotContainer {
     configureAuton();
     dashboardStuff();
 
+    UsbCamera cam = CameraServer.startAutomaticCapture();
+    cam.setResolution(1280, 720);
+
   }
 
   private void configureButtonBindings() {
     zeroGyro.onTrue(c_zeroGyro);
     // new JoystickButton(driver, PS4Controller.Button.kTriangle.value).whileHeld(c_shoot);
-    // shoot.whileHeld(c_shoot);
     pneumaticButtonUp.onTrue(c_runPneumaticUp);
     pneumaticButtonMid.onTrue(c_runPneumaticMid);
     pneumaticButtonDown.onTrue(c_runPneumaticDown);
@@ -184,22 +189,22 @@ public class RobotContainer {
 
     telescopeRun.onTrue(c_timedTelescope);
 
-    checkOperatorPOV();
+    //checkOperatorPOV();
   }
 
-  public void checkOperatorPOV(){
-    if(operator.getPOV() == 180){
-      System.out.println("hello");
-      c_lowMacro.schedule();
-    }
-    else if(operator.getPOV() == 90){
-      c_midMacro.execute();
-    }
-    else if(operator.getPOV() == 0){
-      c_highMacro.schedule();
-    }
+  // public void checkOperatorPOV(){
+  //   if(operator.getPOV() == 180){
+  //     System.out.println("hello");
+  //     c_lowMacro.schedule();
+  //   }
+  //   else if(operator.getPOV() == 90){
+  //     c_midMacro.execute();
+  //   }
+  //   else if(operator.getPOV() == 0){
+  //     c_highMacro.schedule();
+  //   }
 
-  }
+  //}
 
   private void setDefaultCommands() {
     drivetrain.setDefaultCommand(
@@ -212,7 +217,6 @@ public class RobotContainer {
 
     // intake.setDefaultCommand(new IntakeCommand(intake, operator));
 
-    // shooter.setDefaultCommand(new IdleShooter(shooter));
   }
 
   private void loadTrajectories() {
@@ -235,8 +239,29 @@ public class RobotContainer {
     tab.addNumber("PSI", () -> hub.getPressure(0));
   }
 
-  public Command getAutonomousCommand(PathPlannerTrajectory name) {
-    return new RunPathPlannerTrajectory2(drivetrain, name);
+  public Command getAutonomousCommand() {
+    switch (autonChooser.getSelected()) {
+      case Nothing:
+        return new WaitCommand(15.0);
+
+      // case TwoBall:
+      //   return new TwoBallR1(drivetrain, intake, indexer, shooter, tr_two_ball_r1);
+      //m_robotContainer.go_straight
+
+      // case FiveBall_R1:
+      //   return new FiveBallR1(drivetrain, intake, indexer, shooter, tr_five_ball_r1_1, tr_five_ball_r1_2, tr_five_ball_r1_3, tr_five_ball_r1_4, tr_five_ball_r1_5);
+    
+      // case FiveBall_A_R1:
+      //   return new FiveBallAR1(drivetrain, intake, indexer, shooter, tr_five_ball_a_r1_1, tr_five_ball_a_r1_2, tr_five_ball_a_r1_3, tr_five_ball_a_r1_4);
+
+      default:
+        return new WaitCommand(15.0);
+    }
+    
+    //return new RunPathPlannerTrajectory2(drivetrain, name);
+
+
+
   }
 
 }
