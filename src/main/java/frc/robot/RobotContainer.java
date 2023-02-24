@@ -38,6 +38,7 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.OurBeautifulGlowingCANdleSubsystem;
 import frc.robot.utils.TrajectoryHelper;
+import frc.robot.commands.auton.RA1;
 
 public class RobotContainer {
 
@@ -131,7 +132,7 @@ public class RobotContainer {
 
   /* Trajectories */
   public PathPlannerTrajectory go_straight, one_one;
-  private enum Autons { Nothing, GoStraight, OneOne }
+  private enum Autons { Nothing, Winger, Center }
   private SendableChooser<Autons> autonChooser = new SendableChooser<>();
 
 
@@ -227,8 +228,9 @@ public class RobotContainer {
   }
 
   private void configureAuton() {
-    autonChooser.setDefaultOption("Nothing", Autons.OneOne);
-    autonChooser.addOption("GoStraight", Autons.GoStraight);
+    autonChooser.setDefaultOption("Nothing", Autons.Nothing);
+    autonChooser.addOption("Winger", Autons.Winger);
+    autonChooser.addOption("Center", Autons.Center);
 
     ShuffleboardTab tab = Shuffleboard.getTab("Autonomous");
     tab.add("Auton Chooser", autonChooser);
@@ -244,10 +246,9 @@ public class RobotContainer {
       case Nothing:
         return new WaitCommand(15.0);
 
-      // case TwoBall:
-      //   return new TwoBallR1(drivetrain, intake, indexer, shooter, tr_two_ball_r1);
-      //m_robotContainer.go_straight
-
+       case Winger:
+         return new RA1(drivetrain, intake, telescope, arm, go_straight, one_one);
+      
       // case FiveBall_R1:
       //   return new FiveBallR1(drivetrain, intake, indexer, shooter, tr_five_ball_r1_1, tr_five_ball_r1_2, tr_five_ball_r1_3, tr_five_ball_r1_4, tr_five_ball_r1_5);
     
