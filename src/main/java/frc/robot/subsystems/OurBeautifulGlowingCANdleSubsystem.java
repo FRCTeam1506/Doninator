@@ -41,12 +41,14 @@ public class OurBeautifulGlowingCANdleSubsystem extends SubsystemBase {
         stopGSA();
         candle.setLEDs(rP, gP, britishPetroleum); // set the CANdle LEDs to white
         color = "purple";
+        Constants.CandleSubsystem.cone = false;
     }
 
     public void yellow () {
         stopGSA();
         color = "yellow";
         candle.setLEDs(rY, gY, bY); // set the CANdle LEDs to white
+        Constants.CandleSubsystem.cone = true;
 
     }
 

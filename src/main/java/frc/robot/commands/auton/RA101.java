@@ -21,12 +21,12 @@ import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.TelescopingSubsystem;
 
 
-public class RA100 extends SequentialCommandGroup {
+public class RA101 extends SequentialCommandGroup {
 
 
     //intake and outtake work for cube, so inverse for cone
     //RA100 only for one PathPlannerTrajectory --- simple auton
-    public RA100 (SwerveDrivetrain drivetrain, IntakeSubsystem intake, TelescopingSubsystem telescope, ArmSubsystem arm, PathPlannerTrajectory trajectory1) {
+    public RA101 (SwerveDrivetrain drivetrain, IntakeSubsystem intake, TelescopingSubsystem telescope, ArmSubsystem arm, PathPlannerTrajectory trajectory1) {
         
         addCommands(
             new ZeroGyro(drivetrain).withTimeout(0.1),
@@ -34,15 +34,12 @@ public class RA100 extends SequentialCommandGroup {
                 new SetHigh(telescope),
                 new armMid(arm)
             ).withTimeout(3),
-            new JustOuttake(intake).withTimeout(1),
+            new JustIntake(intake).withTimeout(1),
             new SetLow(telescope).withTimeout(2),
             new armLow(arm).withTimeout(1),
             new JustStopIntake(intake).withTimeout(0.1),
-            new ParallelCommandGroup(
-                new JustOuttake(intake).withTimeout(5.5),
-                new RunPathPlannerTrajectory2(drivetrain, trajectory1)
-            ),
-            new JustStopIntake(intake).withTimeout(0.1)
+            new RunPathPlannerTrajectory2(drivetrain, trajectory1)
+            // new JustIntake(intake).withTimeout(1.5)
         );
     }
     

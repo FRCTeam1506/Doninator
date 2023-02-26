@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakeSubsystem extends SubsystemBase {
 
-    private final double DEFAULT_SPEED = 0.65; // 0.33
     Conversions conversions = new Conversions();
 
     private TalonFX motor = new TalonFX(Constants.IntakeSubsystem.MOTOR_ID);
@@ -40,11 +39,22 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void intakeDefSpeed(){
-        motor.set(TalonFXControlMode.PercentOutput, DEFAULT_SPEED);
+        if(Constants.CandleSubsystem.cone == true){
+            motor.set(TalonFXControlMode.PercentOutput, -Constants.IntakeSubsystem.CONE_DEFAULT_INTAKE_SPEED);
+        }
+        else{
+            motor.set(TalonFXControlMode.PercentOutput, Constants.IntakeSubsystem.CUBE_DEFAULT_INTAKE_SPEED);
+        }
+
     }
 
     public void outtakeDefSpeed(){
-        motor.set(TalonFXControlMode.PercentOutput, -DEFAULT_SPEED);
+        if(Constants.CandleSubsystem.cone == true){
+            motor.set(TalonFXControlMode.PercentOutput, Constants.IntakeSubsystem.CONE_DEFAULT_OUTTAKE_SPEED);
+        }
+        else{
+            motor.set(TalonFXControlMode.PercentOutput, -Constants.IntakeSubsystem.CUBE_DEFAULT_OUTTAKE_SPEED);
+        }
     }
 
     public void intakeRPM(double rpm){        
@@ -53,7 +63,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void outtake () {
-        motor.set(TalonFXControlMode.PercentOutput, -0.45);
+        motor.set(TalonFXControlMode.PercentOutput, -0.2); //-0.45
     }
 
     public void stop () {

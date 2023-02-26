@@ -41,6 +41,7 @@ import frc.robot.subsystems.OurBeautifulGlowingCANdleSubsystem;
 import frc.robot.utils.TrajectoryHelper;
 import frc.robot.commands.auton.RA1;
 import frc.robot.commands.auton.RA100;
+import frc.robot.commands.auton.RA200;
 
 public class RobotContainer {
 
@@ -59,8 +60,8 @@ public class RobotContainer {
   private final JoystickButton pneumaticButtonMid = new JoystickButton(operator, PS4Controller.Button.kCircle.value);
   private final JoystickButton pneumaticButtonDown = new JoystickButton(operator, PS4Controller.Button.kSquare.value);
 
-  private final JoystickButton outtakeButton = new JoystickButton(operator, PS4Controller.Button.kR2.value);
-  private final JoystickButton intakeButton = new JoystickButton(operator, PS4Controller.Button.kL2.value);
+  private final JoystickButton outtakeButton = new JoystickButton(operator, PS4Controller.Button.kL2.value);
+  private final JoystickButton intakeButton = new JoystickButton(operator, PS4Controller.Button.kR2.value);
 
   private final JoystickButton telescopeForward = new JoystickButton(operator, PS4Controller.Button.kL1.value);
   private final JoystickButton telescopeBack = new JoystickButton(operator, PS4Controller.Button.kR1.value);
@@ -76,6 +77,8 @@ public class RobotContainer {
 
   private final JoystickButton telescopeRun = new JoystickButton(operator, PS4Controller.Button.kPS.value);
   private final JoystickButton telescopeZero = new JoystickButton(operator, PS4Controller.Button.kCross.value);
+  private final JoystickButton telescopePrint2 = new JoystickButton(driver, PS4Controller.Button.kShare.value);
+
 
   private final JoystickButton macroLow = new JoystickButton(operator, PS4Controller.Button.kSquare.value);
   private final JoystickButton macroMid = new JoystickButton(operator, PS4Controller.Button.kCircle.value);
@@ -159,7 +162,7 @@ public class RobotContainer {
 
 
   /* Trajectories */
-  public PathPlannerTrajectory go_straight, one_one, B_LW1, B_LW2, B_RW1, B_RW2, B_CT1, B_CT2, B_CT3, R_LW1, R_LW2, R_RW1, R_RW2, R_CT1, R_CT2, R_CT3, B_RW100, B_LW100, B_CT100, B_CT101, R_RW100, R_LW100, R_CT100, R_CT101, STR;
+  public PathPlannerTrajectory go_straight, one_one, B_LW1, B_LW2, B_RW1, B_RW2, B_CT1, B_CT2, B_CT3, R_LW1, R_LW2, R_RW1, R_RW2, R_CT1, R_CT2, R_CT3, B_RW100, B_LW100, B_CT100, B_CT101, R_RW100, R_LW100, R_CT100, R_CT101, B_STR, R_STR, RL_STR, RL_STR2;
   private enum Colors { None, Red, Blue }
   private enum Autons { Nothing, LeftWing, Center, RightWing, RW100, LW100, CT100, CT101, STR }
   private SendableChooser<Colors> colorChooser = new SendableChooser<>();
@@ -208,6 +211,7 @@ public class RobotContainer {
     intakeButton.onTrue(c_runIntake);
     outtakeButton.onFalse(c_stopIntake);
     intakeButton.onFalse(c_stopIntake);
+    telescopePrint2.onTrue(c_TelescopePrintStuff);
 
     // telescopeForward.onFalse(c_TelescopeStop);
     // telescopeBack.onFalse(c_TelescopeStop);
@@ -329,9 +333,9 @@ public class RobotContainer {
     R_RW1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("B_RW1",3.0,3.0, true);
     R_RW2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("B_RW2",3.0,3.0, true);
 
-    R_CT1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("R_CT1",3.0,3.0, true);
-    R_CT2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("R_CT2",3.0,3.0, true);
-    R_CT3 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("R_CT3",3.0,3.0, true);
+    R_CT1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("B_CT1",3.0,3.0, true);
+    R_CT2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("B_CT2",3.0,3.0, true);
+    R_CT3 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("B_CT3",3.0,3.0, true);
 
     B_LW100 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("LW100",3.0,3.0, false);
     B_RW100 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RW100",3.0,3.0, false);
@@ -343,7 +347,10 @@ public class RobotContainer {
     R_CT100 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("CT100",1.0,1.0, true);
     R_CT101 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("CT101",1.0,1.0, true);
 
-    
+    B_STR = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("STR",2.0,0.5, false);
+    RL_STR = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RL_STR",4.0,2, false);
+    RL_STR2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RL_STR2",4.0,2, false);
+
 
   }
 
@@ -410,8 +417,9 @@ public class RobotContainer {
             return new RA100(drivetrain, intake, telescope, arm, R_CT101);
 
           case STR:
-            return new RA1(drivetrain, intake, telescope, arm, STR, STR, STR);
-
+            // return new RA1(drivetrain, intake, telescope, arm, R_STR, B_STR, null);
+            // return new RunPathPlannerTrajectory2(drivetrain, B_STR);
+              return new RA200(drivetrain, intake, telescope, arm, RL_STR, RL_STR2);
 
         
           default:
@@ -444,6 +452,9 @@ public class RobotContainer {
 
           case CT101:
             return new RA100(drivetrain, intake, telescope, arm, B_CT101);
+
+          case STR:
+            return new RA1(drivetrain, intake, telescope, arm, B_STR, R_STR, null);
 
 
 

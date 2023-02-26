@@ -169,7 +169,12 @@ public final class Constants {
 
     public static final class IntakeSubsystem{
         public static final int MOTOR_ID = 61;
-        public static final double DEFAULT_SPEED = 0.6;
+        public static final double CUBE_DEFAULT_INTAKE_SPEED = 0.3;
+        public static final double CONE_DEFAULT_INTAKE_SPEED = 0.3; // 0.33
+        public static final double CUBE_DEFAULT_OUTTAKE_SPEED = 0.3;
+        public static final double CONE_DEFAULT_OUTTAKE_SPEED = 0.3; // 0.33
+
+
     }
 
     public static final class TelescopingSubsystem{
@@ -180,6 +185,7 @@ public final class Constants {
 
     public static final class CandleSubsystem{
         public static final int CANDLE_ID = 62;
+        public static boolean cone = true;
     }
 
     // public static final class 
