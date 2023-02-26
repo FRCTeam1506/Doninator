@@ -30,64 +30,40 @@ public class AllignedSubsystem extends SubsystemBase {
     ArmSubsystem arm;
     TelescopingSubsystem telescope;
 
-    public AllignedSubsystem (ArmSubsystem arm, TelescopingSubsystem telescope) {
+    public AllignedSubsystem(ArmSubsystem arm, TelescopingSubsystem telescope){
         this.arm = arm;
         this.telescope = telescope;
-        dashboard();
+
     }
 
-    private static final PneumaticState DEFAULT_PNEUMATIC_STATE = PneumaticState.High;
-    private enum PneumaticState { Low, Mid, High }
-    private PneumaticState currentPneumaticState = DEFAULT_PNEUMATIC_STATE;
-
-    //setState not in use
-    private void setState (PneumaticState state) {
-        if (currentPneumaticState != state) {
-            currentPneumaticState = state;
-            switch (state) {
-                case Low:
-                    arm.setLow();
-
-                    break;
-
-                case Mid:
-                    arm.setMid();
-                    break;
-
-                case High:
-                    arm.setHigh();
-            }
-        }
+    public void ground(){
+        arm.setLow();
+        telescope.runZero();
     }
-    private String getStateName () { return currentPneumaticState.name(); }
 
-    public void extendStateMAX () { setState(PneumaticState.High); }
-    public void retractStateMAX () { setState(PneumaticState.Low); }
-    public void extendStateMID() { setState(PneumaticState.Mid); }
+    public void mid(){
+        arm.setMid();
+        telescope.runMid();
+    }
 
+    public void high(){
+        arm.setMid();
+        telescope.runHigh();
+    }
 
+    public void transport(){
+        arm.setHigh();
+        telescope.runZero();
+    }
 
-    // public void progress () {
+    public void HP(){
+        arm.setMid();
+        telescope.runZero();
+    }
 
-    //     if(getStateName().equals("Low")){
-    //         setState(PneumaticState.Mid);
-    //     }
-    //     if(getStateName().equals("Mid")){
-    //         setState(PneumaticState.High);
-    //     }
-
-    // }
-
-    // public void regress () {
-
-    //     if(getStateName().equals("High")){
-    //         setState(PneumaticState.Mid);
-    //     }
-    //     if(getStateName().equals("Mid")){
-    //         setState(PneumaticState.Low);
-    //     }
-
-    // }
+    public void stop(){
+        telescope.stop();
+    }
 
     @Override
     public void periodic() {

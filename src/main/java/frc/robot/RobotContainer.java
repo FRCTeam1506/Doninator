@@ -34,11 +34,13 @@ import frc.robot.commands.telescoping.SetLow;
 // import frc.robot.commands.shooter.Shoot;
 // import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveDrivetrain;
+import frc.robot.subsystems.AllignedSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.OurBeautifulGlowingCANdleSubsystem;
 import frc.robot.utils.TrajectoryHelper;
 import frc.robot.commands.auton.RA1;
+import frc.robot.commands.auton.RA100;
 
 public class RobotContainer {
 
@@ -47,6 +49,7 @@ public class RobotContainer {
   private final PS4Controller driver = new PS4Controller(0);
   public static final PS4Controller operator = new PS4Controller(1);
 
+  public static boolean manualControls;
 
   /* Buttons */
   private final JoystickButton zeroGyro = new JoystickButton(driver, PS4Controller.Button.kCircle.value);
@@ -74,6 +77,21 @@ public class RobotContainer {
   private final JoystickButton telescopeRun = new JoystickButton(operator, PS4Controller.Button.kPS.value);
   private final JoystickButton telescopeZero = new JoystickButton(operator, PS4Controller.Button.kCross.value);
 
+  private final JoystickButton macroLow = new JoystickButton(operator, PS4Controller.Button.kSquare.value);
+  private final JoystickButton macroMid = new JoystickButton(operator, PS4Controller.Button.kCircle.value);
+  private final JoystickButton macroHigh = new JoystickButton(operator, PS4Controller.Button.kTriangle.value);
+  private final JoystickButton macroHP = new JoystickButton(operator, PS4Controller.Button.kPS.value);
+  private final JoystickButton macroTransport = new JoystickButton(operator, PS4Controller.Button.kTouchpad.value);
+
+  private final JoystickButton operatorOptions = new JoystickButton(operator, PS4Controller.Button.kOptions.value);
+
+
+  private final JoystickButton switchMode = new JoystickButton(driver, PS4Controller.Button.kTouchpad.value);
+
+
+
+  // private final JoystickButton telescopeZeroWHILE = new JoystickButton(driver, PS4Controller.Button.kPS.value);
+
   int operatorPOV = operator.getPOV();
 
 
@@ -92,6 +110,7 @@ public class RobotContainer {
   private final IntakeSubsystem intake = new IntakeSubsystem();
   private final frc.robot.subsystems.TelescopingSubsystem telescope = new frc.robot.subsystems.TelescopingSubsystem();
   private final OurBeautifulGlowingCANdleSubsystem candle = new OurBeautifulGlowingCANdleSubsystem();
+  private final AllignedSubsystem macro = new AllignedSubsystem(arm, telescope);
 
   public static PneumaticHub hub      = new PneumaticHub();
   public static Compressor compressor = new Compressor(1, PneumaticsModuleType.REVPH);
@@ -123,16 +142,27 @@ public class RobotContainer {
   private final Command c_candleIncrement = new InstantCommand( () -> candle.incrementColor(-5));
   private final Command c_candleRainbow = new InstantCommand( () -> candle.gsa());
 
-  private final Command c_timedTelescope = new InstantCommand( () -> telescope.testRun());
+  private final Command c_macroLow = new InstantCommand( () -> macro.ground());
+  private final Command c_macroMid = new InstantCommand( () -> macro.mid());
+  private final Command c_macroHigh = new InstantCommand( () -> macro.high());
+  private final Command c_macroTransport = new InstantCommand( () -> macro.transport());
+  private final Command c_macroHP = new InstantCommand( () -> macro.HP());
+  private final Command c_macroStop = new InstantCommand( () -> macro.stop());
+
+  private final Command c_switchMode = new InstantCommand( () -> switchMode());
 
 
-  //private final Command c_lowMacro   = new InstantCommand( () -> ground(telescope., arm));
-  //private final Command c_midMacro   = new InstantCommand( () -> mid(telescope, arm));
-  //private final Command c_highMacro   = new InstantCommand( () -> high(telescope, arm));
+
+
+  // private final Command c_timedTelescope = new InstantCommand( () -> telescope.testRun());
+  // private final Command c_telescopeZeroWHILE = new InstantCommand (() -> telescope.runZeroWhile());
+
 
   /* Trajectories */
-  public PathPlannerTrajectory go_straight, one_one;
-  private enum Autons { Nothing, Winger, Center }
+  public PathPlannerTrajectory go_straight, one_one, B_LW1, B_LW2, B_RW1, B_RW2, B_CT1, B_CT2, B_CT3, R_LW1, R_LW2, R_RW1, R_RW2, R_CT1, R_CT2, R_CT3, B_RW100, B_LW100, B_CT100, B_CT101, R_RW100, R_LW100, R_CT100, R_CT101, STR;
+  private enum Colors { None, Red, Blue }
+  private enum Autons { Nothing, LeftWing, Center, RightWing, RW100, LW100, CT100, CT101, STR }
+  private SendableChooser<Colors> colorChooser = new SendableChooser<>();
   private SendableChooser<Autons> autonChooser = new SendableChooser<>();
 
 
@@ -150,24 +180,51 @@ public class RobotContainer {
     loadTrajectories();
     configureAuton();
     dashboardStuff();
+    checkOperatorPOV();
+
+    // if(manualControls == true){
+    //   configureManualButtonBindings();
+    // }
+    // else{
+    //   configureAutoButtonBindings();
+    // }
 
     UsbCamera cam = CameraServer.startAutomaticCapture();
     cam.setResolution(1280, 720);
+    cam.setFPS(20);
 
   }
 
-  private void configureButtonBindings() {
+  private void switchMode(){
+    System.out.println("switch mode");
+    
+    manualControls = !manualControls;
+  }
+
+  public void configureButtonBindings(){
     zeroGyro.onTrue(c_zeroGyro);
+
+    outtakeButton.onTrue(c_outtakeIntake);
+    intakeButton.onTrue(c_runIntake);
+    outtakeButton.onFalse(c_stopIntake);
+    intakeButton.onFalse(c_stopIntake);
+
+    // telescopeForward.onFalse(c_TelescopeStop);
+    // telescopeBack.onFalse(c_TelescopeStop);
+
+    candleYellow.onTrue(c_candleYellow);
+    candlePurple.onTrue(c_candlePurple);
+    // candleIncrement.onTrue(c_TelescopeReset);
+    candleRainbow.onTrue(c_candleRainbow);
+
+    switchMode.onTrue(c_switchMode);
+
+  }
+  private void configureManualButtonBindings() {
     // new JoystickButton(driver, PS4Controller.Button.kTriangle.value).whileHeld(c_shoot);
     pneumaticButtonUp.onTrue(c_runPneumaticUp);
     pneumaticButtonMid.onTrue(c_runPneumaticMid);
     pneumaticButtonDown.onTrue(c_runPneumaticDown);
-
-    outtakeButton.onTrue(c_outtakeIntake);
-    intakeButton.onTrue(c_runIntake);
-
-    outtakeButton.onFalse(c_stopIntake);
-    intakeButton.onFalse(c_stopIntake);
 
     telescopeForward.onTrue(c_TelescopeForward);
     telescopeBack.onTrue(c_TelescopeBack);
@@ -180,32 +237,53 @@ public class RobotContainer {
     telescopeMid.onTrue(c_TelescopeMid);
     telescopeHigh.onTrue(c_TelescopeHigh);
 
-    telescopeZero.onTrue(c_TelescopeHP);
+    // telescopeZero.onTrue(c_TelescopeHP);
 
 
-    candleYellow.onTrue(c_candleYellow);
-    candlePurple.onTrue(c_candlePurple);
-    candleIncrement.onTrue(c_TelescopeReset);
-    candleRainbow.onTrue(c_candleRainbow);
+    // telescopeRun.onTrue(c_timedTelescope);
+    // telescopeZeroWHILE.onTrue(c_telescopeZeroWHILE);
 
-    telescopeRun.onTrue(c_timedTelescope);
-
-    //checkOperatorPOV();
+    // checkOperatorPOV();
   }
 
-  // public void checkOperatorPOV(){
-  //   if(operator.getPOV() == 180){
-  //     System.out.println("hello");
-  //     c_lowMacro.schedule();
-  //   }
-  //   else if(operator.getPOV() == 90){
-  //     c_midMacro.execute();
-  //   }
-  //   else if(operator.getPOV() == 0){
-  //     c_highMacro.schedule();
-  //   }
+  private void configureAutoButtonBindings() {
+    macroLow.onTrue(c_macroLow);
+    macroMid.onTrue(c_macroMid);
+    macroHigh.onTrue(c_macroHigh);
+    macroHP.onTrue(c_macroHP);
+    macroTransport.onTrue(c_macroTransport);
+    macroTransport.onFalse(c_macroStop);
+    macroLow.onFalse(c_macroStop);
+    macroMid.onFalse(c_macroStop);
+    macroHigh.onFalse(c_macroStop);
+    macroHP.onFalse(c_macroStop);
 
-  //}
+  }
+
+
+  public void checkOperatorPOV(){
+    if(operator.getPOV() == 270){
+      System.out.println("hello270");
+      macro.ground();
+    }
+    else if(operator.getPOV() == 90){
+      System.out.println("hello90");
+      macro.mid();
+    }
+    else if(operator.getPOV() == 0){
+      macro.high();
+      System.out.println("hello0");
+    }
+    else if(operator.getPOV() == 180){
+      macro.transport();
+    }
+
+    operatorOptions.onTrue(c_macroHP);
+    operatorOptions.onFalse(c_macroStop);
+
+
+
+  }
 
   private void setDefaultCommands() {
     drivetrain.setDefaultCommand(
@@ -222,17 +300,73 @@ public class RobotContainer {
 
   private void loadTrajectories() {
     // tr_test = TrajectoryHelper.loadWPILibTrajectoryFromFile("test1");
-    go_straight = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("testpark",3.0,3.0);
-    one_one = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("testpark",3.0,3.0);
+    // go_straight = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("testpark",3.0,3.0);
+    // one_one = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("testpark",3.0,3.0);
+
+    go_straight = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("testpark",3.0,3.0, false);
+    
+    // LW0 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("LW0",3.0,3.0, false);
+    // LW1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("LW1",3.0,3.0, false);
+    // LW2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("LW2",3.0,3.0, false);
+    // LW3 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("LW3",3.0,3.0, false);
+
+    // RedLeft1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RedLeft1",3.0,3.0, true);
+    // RedLeft2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RedLeft2",3.0,3.0, true);
+    // RedLeft3 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RedLeft3",3.0,3.0, true);
+
+    B_LW1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("B_LW1",3.0,3.0, false);
+    B_LW2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("B_LW2",3.0,3.0, false);
+    B_RW1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("B_RW1",3.0,3.0, false);
+    B_RW2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("B_RW2",3.0,3.0, false);
+    
+    B_CT1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("B_CT1",3.0,3.0, false);
+    B_CT2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("B_CT2",3.0,3.0, false);
+    B_CT3 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("B_CT3",3.0,3.0, false);
+
+
+    R_LW1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("B_LW1",3.0,3.0, true);
+    R_LW2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("B_LW2",3.0,3.0, true);
+    R_RW1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("B_RW1",3.0,3.0, true);
+    R_RW2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("B_RW2",3.0,3.0, true);
+
+    R_CT1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("R_CT1",3.0,3.0, true);
+    R_CT2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("R_CT2",3.0,3.0, true);
+    R_CT3 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("R_CT3",3.0,3.0, true);
+
+    B_LW100 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("LW100",3.0,3.0, false);
+    B_RW100 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RW100",3.0,3.0, false);
+    B_CT100 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("CT100",1.0,1.0, false);
+    B_CT101 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("CT101",1.0,1.0, false);
+
+    R_LW100 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("LW100",3.0,3.0, true);
+    R_RW100 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RW100",3.0,3.0, true);
+    R_CT100 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("CT100",1.0,1.0, true);
+    R_CT101 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("CT101",1.0,1.0, true);
+
+    
 
   }
 
   private void configureAuton() {
     autonChooser.setDefaultOption("Nothing", Autons.Nothing);
-    autonChooser.addOption("Winger", Autons.Winger);
+    autonChooser.addOption("LeftWing", Autons.LeftWing);
     autonChooser.addOption("Center", Autons.Center);
+    autonChooser.addOption("RightWing", Autons.RightWing);
+    autonChooser.addOption("LW100", Autons.LW100);
+    autonChooser.addOption("RW100", Autons.RW100);
+    autonChooser.addOption("CT100", Autons.CT101);
+    autonChooser.addOption("CT101", Autons.CT101);
+    autonChooser.addOption("STR", Autons.STR);
+
+
+    colorChooser.setDefaultOption("Nothing", Colors.None);
+    colorChooser.addOption("RED", Colors.Red);
+    colorChooser.addOption("BLUE", Colors.Blue);
+
+
 
     ShuffleboardTab tab = Shuffleboard.getTab("Autonomous");
+    tab.add("Color Chooser", colorChooser);
     tab.add("Auton Chooser", autonChooser);
   }
 
@@ -242,27 +376,99 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    switch (autonChooser.getSelected()) {
-      case Nothing:
+
+    switch (colorChooser.getSelected()){
+
+      case None:
         return new WaitCommand(15.0);
 
-       case Winger:
-         return new RA1(drivetrain, intake, telescope, arm, go_straight, one_one);
-      
-      // case FiveBall_R1:
-      //   return new FiveBallR1(drivetrain, intake, indexer, shooter, tr_five_ball_r1_1, tr_five_ball_r1_2, tr_five_ball_r1_3, tr_five_ball_r1_4, tr_five_ball_r1_5);
-    
-      // case FiveBall_A_R1:
-      //   return new FiveBallAR1(drivetrain, intake, indexer, shooter, tr_five_ball_a_r1_1, tr_five_ball_a_r1_2, tr_five_ball_a_r1_3, tr_five_ball_a_r1_4);
 
-      default:
-        return new WaitCommand(15.0);
+      case Red:
+        switch (autonChooser.getSelected()) {
+          case Nothing:
+            return new WaitCommand(15.0);
+
+          case LeftWing:
+            return new RA1(drivetrain, intake, telescope, arm, R_LW1, R_LW2, null);
+          
+          case RightWing:
+            return new RA1(drivetrain, intake, telescope, arm, R_RW1, R_RW2, null);
+        
+          case Center:
+            return new RA1(drivetrain, intake, telescope, arm, R_CT1, R_CT2, R_CT3);
+
+          case LW100:
+            return new RA100(drivetrain, intake, telescope, arm, R_LW100);
+            
+          case RW100:
+            return new RA100(drivetrain, intake, telescope, arm, R_RW100);
+            
+          case CT100:
+            return new RA100(drivetrain, intake, telescope, arm, R_CT100);
+
+          case CT101:
+            return new RA100(drivetrain, intake, telescope, arm, R_CT101);
+
+          case STR:
+            return new RA1(drivetrain, intake, telescope, arm, STR, STR, STR);
+
+
+        
+          default:
+            return new WaitCommand(15.0);
+        }
+
+
+      case Blue:
+        switch (autonChooser.getSelected()) {
+          case Nothing:
+            return new WaitCommand(15.0);
+
+          case LeftWing:
+            return new RA1(drivetrain, intake, telescope, arm, B_LW1, B_LW2, null);
+          
+          case RightWing:
+            return new RA1(drivetrain, intake, telescope, arm, B_RW1, B_RW2, null);
+        
+          case Center:
+            return new RA1(drivetrain, intake, telescope, arm, B_CT1, B_CT2, B_CT3);
+
+          case LW100:
+            return new RA100(drivetrain, intake, telescope, arm, B_LW100);
+            
+          case RW100:
+            return new RA100(drivetrain, intake, telescope, arm, B_RW100);
+            
+          case CT100:
+            return new RA100(drivetrain, intake, telescope, arm, B_CT100);
+
+          case CT101:
+            return new RA100(drivetrain, intake, telescope, arm, B_CT101);
+
+
+
+          default:
+            return new WaitCommand(15.0);
+        }
+
+
+        default:
+          return new WaitCommand(15.0);
     }
     
     //return new RunPathPlannerTrajectory2(drivetrain, name);
+  }
 
-
+  public void periodic(){
+    switchMode.onTrue(c_switchMode);
+    if(manualControls == true){
+      configureManualButtonBindings();
+    }
+    else{
+      configureAutoButtonBindings();
+    }
 
   }
 
 }
+//na

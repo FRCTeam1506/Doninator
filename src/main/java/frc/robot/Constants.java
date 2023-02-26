@@ -174,7 +174,8 @@ public final class Constants {
 
     public static final class TelescopingSubsystem{
         public static final int MOTOR_ID = 60;
-        public static final double DEFAULT_SPEED = 0.4; // 0.33 //0.65
+        public static final int DIO_PORT = 1;
+        public static final double DEFAULT_SPEED = 0.45; // 0.33 //0.65
     }
 
     public static final class CandleSubsystem{

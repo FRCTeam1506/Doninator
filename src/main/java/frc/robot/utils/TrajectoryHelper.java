@@ -32,17 +32,17 @@ public class TrajectoryHelper {
         return trajectory;
     }
 
-    public static Trajectory loadPathPlannerTrajectory (String filename) {
-        return PathPlanner.loadPath(filename, 5.5, 4.0);
+    public static Trajectory loadPathPlannerTrajectory (String filename, Boolean reversed) {
+        return PathPlanner.loadPath(filename, 5.5, 4.0, reversed);
     }
 
-    public static PathPlannerTrajectory loadHolonomicPathPlannerTrajectory (String filename) {
+    public static PathPlannerTrajectory loadHolonomicPathPlannerTrajectory (String filename, Boolean reversed) {
         // return PathPlanner.loadPath(filename, 3.5, 3);
         return PathPlanner.loadPath(filename, Constants.Auton.MAX_SPEED_MPS, Constants.Auton.MAX_ACCELERATION_MPSS, false);
     }
 
-    public static PathPlannerTrajectory loadHolonomicPathPlannerTrajectory (String filename, double maxVelocity, double maxAcceleration) {
-        return PathPlanner.loadPath(filename, maxVelocity, maxAcceleration, false);
+    public static PathPlannerTrajectory loadHolonomicPathPlannerTrajectory (String filename, double maxVelocity, double maxAcceleration, boolean reversed) {
+        return PathPlanner.loadPath(filename, maxVelocity, maxAcceleration, reversed);
     }
 
 

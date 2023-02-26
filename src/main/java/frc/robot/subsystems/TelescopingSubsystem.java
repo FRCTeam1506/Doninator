@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
+import frc.robot.commands.drivetrain.SwerveTeleop;
 
 import com.ctre.phoenix.motorcontrol.ControlFrame;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -8,15 +10,22 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
+import edu.wpi.first.wpilibj.Counter;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
 public class TelescopingSubsystem extends SubsystemBase {
 
     private TalonFX motor = new TalonFX(Constants.TelescopingSubsystem.MOTOR_ID);
+    DigitalInput input = new DigitalInput(Constants.TelescopingSubsystem.DIO_PORT);
+    // Counter counter = new Counter(input);
+    boolean click;
+
     double encoderCount = motor.getSelectedSensorPosition();
     double startingEncoderCount = encoderCount;
     double speed = 0.3;
@@ -34,17 +43,20 @@ public class TelescopingSubsystem extends SubsystemBase {
     public static final double ABOVE_RUNG_HEIGHT = 25_000.0; // 25_000
     public static final double FULL_EXTEND = MAX_POSITION;
 
+    private double targetPosition = 0;
+    
 
     public TelescopingSubsystem () {
         motor.configFactoryDefault();
         motor.setControlFramePeriod(ControlFrame.Control_3_General, 100);
         motor.setInverted(TalonFXInvertType.CounterClockwise);
-        resetMotors();
+        // resetMotors();
         //set motor to brake
         motor.configFactoryDefault();
         motor.setNeutralMode(NeutralMode.Brake);
 
         motor.setInverted(TalonFXInvertType.CounterClockwise);
+        encoderCount = motor.getSelectedSensorPosition();
 
 
         motor.config_kP(0, kP);
@@ -55,7 +67,9 @@ public class TelescopingSubsystem extends SubsystemBase {
         motor.configMotionCruiseVelocity(kVelocity);
         motor.configMotionAcceleration(kAcceleration);
 
-        resetMotors();
+        // click = input.get();
+
+        // resetMotors();
         dashboard();
     }
 
@@ -102,34 +116,82 @@ public class TelescopingSubsystem extends SubsystemBase {
 
    //     while(c<190000){
     public void runHigh(){
+        targetPosition = 190000;
         motor.set(TalonFXControlMode.MotionMagic, 190000);
     }
 
     public void runMid(){
+        targetPosition = 87191;
         motor.set(TalonFXControlMode.MotionMagic, 87191);
     }
 
     public void runHP(){
-        motor.set(TalonFXControlMode.MotionMagic, 166587);
+        motor.set(TalonFXControlMode.MotionMagic, 168587); //166587
     }
 
 
     public void runZero(){
-        motor.set(TalonFXControlMode.MotionMagic, 0);
+        targetPosition = 1;
+        //motor.set(TalonFXControlMode.Position, 10000);
+        motor.set(TalonFXControlMode.PercentOutput, -Constants.TelescopingSubsystem.DEFAULT_SPEED);
+        System.out.println("000");
     }
 
+    // public void runZeroWhile(){
+    //     while(encoderCount > 30){
+    //         motor.set(TalonFXControlMode.PercentOutput, -Constants.TelescopingSubsystem.DEFAULT_SPEED);
+    //         encoderCount = motor.getSelectedSensorPosition();
+    //         RobotContainer robot = new RobotContainer();
+    //     }
+    //     motor.set(TalonFXControlMode.PercentOutput, 0);
+    // }
 
-
-    public void testRun() {
-        // runUntil(0.2);
-        Timer.delay(0.50);            
-        stop();
+    public void antiLukeFeature(){
+        if(encoderCount<0){
+            stop();
+        }
+        else if(encoderCount>235000){
+            stop();
+        }
     }
+
+    public void testSwitch(){
+        click = input.get();
+        if(click == false){
+            resetMotors();
+            System.out.println("CLICKED");
+            motor.set(TalonFXControlMode.PercentOutput, 0);
+            motor.set(TalonFXControlMode.MotionMagic, 2500);
+            // stop();
+        }
+    }
+
+    public void testRunZero(){
+        motor.set(TalonFXControlMode.MotionMagic, 2500);
+    }
+
+    // public void testRun() {
+    //     // runUntil(0.2);
+    //     Timer.delay(0.50);            
+    //     stop();
+    // }
 
     private void dashboard () {
-        ShuffleboardTab tab = Shuffleboard.getTab("Intake");
-        tab.add(this);
+        // ShuffleboardTab tab = Shuffleboard.getTab("Intake");
+        // tab.add(this);
+        encoderCount = motor.getSelectedSensorPosition();
+        SmartDashboard.putNumber("Telescope motor", encoderCount);
+        SmartDashboard.putNumber("Telescope target", targetPosition);
+
         // tab.addString("XFactor State",this::getXFactorStateName);
+    }
+
+    public void periodic(){
+        testSwitch();
+        // antiLukeFeature();
+        click = input.get();
+        dashboard();
+
     }
     
 }
