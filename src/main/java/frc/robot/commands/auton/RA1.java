@@ -27,41 +27,23 @@ public class RA1 extends SequentialCommandGroup {
 
     public RA1 (SwerveDrivetrain drivetrain, IntakeSubsystem intake, TelescopingSubsystem telescope, ArmSubsystem arm, PathPlannerTrajectory trajectory1, PathPlannerTrajectory trajectory2, PathPlannerTrajectory trajectory3) {
         
-        new RunPathPlannerTrajectory2(drivetrain, trajectory1);
-        // addCommands(
-        //     new ResetOdometry(drivetrain),
-        //     new ParallelCommandGroup(
-        //         new SetHigh(telescope),
-        //         new armMid(arm)
-        //     ).withTimeout(3),
-        //     new JustIntake(intake).withTimeout(1),
-        //     new JustStopIntake(intake).withTimeout(0.1),
-        //     new ParallelCommandGroup(
-        //         new SetZeroTest(telescope),
-        //         new armLow(arm),
-        //         new RunPathPlannerTrajectory2(drivetrain, trajectory1)
-        //     )
-        //     );
+        addCommands(
 
-        System.out.println("part two auton");
-
-        // addCommands(
-        //     new JustIntake(intake).withTimeout(1.5),
-        //     new RunPathPlannerTrajectory2(drivetrain, trajectory2)
-            // new high(telescope, arm).withTimeout(2.5),
-            // new JustOuttake(intake),
-            // new RunPathPlannerTrajectory2(drivetrain, trajectory3)
-            // );
-    
-        // addCommands(
-        //     new PrintCommand("pick up 3, shoot"),
-        //     new ParallelDeadlineGroup(
-        //         new RunPathPlannerTrajectory2(drivetrain, trajectory2),
-        //         new ExtendAndIntake(intake)
-        //     ).withTimeout(1.0),
-        //     new ShootAndIndex(shooter, indexer, 1810.0).withTimeout(1.0)
-        // );
-
+        // new ZeroGyro(drivetrain).withTimeout(0.1),
+        new ZeroGyro(drivetrain).withTimeout(0.1),
+        new ParallelCommandGroup(
+            new SetHigh(telescope),
+            new armMid(arm)
+        ).withTimeout(2),
+        new JustOuttake(intake).withTimeout(0.25),
+        new SetLow(telescope).withTimeout(1.5),
+        new armLow(arm).withTimeout(1),
+        new JustStopIntake(intake).withTimeout(0.1),
+        new ParallelCommandGroup(
+            new JustOuttake(intake).withTimeout(5.2),
+            new RunPathPlannerTrajectory2(drivetrain, trajectory1)
+        )
+        );
     }
     
 }

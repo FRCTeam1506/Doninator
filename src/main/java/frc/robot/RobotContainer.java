@@ -39,9 +39,11 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.OurBeautifulGlowingCANdleSubsystem;
 import frc.robot.utils.TrajectoryHelper;
+import frc.robot.commands.auton.Center;
 import frc.robot.commands.auton.RA1;
 import frc.robot.commands.auton.RA100;
 import frc.robot.commands.auton.RA200;
+import frc.robot.commands.auton.Wings;
 
 public class RobotContainer {
 
@@ -162,7 +164,9 @@ public class RobotContainer {
 
 
   /* Trajectories */
-  public PathPlannerTrajectory go_straight, one_one, B_LW1, B_LW2, B_RW1, B_RW2, B_CT1, B_CT2, B_CT3, R_LW1, R_LW2, R_RW1, R_RW2, R_CT1, R_CT2, R_CT3, B_RW100, B_LW100, B_CT100, B_CT101, R_RW100, R_LW100, R_CT100, R_CT101, B_STR, R_STR, RL_STR, RL_STR2;
+  public PathPlannerTrajectory go_straight, one_one, B_LW1, B_LW2, B_RW1, B_RW2, B_CT1, B_CT2, B_CT3, 
+      R_LW1, R_LW2, R_RW1, R_RW2, R_CT1, R_CT2, R_CT3, B_RW100, B_LW100, B_CT100, B_CT101, R_RW100,
+      R_LW100, R_CT100, R_CT101, B_STR, R_STR, RL_STR, RL_STR2, R_Center, B_Center, RR_STR1, RR_STR2;
   private enum Colors { None, Red, Blue }
   private enum Autons { Nothing, LeftWing, Center, RightWing, RW100, LW100, CT100, CT101, STR }
   private SendableChooser<Colors> colorChooser = new SendableChooser<>();
@@ -348,8 +352,14 @@ public class RobotContainer {
     R_CT101 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("CT101",1.0,1.0, true);
 
     B_STR = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("STR",2.0,0.5, false);
-    RL_STR = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RL_STR",4.0,2, false);
-    RL_STR2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RL_STR2",4.0,2, false);
+    RL_STR = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RL_STR",3.0,2, false);
+    RL_STR2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RL_STR2",3.0,2, false);
+
+    R_Center = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("R_Center",1.7,1, false);
+    B_Center = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("B_Center",2.0,1, false);
+
+    RR_STR1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RR_STR1",3.0,1, false);
+    RR_STR2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RR_STR2",3.0,1, false);
 
 
   }
@@ -399,22 +409,12 @@ public class RobotContainer {
             return new RA1(drivetrain, intake, telescope, arm, R_LW1, R_LW2, null);
           
           case RightWing:
-            return new RA1(drivetrain, intake, telescope, arm, R_RW1, R_RW2, null);
+            return new Wings(drivetrain, intake, telescope, arm, RR_STR1, RR_STR2);
         
           case Center:
-            return new RA1(drivetrain, intake, telescope, arm, R_CT1, R_CT2, R_CT3);
+            return new Center(drivetrain, intake, telescope, arm, R_Center);
 
-          case LW100:
-            return new RA100(drivetrain, intake, telescope, arm, R_LW100);
-            
-          case RW100:
-            return new RA100(drivetrain, intake, telescope, arm, R_RW100);
-            
-          case CT100:
-            return new RA100(drivetrain, intake, telescope, arm, R_CT100);
 
-          case CT101:
-            return new RA100(drivetrain, intake, telescope, arm, R_CT101);
 
           case STR:
             // return new RA1(drivetrain, intake, telescope, arm, R_STR, B_STR, null);
@@ -439,19 +439,7 @@ public class RobotContainer {
             return new RA1(drivetrain, intake, telescope, arm, B_RW1, B_RW2, null);
         
           case Center:
-            return new RA1(drivetrain, intake, telescope, arm, B_CT1, B_CT2, B_CT3);
-
-          case LW100:
-            return new RA100(drivetrain, intake, telescope, arm, B_LW100);
-            
-          case RW100:
-            return new RA100(drivetrain, intake, telescope, arm, B_RW100);
-            
-          case CT100:
-            return new RA100(drivetrain, intake, telescope, arm, B_CT100);
-
-          case CT101:
-            return new RA100(drivetrain, intake, telescope, arm, B_CT101);
+            return new Center(drivetrain, intake, telescope, arm, B_Center);
 
           case STR:
             return new RA1(drivetrain, intake, telescope, arm, B_STR, R_STR, null);

@@ -22,24 +22,16 @@ import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.TelescopingSubsystem;
 
 
-public class DropCone2 extends SequentialCommandGroup {
+public class Center extends SequentialCommandGroup {
 
 
     //intake and outtake work for cube, so inverse for cone
     //RA100 only for one PathPlannerTrajectory --- simple auton
-    public DropCone2 (SwerveDrivetrain drivetrain, IntakeSubsystem intake, TelescopingSubsystem telescope, ArmSubsystem arm) {
-    
-
+    public Center (SwerveDrivetrain drivetrain, IntakeSubsystem intake, TelescopingSubsystem telescope, ArmSubsystem arm, PathPlannerTrajectory trajectory1) {
+        
         addCommands(
-            new ZeroGyro(drivetrain).withTimeout(0.1),
-            new ParallelCommandGroup(
-                new SetHigh(telescope),
-                new armMid(arm)
-            ).withTimeout(2),
-            new JustOuttake(intake).withTimeout(0.25),
-            new SetLow(telescope).withTimeout(1.5),
-            new armLow(arm).withTimeout(1),
-            new JustStopIntake(intake).withTimeout(0.1)
+            new DropCone(drivetrain, intake, telescope, arm),
+            new RunPathPlannerTrajectory2(drivetrain, trajectory1)
         );
     }
     
