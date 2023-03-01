@@ -27,16 +27,17 @@ public class Wings extends SequentialCommandGroup {
 
     //intake and outtake work for cube, so inverse for cone
     //RA100 only for one PathPlannerTrajectory --- simple auton
-    public Wings (SwerveDrivetrain drivetrain, IntakeSubsystem intake, TelescopingSubsystem telescope, ArmSubsystem arm, PathPlannerTrajectory trajectory1, PathPlannerTrajectory trajectory2) {
+    public Wings (SwerveDrivetrain drivetrain, IntakeSubsystem intake, TelescopingSubsystem telescope, 
+                  ArmSubsystem arm, PathPlannerTrajectory trajectory1, PathPlannerTrajectory trajectory2) {
         
         addCommands(
             new DropCone(drivetrain, intake, telescope, arm),
             new JustStopIntake(intake).withTimeout(0.1),
+            new armLow(arm).withTimeout(.5),
             new ParallelCommandGroup(
                 new JustOuttake(intake).withTimeout(5.2),
                 new RunPathPlannerTrajectory2(drivetrain, trajectory1)
             ),
-            new armLow(arm).withTimeout(.3),
             new JustStopIntake(intake).withTimeout(0.1),
             new armMid(arm).withTimeout(.2),
             new RunPathPlannerTrajectory2(drivetrain, trajectory2),
