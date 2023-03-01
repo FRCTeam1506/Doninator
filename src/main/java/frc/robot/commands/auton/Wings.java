@@ -1,6 +1,7 @@
 package frc.robot.commands.auton;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.FollowPathWithEvents;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -38,6 +39,8 @@ public class Wings extends SequentialCommandGroup {
                 new JustOuttake(intake).withTimeout(5.2),
                 new RunPathPlannerTrajectory2(drivetrain, trajectory1)
             ),
+            //    FollowPathWithEvents(
+            //new RunPathPlannerTrajectory2(drivetrain, trajectory1)
             new JustStopIntake(intake).withTimeout(0.1),
             new armMid(arm).withTimeout(.2),
             new RunPathPlannerTrajectory2(drivetrain, trajectory2),
