@@ -4,7 +4,6 @@ import com.ctre.phoenix.sensors.Pigeon2;
 //import com.ctre.phoenix.sensors.PigeonIMU;
 
 import frc.robot.Constants;
-//import frc.robot.Constants.SwerveDrivetrain.Mod0;
 import frc.robot.utils.swerve.SwerveModule;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -43,7 +42,6 @@ public class SwerveDrivetrain extends SubsystemBase {
         };
 
 
-        //old 2023 call this.swerveOdometry = new SwerveDriveOdometry(Constants.SwerveDrivetrain.SWERVE_KINEMATICS, this.getYaw());
         this.swerveOdometry = new SwerveDriveOdometry(Constants.SwerveDrivetrain.SWERVE_KINEMATICS, this.getYaw(),
                                                     getModulePositions());
 

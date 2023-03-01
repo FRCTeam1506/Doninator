@@ -72,11 +72,6 @@ public class OurBeautifulGlowingCANdleSubsystem extends SubsystemBase {
         candle.animate(null);
     }
 
-    // public Supplier<String> getColor(){
-    //     return (Supplier<String>) candle;
-    // }
-
-
     private void dashboard () {
         // ShuffleboardTab tab = Shuffleboard.getTab("Candle Color");
         // tab.add(this);

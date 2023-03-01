@@ -68,20 +68,14 @@ public class AllignedSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         // System.out.println("hello");
-        // refreshExtendoState();
-        // refreshTriggerState();
-        // refreshLeanboiState();
+
     }
 
     private void dashboard () {
-        ShuffleboardTab tab = Shuffleboard.getTab("Climber");
-        tab.add(this);
-        // tab.addString("Arm State", this::getStateName);
-
-        // tab.addNumber("Left Motor Pos", leftMotor::getSelectedSensorPosition);
-        // tab.addNumber("Right Motor Pos", rightMotor::getSelectedSensorPosition);
-        // tab.addNumber("Pneumatic State", () -> currentPneumaticState);
-
+        //ShuffleboardTab tab = Shuffleboard.getTab("Climber");
+        //tab.add(this);
+        
+        
     }
 
 }
