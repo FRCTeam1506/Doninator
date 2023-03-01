@@ -22,12 +22,12 @@ import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.TelescopingSubsystem;
 
 
-public class DropCone2 extends SequentialCommandGroup {
+public class DropCone extends SequentialCommandGroup {
 
 
     //intake and outtake work for cube, so inverse for cone
     //RA100 only for one PathPlannerTrajectory --- simple auton
-    public DropCone2 (SwerveDrivetrain drivetrain, IntakeSubsystem intake, TelescopingSubsystem telescope, ArmSubsystem arm) {
+    public DropCone (SwerveDrivetrain drivetrain, IntakeSubsystem intake, TelescopingSubsystem telescope, ArmSubsystem arm) {
     
 
         addCommands(
