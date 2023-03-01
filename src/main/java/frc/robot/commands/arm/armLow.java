@@ -4,7 +4,6 @@
 
 package frc.robot.commands.arm;
 
-import frc.robot.subsystems.TelescopingSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;

@@ -98,23 +98,11 @@ public class TelescopingSubsystem extends SubsystemBase {
         encoderCount = motor.getSelectedSensorPosition();
     }
 
-    public void setMid(){
-        // motor.set(TalonFXControlMode.MotionMagic, -21719);
-        // motor.set(TalonFXControlMode.Velocity, Conversions.RPMToFalcon(rpm/2, 1));
-
-        System.out.println("hello hello hello");
-    }
-    public void setHigh(){
-        motor.set(TalonFXControlMode.Position, -50000);
-    }
-
     public void printStuff(){
         System.out.println("Starting encoder count: " + startingEncoderCount);
         System.out.println("Current encoder count: " + motor.getSelectedSensorPosition());
     }
 
-
-   //     while(c<190000){
     public void runHigh(){
         targetPosition = 190000;
         motor.set(TalonFXControlMode.MotionMagic, 156821); //190k
@@ -132,19 +120,9 @@ public class TelescopingSubsystem extends SubsystemBase {
 
     public void runZero(){
         targetPosition = 1;
-        //motor.set(TalonFXControlMode.Position, 10000);
         motor.set(TalonFXControlMode.PercentOutput, -Constants.TelescopingSubsystem.DEFAULT_SPEED);
         System.out.println("000");
     }
-
-    // public void runZeroWhile(){
-    //     while(encoderCount > 30){
-    //         motor.set(TalonFXControlMode.PercentOutput, -Constants.TelescopingSubsystem.DEFAULT_SPEED);
-    //         encoderCount = motor.getSelectedSensorPosition();
-    //         RobotContainer robot = new RobotContainer();
-    //     }
-    //     motor.set(TalonFXControlMode.PercentOutput, 0);
-    // }
 
     public void antiLukeFeature(){
         if(encoderCount<0){
@@ -169,12 +147,6 @@ public class TelescopingSubsystem extends SubsystemBase {
     public void testRunZero(){
         motor.set(TalonFXControlMode.MotionMagic, 2500);
     }
-
-    // public void testRun() {
-    //     // runUntil(0.2);
-    //     Timer.delay(0.50);            
-    //     stop();
-    // }
 
     private void dashboard () {
         // ShuffleboardTab tab = Shuffleboard.getTab("Intake");
