@@ -1,7 +1,6 @@
 package frc.robot.commands.auton;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.commands.FollowPathWithEvents;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -23,37 +22,23 @@ import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.TelescopingSubsystem;
 
 
-public class Wings extends SequentialCommandGroup {
+public class CenterBeta extends SequentialCommandGroup {
 
 
     //intake and outtake work for cube, so inverse for cone
     //RA100 only for one PathPlannerTrajectory --- simple auton
-    public Wings (SwerveDrivetrain drivetrain, IntakeSubsystem intake, TelescopingSubsystem telescope, 
-                  ArmSubsystem arm, PathPlannerTrajectory trajectory1, PathPlannerTrajectory trajectory2) {
+    public CenterBeta (SwerveDrivetrain drivetrain, IntakeSubsystem intake, TelescopingSubsystem telescope, ArmSubsystem arm, PathPlannerTrajectory trajectory1, PathPlannerTrajectory trajectory2) {
         
         addCommands(
             new DropCone(drivetrain, intake, telescope, arm),
-            new JustStopIntake(intake).withTimeout(0.1),
-            new armLow(arm).withTimeout(.5),
             new ParallelCommandGroup(
-                new JustOuttake(intake).withTimeout(5.4),
+                new JustOuttake(intake).withTimeout(6),
                 new RunPathPlannerTrajectory2(drivetrain, trajectory1)
             ),
-            //    FollowPathWithEvents(
-            //new RunPathPlannerTrajectory2(drivetrain, trajectory1)
             new JustStopIntake(intake).withTimeout(0.1),
-            new armMid(arm).withTimeout(.2),
-            new RunPathPlannerTrajectory2(drivetrain, trajectory2),
-            new ParallelCommandGroup(
-                new armMid(arm).withTimeout(0.7),
-                new SetHigh(telescope).withTimeout(2)
-            ),
-            new JustIntake(intake).withTimeout(0.2),
-            new SetLow(telescope).withTimeout(2),
-            new armLow(arm).withTimeout(0.2),
-            new JustStopIntake(intake).withTimeout(0.1)
+            new RunPathPlannerTrajectory2(drivetrain, trajectory2)
 
-
+            //new InstantCommand(() -> drivetrain.
         );
     }
     

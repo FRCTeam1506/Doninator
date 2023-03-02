@@ -32,6 +32,7 @@ public class Center extends SequentialCommandGroup {
         addCommands(
             new DropCone(drivetrain, intake, telescope, arm),
             new RunPathPlannerTrajectory2(drivetrain, trajectory1)
+            //new InstantCommand(() -> drivetrain.
         );
     }
     

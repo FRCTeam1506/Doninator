@@ -37,8 +37,8 @@ public class DropCone extends SequentialCommandGroup {
                 new armMid(arm)
             ).withTimeout(2),
             new JustOuttake(intake).withTimeout(0.25),
-            new SetLow(telescope).withTimeout(1.5),
-            new armLow(arm).withTimeout(1),
+            new SetLow(telescope).withTimeout(1),
+            new armLow(arm).withTimeout(0.1),
             new JustStopIntake(intake).withTimeout(0.1)
         );
     }

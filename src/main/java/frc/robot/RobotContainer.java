@@ -36,7 +36,9 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.OurBeautifulGlowingCANdleSubsystem;
 import frc.robot.utils.TrajectoryHelper;
+import frc.robot.commands.auton.Basic;
 import frc.robot.commands.auton.Center;
+import frc.robot.commands.auton.CenterBeta;
 import frc.robot.commands.auton.RA1;
 import frc.robot.commands.auton.RA100;
 import frc.robot.commands.auton.RA200;
@@ -159,7 +161,7 @@ public class RobotContainer {
 
 
   /* Trajectories */
-  public PathPlannerTrajectory B_LW1, B_LW2, B_RW1, B_RW2, RL_STR1, RL_STR2, R_Center, B_Center, RR_STR1, RR_STR2;
+  public PathPlannerTrajectory B_LW1, B_LW2, B_RW1, B_RW2, RL_STR1, RL_STR2, R_Center, B_Center, RR_STR1, RR_STR2, R_CenterBeta1, R_CenterBeta2, BlueTurn, BRW1, BRW2;
   private enum Colors { None, Red, Blue }
   private enum Autons { Nothing, LeftWing, Center, RightWing, Test }
   private SendableChooser<Colors> colorChooser = new SendableChooser<>();
@@ -283,19 +285,26 @@ public class RobotContainer {
 
   private void loadTrajectories() {
     // Test = TrajectoryHelper.loadWPILibTrajectoryFromFile("test1");
-    
-    B_LW1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("B_LW1",3.0,3.0, false);
-    B_LW2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("B_LW2",3.0,3.0, false);
-    B_RW1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("B_RW1",3.0,3.0, false);
-    B_RW2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("B_RW2",3.0,3.0, false);
+    double accel = 2;
+    B_LW1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BB_LW1",3.0,accel, false);
+    B_LW2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BB_LW2",3,accel, false);
+    B_RW1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BlueBasic",3,accel, false);
+    B_RW2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BB_RW2",3,accel, false);
     B_Center = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("B_Center",2.0,1, false);
 
     RL_STR1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RL_STR1",3.0,2, false);
     RL_STR2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RL_STR2",3.0,2, false);
-    RR_STR1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RR_STR1",3.0,1, false);
-    RR_STR2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RR_STR2",3.0,1, false);
-    R_Center = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("R_Center",1.7,1, false);
+    RR_STR1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RR_STR1",3.7,2, false);
+    RR_STR2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RR_STR2",4,2, false);
+    R_Center = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("R_Center",0.7,1, false);
 
+    R_CenterBeta1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("R_CenterBeta1",0.7,1, false);
+    R_CenterBeta2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("R_CenterBeta2",0.7,1, false);
+
+    BlueTurn = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BlueTurn",2.5,2.2, false);
+
+    BRW1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BRW1",2.5,2.2, false);
+    BRW2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BRW2",2.5,2.2, false);
 
   }
 
@@ -350,8 +359,8 @@ public class RobotContainer {
           case Test:
             // return new RA1(drivetrain, intake, telescope, arm, R_STR, B_STR, null);
             // return new RunPathPlannerTrajectory2(drivetrain, B_STR);
-              return new RA200(drivetrain, intake, telescope, arm, RR_STR1, RR_STR2);
-
+            // return new RA200(drivetrain, intake, telescope, arm, RR_STR1, RR_STR2);
+            return new CenterBeta(drivetrain, intake, telescope, arm, R_CenterBeta1, R_CenterBeta2);
         
           default:
             return new WaitCommand(15.0);
@@ -367,14 +376,16 @@ public class RobotContainer {
             return new Wings(drivetrain, intake, telescope, arm, B_LW1, B_LW2);
           
           case RightWing:
-            return new Wings(drivetrain, intake, telescope, arm, B_RW1, B_RW2);
+            // return new Wings(drivetrain, intake, telescope, arm, B_RW1, B_RW2);
+            return new Wings(drivetrain, intake, telescope, arm, BRW1, BRW2);
+            //basic
         
           case Center:
             return new Center(drivetrain, intake, telescope, arm, B_Center);
 
           case Test:
-            return new RA200(drivetrain, intake, telescope, arm, B_LW1, B_LW2);
-
+            // return new Basic(drivetrain, intake, telescope, arm, B_RW1, BlueTurn);
+            return new RunPathPlannerTrajectory2(drivetrain, BlueTurn);
 
           default:
             return new WaitCommand(15.0);
