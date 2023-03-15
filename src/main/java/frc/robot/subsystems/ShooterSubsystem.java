@@ -44,9 +44,9 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void dashboard () {
-        ShuffleboardTab tab = Shuffleboard.getTab("Shooter");
-        tab.addNumber("Velocity (RPM)", this::getVelocity);
-        tab.addNumber("Velocity Graph (RPM)", this::getVelocity).withWidget(BuiltInWidgets.kGraph);
+        // ShuffleboardTab tab = Shuffleboard.getTab("Shooter");
+        // tab.addNumber("Velocity (RPM)", this::getVelocity);
+        // tab.addNumber("Velocity Graph (RPM)", this::getVelocity).withWidget(BuiltInWidgets.kGraph);
     
 
     }

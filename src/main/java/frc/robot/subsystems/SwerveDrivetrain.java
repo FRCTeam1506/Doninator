@@ -80,9 +80,31 @@ public class SwerveDrivetrain extends SubsystemBase {
         }
     }
 
+
+    public void driveSlow(){
+        Constants.SwerveDrivetrain.MAX_SPEED = 1;
+        Constants.SwerveDrivetrain.MAX_ANGULAR_VELOCITY = 5.5;
+        for(int i = 0; i<77777; i++){
+            System.out.println("slow");
+        }
+    }
+
+    public void driveNormal(){
+        Constants.SwerveDrivetrain.MAX_SPEED = 5;
+        Constants.SwerveDrivetrain.MAX_ANGULAR_VELOCITY = 11.5;
+    }
+
+    // public void driveFast(){
+    //     Constants.SwerveDrivetrain.MAX_SPEED = 5.5;
+    //     Constants.SwerveDrivetrain.MAX_ANGULAR_VELOCITY = 11.5;
+    // }
+
+
+
     /* Gyro */
     public void zeroGyro() {
         this.gyro.setYaw(0);
+        
     }
 
     private double optimizeGyro (double degrees) {
@@ -110,6 +132,16 @@ public class SwerveDrivetrain extends SubsystemBase {
     public double getGyroAngleRadians() {
         return this.getYaw().getRadians();
     }
+
+    public double getGyroPitchDegrees() {
+        //change this next year pigeon 2 Pitch axis is Y
+        return this.gyro.getRoll() ;
+    }
+
+    public double getGyroRoll() {
+        return this.gyro.getRoll();
+    }
+
 
     /* Odometry */
     public Pose2d getPose() {
@@ -159,11 +191,13 @@ public class SwerveDrivetrain extends SubsystemBase {
     }
 
     public void dashboard() {
-        ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
-        tab.add(this);
-        tab.addNumber("Gyro Angle ???", this::getGyroAngleDegrees).withWidget(BuiltInWidgets.kGyro);
-        tab.addNumber("Gyro Angle (GRAPH) ???", this::getGyroAngleDegrees).withWidget(BuiltInWidgets.kGraph);
-        SmartDashboard.putData(this.field);
+         ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
+        // tab.add(this);
+        // tab.addNumber("Gyro Angle ???", this::getGyroAngleDegrees).withWidget(BuiltInWidgets.kGyro);
+        // tab.addNumber("Gyro Angle (GRAPH) ???", this::getGyroAngleDegrees).withWidget(BuiltInWidgets.kGraph);
+        tab.addNumber("Gyro Pitch", this::getGyroPitchDegrees).withWidget(BuiltInWidgets.kGyro);
+        tab.addNumber("Gyro Pitch (GRAPH)", this::getGyroPitchDegrees).withWidget(BuiltInWidgets.kGraph);
+        // SmartDashboard.putData(this.field);
         // SmartDashboard.putData("ANGLE PID", data);
         // SmartDashboard.putData("DRIVE PID", data);
 
@@ -174,5 +208,6 @@ public class SwerveDrivetrain extends SubsystemBase {
     public void periodic() {
         this.swerveOdometry.update(this.getYaw(), getModulePositions());
         this.field.setRobotPose(this.swerveOdometry.getPoseMeters());
+        
     }
 }

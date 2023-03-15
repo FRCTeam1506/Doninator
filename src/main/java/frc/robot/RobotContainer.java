@@ -8,6 +8,7 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
@@ -55,6 +56,8 @@ public class RobotContainer {
 
   /* Buttons */
   private final JoystickButton zeroGyro = new JoystickButton(driver, PS4Controller.Button.kCircle.value);
+  // private final JoystickButton driveSlow = new JoystickButton(driver, PS4Controller.Button.kR2.value);
+
 
   // private final JoystickButton shoot = new JoystickButton(driver, PS4Controller.Button.kTriangle.value);
   private final JoystickButton pneumaticButtonUp = new JoystickButton(operator, PS4Controller.Button.kTriangle.value);
@@ -91,6 +94,7 @@ public class RobotContainer {
 
 
   private final JoystickButton switchMode = new JoystickButton(driver, PS4Controller.Button.kTouchpad.value);
+  // private final JoystickButton slowDown = new JoystickButton(driver, PS4Controller.Button.kR2.value);
 
 
 
@@ -120,6 +124,9 @@ public class RobotContainer {
 
   /* Commands */
   private final Command c_zeroGyro = new InstantCommand( () -> drivetrain.zeroGyro() );
+  private final Command c_driveSlow = new InstantCommand( () -> drivetrain.driveSlow() );
+  private final Command c_driveNormal = new InstantCommand( () -> drivetrain.driveNormal() );
+
   private final Command c_runPneumaticUp = new InstantCommand( () -> arm.setHigh());
   private final Command c_runPneumaticMid = new InstantCommand( () -> arm.setMid());
   private final Command c_runPneumaticDown = new InstantCommand( () -> arm.setLow());
@@ -152,6 +159,7 @@ public class RobotContainer {
   private final Command c_macroStop = new InstantCommand( () -> macro.stop());
 
   private final Command c_switchMode = new InstantCommand( () -> switchMode());
+  private final Command c_slowDown = new InstantCommand( () -> slowDown());
 
 
 
@@ -161,7 +169,7 @@ public class RobotContainer {
 
 
   /* Trajectories */
-  public PathPlannerTrajectory B_LW1, B_LW2, B_RW1, B_RW2, RL_STR1, RL_STR2, R_Center, B_Center, RR_STR1, RR_STR2, R_CenterBeta1, R_CenterBeta2, BlueTurn, BRW1, BRW2;
+  public PathPlannerTrajectory B_LW1, B_LW2, B_RW1, B_RW2, RL_STR1, RL_STR2, R_Center, B_Center, RR_STR1, RR_STR2, R_CenterBeta1, R_CenterBeta2, BlueTurn, BRW1, BRW2, BLW1, BLW2, BLW1R, BLW2R;
   private enum Colors { None, Red, Blue }
   private enum Autons { Nothing, LeftWing, Center, RightWing, Test }
   private SendableChooser<Colors> colorChooser = new SendableChooser<>();
@@ -185,7 +193,7 @@ public class RobotContainer {
     checkOperatorPOV();
 
     UsbCamera cam = CameraServer.startAutomaticCapture();
-    cam.setResolution(1280, 720);
+    cam.setResolution(320, 320);
     cam.setFPS(30);
 
   }
@@ -210,6 +218,9 @@ public class RobotContainer {
     candleRainbow.onTrue(c_candleRainbow);
 
     switchMode.onTrue(c_switchMode);
+
+    // slowDown.onTrue(c_slowDown);
+    // driveSlow.onFalse(c_driveNormal);
 
   }
   private void configureManualButtonBindings() {
@@ -296,15 +307,20 @@ public class RobotContainer {
     RL_STR2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RL_STR2",3.0,2, false);
     RR_STR1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RR_STR1",3.7,2, false);
     RR_STR2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RR_STR2",4,2, false);
-    R_Center = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("R_Center",0.7,1, false);
+    R_Center = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("R_Center",1.8,1, false);
 
-    R_CenterBeta1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("R_CenterBeta1",0.7,1, false);
-    R_CenterBeta2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("R_CenterBeta2",0.7,1, false);
+    R_CenterBeta1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("R_CenterBeta1",3,2, false);
+    R_CenterBeta2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("R_CenterBeta2",1.4,1, false);
 
     BlueTurn = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BlueTurn",2.5,2.2, false);
 
-    BRW1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BRW1",2.5,2.2, false);
-    BRW2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BRW2",2.5,2.2, false);
+    BRW1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BRW1",4,2.2, false);
+    BRW2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BRW2",4,2, false);
+    BLW1R = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BRW1",4,2.2, true);
+    BLW2R = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BRW2",4,2, true);
+
+    BLW1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BLW1",4,2.2, false);
+    BLW2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BLW2",3,1.5, false);
 
   }
 
@@ -330,7 +346,15 @@ public class RobotContainer {
   private void dashboardStuff () {
     ShuffleboardTab tab = Shuffleboard.getTab("LiftingArm");
     tab.addNumber("PSI", () -> hub.getPressure(0));
+    tab.addNumber("Pitch: ", () -> drivetrain.getGyroPitchDegrees() );
+    tab.addNumber("Yaw: ", () -> drivetrain.getGyroAngleDegrees());
+    tab.addNumber("Roll: ", () -> drivetrain.getGyroRoll());
+
   }
+
+  private void slowDown(){
+    Constants.SwerveDrivetrain.MAX_SPEED = 1;
+}
 
   public Command getAutonomousCommand() {
 
@@ -346,13 +370,13 @@ public class RobotContainer {
             return new WaitCommand(15.0);
 
           case LeftWing:
-            return new Wings(drivetrain, intake, telescope, arm, RL_STR1, RL_STR2);
+            return new Wings(drivetrain, intake, telescope, arm, candle, RL_STR1, RL_STR2);
           
           case RightWing:
-            return new Wings(drivetrain, intake, telescope, arm, RR_STR1, RR_STR2);
+            return new Wings(drivetrain, intake, telescope, arm, candle, RR_STR1, RR_STR2);
         
           case Center:
-            return new Center(drivetrain, intake, telescope, arm, R_Center);
+            return new Center(drivetrain, intake, telescope, arm, candle, R_Center, null);
 
 
 
@@ -361,6 +385,7 @@ public class RobotContainer {
             // return new RunPathPlannerTrajectory2(drivetrain, B_STR);
             // return new RA200(drivetrain, intake, telescope, arm, RR_STR1, RR_STR2);
             return new CenterBeta(drivetrain, intake, telescope, arm, R_CenterBeta1, R_CenterBeta2);
+            
         
           default:
             return new WaitCommand(15.0);
@@ -373,19 +398,20 @@ public class RobotContainer {
             return new WaitCommand(15.0);
 
           case LeftWing:
-            return new Wings(drivetrain, intake, telescope, arm, B_LW1, B_LW2);
+            return new Wings(drivetrain, intake, telescope, arm, candle, BLW1, BLW2);
           
           case RightWing:
             // return new Wings(drivetrain, intake, telescope, arm, B_RW1, B_RW2);
-            return new Wings(drivetrain, intake, telescope, arm, BRW1, BRW2);
+            return new Wings(drivetrain, intake, telescope, arm, candle, BRW1, BRW2);
             //basic
         
           case Center:
-            return new Center(drivetrain, intake, telescope, arm, B_Center);
+            return new Center(drivetrain, intake, telescope, arm, candle, R_Center, null);
 
           case Test:
             // return new Basic(drivetrain, intake, telescope, arm, B_RW1, BlueTurn);
-            return new RunPathPlannerTrajectory2(drivetrain, BlueTurn);
+            // return new RunPathPlannerTrajectory2(drivetrain, BlueTurn);
+            return new Wings(drivetrain, intake, telescope, arm, candle, BLW1R, BLW2R);
 
           default:
             return new WaitCommand(15.0);

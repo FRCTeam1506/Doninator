@@ -24,6 +24,7 @@ public class OurBeautifulGlowingCANdleSubsystem extends SubsystemBase {
     int rY = 199;
     int gY = 179;
     int bY = 2;
+
     
     int rP = 212;
     int gP = 66;
@@ -35,6 +36,8 @@ public class OurBeautifulGlowingCANdleSubsystem extends SubsystemBase {
         config.brightnessScalar = 1; // dim the LEDs to half brightness
         candle.configAllSettings(config);
         dashboard();
+
+        // candle.setLEDs(1,1,1,1,8, 1);
     }
 
     public void purple () {

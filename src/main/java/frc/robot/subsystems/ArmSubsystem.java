@@ -62,8 +62,8 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     private void dashboard () {
-        ShuffleboardTab tab = Shuffleboard.getTab("Climber");
-        tab.add(this);
+        // ShuffleboardTab tab = Shuffleboard.getTab("Climber");
+        // tab.add(this);
         // tab.addString("Arm State", this::getStateName);
 
         // tab.addNumber("Left Motor Pos", leftMotor::getSelectedSensorPosition);

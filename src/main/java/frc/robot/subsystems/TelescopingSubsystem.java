@@ -30,8 +30,8 @@ public class TelescopingSubsystem extends SubsystemBase {
     double startingEncoderCount = encoderCount;
     double speed = 0.3;
     private static final double kP = 0.61; // 0.84
-    private static final double kI = 0.0;
-    private static final double kD = 0.0;
+    private static final double kI = 0.00025;
+    private static final double kD = 0;
     private static final double kF = 0.4;  // 0.4
 
     private static final double kVelocity = 40_000.0;       // 62_000.0
@@ -105,12 +105,18 @@ public class TelescopingSubsystem extends SubsystemBase {
 
     public void runHigh(){
         targetPosition = 190000;
-        motor.set(TalonFXControlMode.MotionMagic, 165000); //190k, 156821
+        motor.set(TalonFXControlMode.MotionMagic, 151173); // 165k, 162500 //158812
     }
+
+    public void runHighAuto(){
+        targetPosition = 161290;
+        motor.set(TalonFXControlMode.MotionMagic, 161290); // 165k, 162500 //158812
+    }
+
 
     public void runMid(){
         targetPosition = 87191;
-        motor.set(TalonFXControlMode.MotionMagic, 57170); //87191, 57170
+        motor.set(TalonFXControlMode.MotionMagic, 50700); //87191, 57170
     }
 
     public void runHP(){

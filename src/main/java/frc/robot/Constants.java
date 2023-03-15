@@ -31,8 +31,8 @@ public final class Constants {
         public static final double OPEN_LOOP_RAMP   = 0.25;
         public static final double CLOSED_LOOP_RAMP = 0.0;
 
-        public static final double DRIVE_GEAR_RATIO = (7.36 / 1.0);  // for old bubble test set to 6.54:1
-        public static final double ANGLE_GEAR_RATIO = (15.43 / 1.0); // for old bubble test set to 15.43
+        public static final double DRIVE_GEAR_RATIO = (6.75 / 1.0);  // higher gear ratio set to 7.36:1
+        public static final double ANGLE_GEAR_RATIO = (15.43 / 1.0); // for swerve X modules set to 15.43
 
         public static final SwerveDriveKinematics SWERVE_KINEMATICS = new SwerveDriveKinematics(
             new Translation2d(  WHEEL_BASE / 2.0,   TRACK_WIDTH / 2.0),
@@ -70,8 +70,8 @@ public final class Constants {
         public static final double FF_kA    = (0.00337 / 12);   // 0.27
 
         /* Swerve Profiling Values */
-        public static final double MAX_SPEED            = 4.5;  // m/s //4.5
-        public static final double MAX_ANGULAR_VELOCITY = 11.5; // m/s //11.5
+        public static double MAX_SPEED            = 9;  // m/s //4.5 //25
+        public static double MAX_ANGULAR_VELOCITY = 11.5; // m/s //11.5
 
         /* Neutral Modes */
         public static final NeutralMode ANGLE_NEUTRAL_MODE = NeutralMode.Coast;
@@ -90,7 +90,7 @@ public final class Constants {
             public static final int DRIVE_MOTOR_ID  = 12;
             public static final int ANGLE_MOTOR_ID  = 11;
             public static final int CAN_CODER_ID    = 10;
-            public static final double ANGLE_OFFSET = 195.0; //317.0
+            public static final double ANGLE_OFFSET = 308; //317.0
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(DRIVE_MOTOR_ID, ANGLE_MOTOR_ID, CAN_CODER_ID, ANGLE_OFFSET);
         }
@@ -100,7 +100,7 @@ public final class Constants {
             public static final int DRIVE_MOTOR_ID  = 22;
             public static final int ANGLE_MOTOR_ID  = 21;
             public static final int CAN_CODER_ID    = 20;
-            public static final double ANGLE_OFFSET = 265.0; //237.0;
+            public static final double ANGLE_OFFSET = 9.0; //237.0;
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(DRIVE_MOTOR_ID, ANGLE_MOTOR_ID, CAN_CODER_ID, ANGLE_OFFSET);
         }
@@ -110,7 +110,7 @@ public final class Constants {
             public static final int DRIVE_MOTOR_ID  = 32;
             public static final int ANGLE_MOTOR_ID  = 31;
             public static final int CAN_CODER_ID    = 30;
-            public static final double ANGLE_OFFSET = 249.0; //204.0;
+            public static final double ANGLE_OFFSET = 234.4; //204.0;
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(DRIVE_MOTOR_ID, ANGLE_MOTOR_ID, CAN_CODER_ID, ANGLE_OFFSET);
         }
@@ -120,7 +120,7 @@ public final class Constants {
             public static final int DRIVE_MOTOR_ID  = 42;
             public static final int ANGLE_MOTOR_ID  = 41;
             public static final int CAN_CODER_ID    = 40;
-            public static final double ANGLE_OFFSET = 340.0; //292.0;
+            public static final double ANGLE_OFFSET = 58.7; //292.0;
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(DRIVE_MOTOR_ID, ANGLE_MOTOR_ID, CAN_CODER_ID, ANGLE_OFFSET);
         }
@@ -131,8 +131,8 @@ public final class Constants {
     }
 
     public static final class Auton {
-        public static final double MAX_SPEED_MPS            = 7.0;    // meters per second
-        public static final double MAX_ACCELERATION_MPSS    = 5.0;    // meters per second squared
+        public static final double MAX_SPEED_MPS            = 4.0;    // meters per second
+        public static final double MAX_ACCELERATION_MPSS    = 1.0;    // meters per second squared
 
         public static final double MAX_ANGULAR_SPEED_RPS    = 2 * Math.PI;      // radians per second
         public static final double MAX_ANGULAR_SPEED_RPSS   = 2 * Math.PI;      // radians per second squared
@@ -147,7 +147,7 @@ public final class Constants {
 
         // public static final ProfiledPIDController ROT_PID_CONTROLLER = new ProfiledPIDController(.13, 0, .39, THETA_CONTROLLER_CONTRAINTS);
         // public static final PIDController THETA_CONTROLLER = new PIDController(10.0, 0.0, 0.0, THETA_CONTROLLER_CONTRAINTS);
-        public static final PIDController THETA_CONTROLLER = new PIDController(10.0, 0.0, 0.0);
+        public static final PIDController THETA_CONTROLLER = new PIDController(5.0, 0.0, 0.0); //kP 10
 
     }
 
@@ -170,9 +170,9 @@ public final class Constants {
     public static final class IntakeSubsystem{
         public static final int MOTOR_ID = 61;
         public static final double CUBE_DEFAULT_INTAKE_SPEED = 0.3;
-        public static final double CONE_DEFAULT_INTAKE_SPEED = 0.3; // 0.33
-        public static final double CUBE_DEFAULT_OUTTAKE_SPEED = 0.3;
-        public static final double CONE_DEFAULT_OUTTAKE_SPEED = 0.3; // 0.33
+        public static final double CONE_DEFAULT_INTAKE_SPEED = 0.35; // 0.33
+        public static final double CUBE_DEFAULT_OUTTAKE_SPEED = 0.4; //0.3
+        public static final double CONE_DEFAULT_OUTTAKE_SPEED = 0.25; // 0.33  //0.2
 
 
     }
@@ -180,7 +180,7 @@ public final class Constants {
     public static final class TelescopingSubsystem{
         public static final int MOTOR_ID = 60;
         public static final int DIO_PORT = 1;
-        public static final double DEFAULT_SPEED = 0.45; // 0.33 //0.65
+        public static final double DEFAULT_SPEED = 0.65; // 0.33 //0.65
     }
 
     public static final class CandleSubsystem{

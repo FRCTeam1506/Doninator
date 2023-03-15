@@ -32,7 +32,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public void intake (double x) {
         //previously x was defaultSpeed
         motor.set(TalonFXControlMode.PercentOutput, x);
-        System.out.println("Encoder: " + encoderCount);
+        // System.out.println("Encoder: " + encoderCount);
     }
 
     public void intakeDefSpeed(){
@@ -41,6 +41,16 @@ public class IntakeSubsystem extends SubsystemBase {
         }
         else{
             motor.set(TalonFXControlMode.PercentOutput, Constants.IntakeSubsystem.CUBE_DEFAULT_INTAKE_SPEED);
+        }
+
+    }
+
+    public void intakeSlowSpeed(){
+        if(Constants.CandleSubsystem.cone == true){
+            motor.set(TalonFXControlMode.PercentOutput, 0.2);
+        }
+        else{
+            motor.set(TalonFXControlMode.PercentOutput, -0.2);
         }
 
     }
@@ -68,8 +78,8 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     private void dashboard () {
-        ShuffleboardTab tab = Shuffleboard.getTab("Intake");
-        tab.add(this);
+        // ShuffleboardTab tab = Shuffleboard.getTab("Intake");
+        // tab.add(this);
         // tab.addString("XFactor State",this::getXFactorStateName);
     }
 

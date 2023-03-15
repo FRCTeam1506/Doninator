@@ -6,10 +6,11 @@ import frc.robot.subsystems.SwerveDrivetrain;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import java.lang.Math;
 
 public class SwerveTeleop extends CommandBase {
 
-    private static final double DEADBAND = 0.10;
+    private static final double DEADBAND = 0.08;
 
     private double rotation;
     private Translation2d translation;
@@ -41,6 +42,12 @@ public class SwerveTeleop extends CommandBase {
         yAxis = (Math.abs(yAxis) < DEADBAND) ? 0 : yAxis;
         xAxis = (Math.abs(xAxis) < DEADBAND) ? 0 : xAxis;
         rAxis = (Math.abs(rAxis) < DEADBAND) ? 0 : rAxis;
+
+        yAxis = Math.abs(yAxis)*yAxis;
+        xAxis = Math.abs(xAxis)*xAxis;
+
+        // yAxis = Math.pow(Math.abs(yAxis), 1.4);
+        // xAxis = Math.pow(Math.abs(xAxis), 1.4);
 
         translation = new Translation2d(yAxis, xAxis).times(Constants.SwerveDrivetrain.MAX_SPEED);
         rotation = rAxis * Constants.SwerveDrivetrain.MAX_ANGULAR_VELOCITY;
