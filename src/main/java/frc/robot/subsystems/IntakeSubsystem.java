@@ -8,6 +8,11 @@ import com.ctre.phoenix.motorcontrol.ControlFrame;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticHub;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -16,11 +21,13 @@ public class IntakeSubsystem extends SubsystemBase {
 
     Conversions conversions = new Conversions();
 
+    private DoubleSolenoid solenoid;
     private TalonFX motor = new TalonFX(Constants.IntakeSubsystem.MOTOR_ID);
     double encoderCount = motor.getSelectedSensorPosition();
 
 
-    public IntakeSubsystem () {
+    public IntakeSubsystem (PneumaticHub hub) {
+        solenoid = hub.makeDoubleSolenoid(Constants.IntakeSubsystem.SolenoidId1, Constants.IntakeSubsystem.SolenoidId2);
         motor.configFactoryDefault();
         motor.setControlFramePeriod(ControlFrame.Control_3_General, 100);
         motor.setInverted(TalonFXInvertType.CounterClockwise);
@@ -62,6 +69,14 @@ public class IntakeSubsystem extends SubsystemBase {
         else{
             motor.set(TalonFXControlMode.PercentOutput, -Constants.IntakeSubsystem.CUBE_DEFAULT_OUTTAKE_SPEED);
         }
+    }
+
+    public void pneumaticRetract(){
+        solenoid.set(Value.kReverse);
+    }
+
+    public void pneumaticExtract(){
+        solenoid.set(Value.kForward);
     }
 
     public void intakeRPM(double rpm){        

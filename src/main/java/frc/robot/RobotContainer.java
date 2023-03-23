@@ -66,6 +66,9 @@ public class RobotContainer {
 
   private final JoystickButton outtakeButton = new JoystickButton(operator, PS4Controller.Button.kL2.value);
   private final JoystickButton intakeButton = new JoystickButton(operator, PS4Controller.Button.kR2.value);
+  private final JoystickButton intakeIn = new JoystickButton(operator, PS4Controller.Button.kShare.value);
+  private final JoystickButton intakeOut = new JoystickButton(operator, PS4Controller.Button.kOptions.value);
+
 
   private final JoystickButton telescopeForward = new JoystickButton(operator, PS4Controller.Button.kL1.value);
   private final JoystickButton telescopeBack = new JoystickButton(operator, PS4Controller.Button.kR1.value);
@@ -114,7 +117,7 @@ public class RobotContainer {
   /* Subsystems */
   private final SwerveDrivetrain drivetrain = new SwerveDrivetrain();
   private final ArmSubsystem arm = new ArmSubsystem(hub);
-  private final IntakeSubsystem intake = new IntakeSubsystem();
+  private final IntakeSubsystem intake = new IntakeSubsystem(hub);
   private final frc.robot.subsystems.TelescopingSubsystem telescope = new frc.robot.subsystems.TelescopingSubsystem();
   private final OurBeautifulGlowingCANdleSubsystem candle = new OurBeautifulGlowingCANdleSubsystem();
   private final AllignedSubsystem macro = new AllignedSubsystem(arm, telescope);
@@ -134,6 +137,9 @@ public class RobotContainer {
   public final Command c_runIntake = new InstantCommand( () -> intake.intakeDefSpeed());
   private final Command c_outtakeIntake = new InstantCommand( () -> intake.outtakeDefSpeed());
   private final Command c_stopIntake = new InstantCommand( () -> intake.stop());
+  private final Command c_intakeOut = new InstantCommand( () -> intake.pneumaticExtract());
+  private final Command c_intakeIn = new InstantCommand( () -> intake.pneumaticRetract());
+
 
   private final Command c_TelescopeForward = new InstantCommand( () -> telescope.forward());
   private final Command c_TelescopeBack = new InstantCommand( () -> telescope.backward());
@@ -169,7 +175,8 @@ public class RobotContainer {
 
 
   /* Trajectories */
-  public PathPlannerTrajectory B_LW1, B_LW2, B_RW1, B_RW2, RL_STR1, RL_STR2, R_Center, B_Center, RR_STR1, RR_STR2, R_CenterBeta1, R_CenterBeta2, BlueTurn, BRW1, BRW2, BLW1, BLW2, BLW1R, BLW2R;
+  public PathPlannerTrajectory B_LW1, B_LW2, B_RW1, B_RW2, RL_STR1, RL_STR2, R_Center, B_Center, RR_STR1,
+                               RR_STR2, R_CenterBeta1, R_CenterBeta2, BlueTurn, BRW1, BRW2, BLW1, BLW2, BLW1R, BLW2R;
   private enum Colors { None, Red, Blue }
   private enum Autons { Nothing, LeftWing, Center, RightWing, Test }
   private SendableChooser<Colors> colorChooser = new SendableChooser<>();
@@ -192,9 +199,9 @@ public class RobotContainer {
     dashboardStuff();
     checkOperatorPOV();
 
-    UsbCamera cam = CameraServer.startAutomaticCapture();
-    cam.setResolution(320, 320);
-    cam.setFPS(30);
+    // UsbCamera cam = CameraServer.startAutomaticCapture();
+    // cam.setResolution(320, 320);
+    // cam.setFPS(30);
 
   }
 
@@ -218,6 +225,9 @@ public class RobotContainer {
     candleRainbow.onTrue(c_candleRainbow);
 
     switchMode.onTrue(c_switchMode);
+
+    intakeIn.onTrue(c_intakeIn);
+    intakeOut.onTrue(c_intakeOut);
 
     // slowDown.onTrue(c_slowDown);
     // driveSlow.onFalse(c_driveNormal);

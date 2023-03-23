@@ -191,12 +191,12 @@ public class SwerveDrivetrain extends SubsystemBase {
     }
 
     public void dashboard() {
-         ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
+        //  ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
         // tab.add(this);
         // tab.addNumber("Gyro Angle ???", this::getGyroAngleDegrees).withWidget(BuiltInWidgets.kGyro);
         // tab.addNumber("Gyro Angle (GRAPH) ???", this::getGyroAngleDegrees).withWidget(BuiltInWidgets.kGraph);
-        tab.addNumber("Gyro Pitch", this::getGyroPitchDegrees).withWidget(BuiltInWidgets.kGyro);
-        tab.addNumber("Gyro Pitch (GRAPH)", this::getGyroPitchDegrees).withWidget(BuiltInWidgets.kGraph);
+        // tab.addNumber("Gyro Pitch", this::getGyroPitchDegrees).withWidget(BuiltInWidgets.kGyro);
+        // tab.addNumber("Gyro Pitch (GRAPH)", this::getGyroPitchDegrees).withWidget(BuiltInWidgets.kGraph);
         // SmartDashboard.putData(this.field);
         // SmartDashboard.putData("ANGLE PID", data);
         // SmartDashboard.putData("DRIVE PID", data);

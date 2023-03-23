@@ -172,7 +172,10 @@ public final class Constants {
         public static final double CUBE_DEFAULT_INTAKE_SPEED = 0.3;
         public static final double CONE_DEFAULT_INTAKE_SPEED = 0.35; // 0.33
         public static final double CUBE_DEFAULT_OUTTAKE_SPEED = 0.4; //0.3
-        public static final double CONE_DEFAULT_OUTTAKE_SPEED = 0.25; // 0.33  //0.2
+        public static final double CONE_DEFAULT_OUTTAKE_SPEED = 0.44; // 0.2  //0.25 //0.3 too slow standish
+
+        public static final int SolenoidId1 = 5; //in
+        public static final int SolenoidId2 = 6; //out
 
 
     }

@@ -104,19 +104,19 @@ public class TelescopingSubsystem extends SubsystemBase {
     }
 
     public void runHigh(){
-        targetPosition = 190000;
-        motor.set(TalonFXControlMode.MotionMagic, 151173); // 165k, 162500 //158812
+        // targetPosition = 190000;
+        motor.set(TalonFXControlMode.MotionMagic, 137000); // 165k, 162500 //158812 //151173 //145k too low standish
     }
 
     public void runHighAuto(){
         targetPosition = 161290;
-        motor.set(TalonFXControlMode.MotionMagic, 161290); // 165k, 162500 //158812
+        motor.set(TalonFXControlMode.MotionMagic, 143800); // 165k, 163290 142500
     }
 
 
     public void runMid(){
         targetPosition = 87191;
-        motor.set(TalonFXControlMode.MotionMagic, 50700); //87191, 57170
+        motor.set(TalonFXControlMode.MotionMagic, 48200); //57170, 50700
     }
 
     public void runHP(){
