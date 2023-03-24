@@ -5,12 +5,21 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import java.lang.Math;
 
 public class Limelight3 extends SubsystemBase {
+
+    SwerveModuleState forward;
+    Rotation2d rotation;
+    SwerveModuleState stop;
+
+
+
     NetworkTable table;
     NetworkTableEntry tx;
     NetworkTableEntry ty;
@@ -28,6 +37,11 @@ public class Limelight3 extends SubsystemBase {
     double minSpeed = 0.1;  // Minimum speed for the robot to move
 
     public Limelight3() {
+        rotation = new Rotation2d(0);
+        forward = new SwerveModuleState(0.7,rotation);
+        stop = new SwerveModuleState(0,rotation);
+        SwerveModuleState[] states = {forward, forward, forward, forward};
+
         table = NetworkTableInstance.getDefault().getTable("limelight");
         table.getEntry("pipeline").setNumber(1);
         tx = table.getEntry("tx");
