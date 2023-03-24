@@ -29,34 +29,52 @@ public class AllignedSubsystem extends SubsystemBase {
 
     ArmSubsystem arm;
     TelescopingSubsystem telescope;
+    IntakeSubsystem intake;
 
-    public AllignedSubsystem(ArmSubsystem arm, TelescopingSubsystem telescope){
+    public AllignedSubsystem(ArmSubsystem arm, TelescopingSubsystem telescope, IntakeSubsystem intake){
         this.arm = arm;
         this.telescope = telescope;
-
+        this.intake = intake;
     }
 
     public void ground(){
+        intake.pneumaticRetract();
         arm.setLow();
         telescope.runZero();
     }
 
     public void mid(){
+        if(Constants.CandleSubsystem.cone){
+            intake.pneumaticExtract();
+        }
+        else{
+            intake.pneumaticRetract();
+        }
+
         arm.setMid();
         telescope.runMid();
     }
 
     public void high(){
+        if(Constants.CandleSubsystem.cone){
+            intake.pneumaticExtract();
+        }
+        else{
+            intake.pneumaticRetract();
+        }
+
         arm.setMid();
         telescope.runHigh();
     }
 
     public void transport(){
+        intake.pneumaticRetract();
         arm.setHigh();
         telescope.runZero();
     }
 
     public void HP(){
+        intake.pneumaticRetract();
         arm.setMid();
         telescope.runZero();
     }

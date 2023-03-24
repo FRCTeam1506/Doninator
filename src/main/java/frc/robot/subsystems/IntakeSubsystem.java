@@ -73,10 +73,13 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void pneumaticRetract(){
         solenoid.set(Value.kReverse);
+        System.out.println("pneumatic");
     }
 
     public void pneumaticExtract(){
         solenoid.set(Value.kForward);
+        System.out.println("pneumatic2");
+
     }
 
     public void intakeRPM(double rpm){        

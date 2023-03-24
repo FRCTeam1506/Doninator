@@ -66,8 +66,8 @@ public class RobotContainer {
 
   private final JoystickButton outtakeButton = new JoystickButton(operator, PS4Controller.Button.kL2.value);
   private final JoystickButton intakeButton = new JoystickButton(operator, PS4Controller.Button.kR2.value);
-  private final JoystickButton intakeIn = new JoystickButton(operator, PS4Controller.Button.kShare.value);
-  private final JoystickButton intakeOut = new JoystickButton(operator, PS4Controller.Button.kOptions.value);
+  private final JoystickButton intakeIn = new JoystickButton(driver, PS4Controller.Button.kShare.value);
+  private final JoystickButton intakeOut = new JoystickButton(driver, PS4Controller.Button.kOptions.value);
 
 
   private final JoystickButton telescopeForward = new JoystickButton(operator, PS4Controller.Button.kL1.value);
@@ -120,7 +120,7 @@ public class RobotContainer {
   private final IntakeSubsystem intake = new IntakeSubsystem(hub);
   private final frc.robot.subsystems.TelescopingSubsystem telescope = new frc.robot.subsystems.TelescopingSubsystem();
   private final OurBeautifulGlowingCANdleSubsystem candle = new OurBeautifulGlowingCANdleSubsystem();
-  private final AllignedSubsystem macro = new AllignedSubsystem(arm, telescope);
+  private final AllignedSubsystem macro = new AllignedSubsystem(arm, telescope, intake);
 
   public static PneumaticHub hub      = new PneumaticHub();
   public static Compressor compressor = new Compressor(1, PneumaticsModuleType.REVPH);
