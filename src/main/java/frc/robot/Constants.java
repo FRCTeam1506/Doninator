@@ -170,8 +170,8 @@ public final class Constants {
     public static final class IntakeSubsystem{
         public static final int MOTOR_ID = 61;
         public static final double CUBE_DEFAULT_INTAKE_SPEED = 0.3;
-        public static final double CONE_DEFAULT_INTAKE_SPEED = 0.35; // 0.33
-        public static final double CUBE_DEFAULT_OUTTAKE_SPEED = 0.4; //0.3
+        public static final double CONE_DEFAULT_INTAKE_SPEED = 0.75; // 0.35 standish
+        public static final double CUBE_DEFAULT_OUTTAKE_SPEED = 1.0; //0.4
         public static final double CONE_DEFAULT_OUTTAKE_SPEED = 0.44; // 0.2  //0.25 //0.3 too slow standish
 
         public static final int SolenoidId1 = 5; //in
@@ -183,7 +183,7 @@ public final class Constants {
     public static final class TelescopingSubsystem{
         public static final int MOTOR_ID = 60;
         public static final int DIO_PORT = 1;
-        public static final double DEFAULT_SPEED = 0.65; // 0.33 //0.65
+        public static final double DEFAULT_SPEED = 0.9; //0.65
     }
 
     public static final class CandleSubsystem{

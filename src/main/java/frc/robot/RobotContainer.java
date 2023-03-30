@@ -66,8 +66,8 @@ public class RobotContainer {
 
   private final JoystickButton outtakeButton = new JoystickButton(operator, PS4Controller.Button.kL2.value);
   private final JoystickButton intakeButton = new JoystickButton(operator, PS4Controller.Button.kR2.value);
-  private final JoystickButton intakeIn = new JoystickButton(driver, PS4Controller.Button.kShare.value);
-  private final JoystickButton intakeOut = new JoystickButton(driver, PS4Controller.Button.kOptions.value);
+  private final JoystickButton intakeIn = new JoystickButton(driver, PS4Controller.Button.kL2.value);
+  private final JoystickButton intakeOut = new JoystickButton(driver, PS4Controller.Button.kR2.value);
 
 
   private final JoystickButton telescopeForward = new JoystickButton(operator, PS4Controller.Button.kL1.value);
@@ -90,7 +90,7 @@ public class RobotContainer {
   private final JoystickButton macroLow = new JoystickButton(operator, PS4Controller.Button.kSquare.value);
   private final JoystickButton macroMid = new JoystickButton(operator, PS4Controller.Button.kCircle.value);
   private final JoystickButton macroHigh = new JoystickButton(operator, PS4Controller.Button.kTriangle.value);
-  private final JoystickButton macroHP = new JoystickButton(operator, PS4Controller.Button.kPS.value);
+  private final JoystickButton macroHP = new JoystickButton(operator, PS4Controller.Button.kCross.value);
   private final JoystickButton macroTransport = new JoystickButton(operator, PS4Controller.Button.kTouchpad.value);
 
   private final JoystickButton operatorOptions = new JoystickButton(operator, PS4Controller.Button.kOptions.value);
@@ -307,11 +307,11 @@ public class RobotContainer {
   private void loadTrajectories() {
     // Test = TrajectoryHelper.loadWPILibTrajectoryFromFile("test1");
     double accel = 2;
-    B_LW1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BB_LW1",3.0,accel, false);
-    B_LW2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BB_LW2",3,accel, false);
-    B_RW1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BlueBasic",3,accel, false);
-    B_RW2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BB_RW2",3,accel, false);
-    B_Center = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("B_Center",2.0,1, false);
+    BLW1R = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BB_LW1",3.0,2.0, false);
+    BLW2R = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BB_LW2",3,2.0, false);
+    // B_RW1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BlueBasic",3,accel, false);
+    // B_RW2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BB_RW2",3,accel, false);
+    // B_Center = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("B_Center",2.0,1, false);
 
     RL_STR1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RL_STR1",3.0,2, false);
     RL_STR2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RL_STR2",3.0,2, false);
@@ -322,12 +322,12 @@ public class RobotContainer {
     R_CenterBeta1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("R_CenterBeta1",3,2, false);
     R_CenterBeta2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("R_CenterBeta2",1.4,1, false);
 
-    BlueTurn = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BlueTurn",2.5,2.2, false);
+    // BlueTurn = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BlueTurn",2.5,2.2, false);
 
     BRW1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BRW1",4,2.2, false);
     BRW2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BRW2",4,2, false);
-    BLW1R = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BRW1",4,2.2, true);
-    BLW2R = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BRW2",4,2, true);
+    // BLW1R = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BRW1",4,2.2, false);
+    // BLW2R = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BRW2",4,2, false);
 
     BLW1 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BLW1",4,2.2, false);
     BLW2 = TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BLW2",3,1.5, false);

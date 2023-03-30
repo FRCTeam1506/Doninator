@@ -51,6 +51,10 @@ public class ArmSubsystem extends SubsystemBase {
         // stage1.set(Value.kOff);
         // stage2.set(Value.kOff);
     }
+    public void setHP() {
+        stage1.set(Value.kReverse);
+        stage2.set(Value.kForward);
+    }
 
 
     @Override

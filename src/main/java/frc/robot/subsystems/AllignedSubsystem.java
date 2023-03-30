@@ -75,8 +75,8 @@ public class AllignedSubsystem extends SubsystemBase {
 
     public void HP(){
         intake.pneumaticRetract();
-        arm.setMid();
-        telescope.runZero();
+        arm.setHP();
+        telescope.runHP(); //runLow
     }
 
     public void stop(){
