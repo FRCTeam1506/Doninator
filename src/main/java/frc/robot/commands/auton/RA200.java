@@ -41,10 +41,10 @@ public class RA200 extends SequentialCommandGroup {
             new JustStopIntake(intake).withTimeout(0.1),
             new ParallelCommandGroup(
                 new JustOuttake(intake).withTimeout(5.2),
-                new RunPathPlannerTrajectory2(drivetrain, trajectory1)
+                new RunPathPlannerTrajectory2(drivetrain, trajectory1,true)
             ),
             new JustStopIntake(intake).withTimeout(0.1),
-            new RunPathPlannerTrajectory2(drivetrain, trajectory2),
+            new RunPathPlannerTrajectory2(drivetrain, trajectory2,false),
             new ParallelCommandGroup(
                 new armMid(arm).withTimeout(0.7),
                 new SetHigh(telescope).withTimeout(2)

@@ -36,7 +36,7 @@ public class Center extends SequentialCommandGroup {
         addCommands(
             new DropCone(drivetrain, intake, telescope, arm, candle),
             new armHigh(arm).withTimeout(0.3),
-            new RunPathPlannerTrajectory2(drivetrain, trajectory1),
+            new RunPathPlannerTrajectory2(drivetrain, trajectory1, true),
             new ForwardSlow2(drivetrain).until(() -> drivetrain.getGyroRoll() <11),
             new BackwardsSlow(drivetrain).withTimeout(1.25), //1.75
             new Stop(drivetrain)

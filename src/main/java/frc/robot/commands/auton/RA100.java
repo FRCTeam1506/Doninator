@@ -40,7 +40,7 @@ public class RA100 extends SequentialCommandGroup {
             new JustStopIntake(intake).withTimeout(0.1),
             new ParallelCommandGroup(
                 new JustOuttake(intake).withTimeout(5.5),
-                new RunPathPlannerTrajectory2(drivetrain, trajectory1)
+                new RunPathPlannerTrajectory2(drivetrain, trajectory1,true)
             ),
             new JustStopIntake(intake).withTimeout(0.1)
         );

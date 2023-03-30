@@ -41,7 +41,7 @@ public class RA1 extends SequentialCommandGroup {
         new JustStopIntake(intake).withTimeout(0.1),
         new ParallelCommandGroup(
             new JustOuttake(intake).withTimeout(5.2),
-            new RunPathPlannerTrajectory2(drivetrain, trajectory1)
+            new RunPathPlannerTrajectory2(drivetrain, trajectory1,true)
         )
         );
     }

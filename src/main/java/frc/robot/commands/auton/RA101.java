@@ -38,7 +38,7 @@ public class RA101 extends SequentialCommandGroup {
             new SetLow(telescope).withTimeout(2),
             new armLow(arm).withTimeout(1),
             new JustStopIntake(intake).withTimeout(0.1),
-            new RunPathPlannerTrajectory2(drivetrain, trajectory1)
+            new RunPathPlannerTrajectory2(drivetrain, trajectory1,false)
             // new JustIntake(intake).withTimeout(1.5)
         );
     }

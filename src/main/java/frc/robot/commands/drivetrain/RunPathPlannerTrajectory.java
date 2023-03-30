@@ -10,9 +10,9 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.subsystems.SwerveDrivetrain;
 
-public class RunPathPlannerTrajectory2 extends SequentialCommandGroup {
+public class RunPathPlannerTrajectory extends SequentialCommandGroup {
     
-    public RunPathPlannerTrajectory2 (SwerveDrivetrain drivetrain, PathPlannerTrajectory trajectory,boolean isFirstPath) {
+    public RunPathPlannerTrajectory (SwerveDrivetrain drivetrain, PathPlannerTrajectory trajectory,boolean isMirrored, boolean isFirstPath) {
         addRequirements(drivetrain);
         addCommands(
             new InstantCommand(() -> {
@@ -30,6 +30,7 @@ public class RunPathPlannerTrajectory2 extends SequentialCommandGroup {
                 Constants.Auton.PY_CONTROLLER,
                 Constants.Auton.THETA_CONTROLLER,
                 drivetrain::setModuleStates,
+                isMirrored,
                 drivetrain
             )
         );
