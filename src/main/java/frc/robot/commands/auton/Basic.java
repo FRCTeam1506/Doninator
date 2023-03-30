@@ -38,7 +38,7 @@ public class Basic extends SequentialCommandGroup {
             new armLow(arm).withTimeout(.5),
             // new RunPathPlannerTrajectory2(drivetrain, turn),
             new ParallelCommandGroup(
-                new RunPathPlannerTrajectory2(drivetrain, trajectory1)
+                new RunPathPlannerTrajectory2(drivetrain, trajectory1, true)
             ),
             //    FollowPathWithEvents(
             //new RunPathPlannerTrajectory2(drivetrain, trajectory1)
