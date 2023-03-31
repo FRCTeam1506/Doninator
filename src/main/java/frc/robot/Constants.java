@@ -147,7 +147,7 @@ public final class Constants {
 
         // public static final ProfiledPIDController ROT_PID_CONTROLLER = new ProfiledPIDController(.13, 0, .39, THETA_CONTROLLER_CONTRAINTS);
         // public static final PIDController THETA_CONTROLLER = new PIDController(10.0, 0.0, 0.0, THETA_CONTROLLER_CONTRAINTS);
-        public static final PIDController THETA_CONTROLLER = new PIDController(5.0, 0.0, 0.0); //kP 10
+        public static final PIDController THETA_CONTROLLER = new PIDController(4.0, 0.0, 0.0); //kP 10
 
     }
 

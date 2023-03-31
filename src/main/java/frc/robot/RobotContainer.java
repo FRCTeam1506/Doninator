@@ -44,6 +44,7 @@ import frc.robot.commands.auton.RA1;
 import frc.robot.commands.auton.RA100;
 import frc.robot.commands.auton.RA200;
 import frc.robot.commands.auton.Wings;
+import frc.robot.commands.auton.Wings2;
 
 public class RobotContainer {
 
@@ -421,7 +422,7 @@ public class RobotContainer {
           case Test:
             // return new Basic(drivetrain, intake, telescope, arm, B_RW1, BlueTurn);
             // return new RunPathPlannerTrajectory2(drivetrain, BlueTurn);
-            return new Wings(drivetrain, intake, telescope, arm, candle, BLW1R, BLW2R);
+            return new Wings2(drivetrain, intake, telescope, arm, candle, BLW1R, BLW2R);
 
           default:
             return new WaitCommand(15.0);

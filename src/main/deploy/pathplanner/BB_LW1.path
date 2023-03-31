@@ -7,8 +7,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.959088888220572,
-        "y": 4.894376008438179
+        "x": 3.6960733550568388,
+        "y": 4.8829405504745385
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -16,26 +16,28 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [],
-        "executionBehavior": "parallel",
+        "names": [
+          "event1"
+        ],
+        "executionBehavior": "sequential",
         "waitBehavior": "none",
         "waitTime": 0
       }
     },
     {
       "anchorPoint": {
-        "x": 5.6057948349848195,
-        "y": 4.848634176583617
+        "x": 5.308472927930163,
+        "y": 4.780021428801773
       },
       "prevControl": {
-        "x": 4.335635091264852,
-        "y": 4.848634176583617
+        "x": 4.062008009893337,
+        "y": 4.860069634547257
       },
       "nextControl": {
-        "x": 6.383405976512381,
-        "y": 4.848634176583617
+        "x": 6.084485488088194,
+        "y": 4.7301857598008
       },
-      "holonomicAngle": 0,
+      "holonomicAngle": -7.853313301978214,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
@@ -49,26 +51,35 @@
     },
     {
       "anchorPoint": {
-        "x": 7.31,
-        "y": 4.64
+        "x": 7.241065323785427,
+        "y": 4.53987681156532
       },
       "prevControl": {
-        "x": 6.749340631348881,
-        "y": 4.642795933238086
+        "x": 6.680405955134308,
+        "y": 4.542672744803407
       },
       "nextControl": null,
-      "holonomicAngle": 0.0,
+      "holonomicAngle": -17.241459398939906,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [],
+        "names": [
+          "event2"
+        ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
       }
     }
   ],
-  "markers": []
+  "markers": [
+    {
+      "position": 1.003636363636303,
+      "names": [
+        "intakecude"
+      ]
+    }
+  ]
 }
