@@ -381,10 +381,11 @@ public class RobotContainer {
             return new WaitCommand(15.0);
 
           case LeftWing:
-            return new Wings(drivetrain, intake, telescope, arm, candle, RL_STR1, RL_STR2);
+            return new Wings(drivetrain, intake, telescope, arm, candle, RL_STR1, RL_STR2,null);
           
           case RightWing:
-            return new Wings(drivetrain, intake, telescope, arm, candle, RR_STR1, RR_STR2);
+            return new Wings(drivetrain, intake, telescope, arm, candle, RR_STR1, RR_STR2,
+            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RR_STR3",4,2, false));
         
           case Center:
             return new Center(drivetrain, intake, telescope, arm, candle, R_Center, null);
@@ -409,11 +410,11 @@ public class RobotContainer {
             return new WaitCommand(15.0);
 
           case LeftWing:
-            return new Wings(drivetrain, intake, telescope, arm, candle, BLW1, BLW2);
+            return new Wings(drivetrain, intake, telescope, arm, candle, BLW1, BLW2,null);
           
           case RightWing:
             // return new Wings(drivetrain, intake, telescope, arm, B_RW1, B_RW2);
-            return new Wings(drivetrain, intake, telescope, arm, candle, BRW1, BRW2);
+            return new Wings(drivetrain, intake, telescope, arm, candle, BRW1, BRW2,null);
             //basic
         
           case Center:

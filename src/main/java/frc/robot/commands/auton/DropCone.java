@@ -36,18 +36,21 @@ public class DropCone extends SequentialCommandGroup {
 
         addCommands(
             new ParallelCommandGroup(
-                new ZeroGyro(drivetrain).withTimeout(0.1),
+                new ZeroGyro(drivetrain).withTimeout(0.05),
                 new skittles(candle)
-            ).withTimeout(0.1),
+            ).withTimeout(0.01),
             new ParallelCommandGroup(
-                new SetHighAuto(telescope),
+                new ExtractCone(intake),
+                // new SetHighAuto(telescope),
                 new armMid(arm)
-            ).withTimeout(1.5),
+            ).withTimeout(0.2),
+            new SetHighAuto(telescope).withTimeout(1.4),
             // new JustOuttake(intake).withTimeout(0.25),
             new JustOuttakeSpeed(intake, 0.3).withTimeout(0.2), //justouttakeslow 0.25
+            new RetractCone(intake).withTimeout(.05),   //.andThen(new SetLow(telescope).withTimeout(1)),
             new SetLow(telescope).withTimeout(1),
-            new armLow(arm).withTimeout(0.1),
-            new JustStopIntake(intake).withTimeout(0.1)
+            new armLow(arm).withTimeout(0.05),
+            new JustStopIntake(intake).withTimeout(0.05)
         );
     }
     

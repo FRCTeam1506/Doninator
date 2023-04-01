@@ -146,7 +146,7 @@ public class TelescopingSubsystem extends SubsystemBase {
         click = input.get();
         if(click == false){
             resetMotors();
-            System.out.println("CLICKED");
+            // System.out.println("CLICKED");
             motor.set(TalonFXControlMode.PercentOutput, 0);
             motor.set(TalonFXControlMode.MotionMagic, 2500);
             // stop();
