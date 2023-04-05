@@ -25,13 +25,13 @@ import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.TelescopingSubsystem;
 
 
-public class Wings extends SequentialCommandGroup {
+public class WingsBeta extends SequentialCommandGroup {
 
 
     //intake and outtake work for cube, so inverse for cone
     //RA100 only for one PathPlannerTrajectory --- simple auton
-    public Wings (SwerveDrivetrain drivetrain, IntakeSubsystem intake, TelescopingSubsystem telescope, 
-                  ArmSubsystem arm, OurBeautifulGlowingCANdleSubsystem candle, PathPlannerTrajectory trajectory1, PathPlannerTrajectory trajectory2, PathPlannerTrajectory trajectory3, PathPlannerTrajectory trajectory4) {
+    public WingsBeta (SwerveDrivetrain drivetrain, IntakeSubsystem intake, TelescopingSubsystem telescope, 
+                  ArmSubsystem arm, OurBeautifulGlowingCANdleSubsystem candle, PathPlannerTrajectory trajectory1, PathPlannerTrajectory trajectory2, PathPlannerTrajectory trajectory3, PathPlannerTrajectory trajectory34,  PathPlannerTrajectory trajectory4) {
         
         addCommands(
             new DropCone(drivetrain, intake, telescope, arm, candle),
@@ -63,19 +63,28 @@ public class Wings extends SequentialCommandGroup {
                 new SetLow(telescope).withTimeout(1)
             ),
 
-            new armLow(arm).withTimeout(0.7),
+            new armLow(arm).withTimeout(0.05),
 
             new ParallelCommandGroup(
-                new RunPathPlannerTrajectory2(drivetrain, trajectory4,true),
-                // new armMid(arm).withTimeout(0.7),
-                // new SetLow(telescope).withTimeout(4),
-                new SetHigh(telescope).withTimeout(.8)
+                new RunPathPlannerTrajectory2(drivetrain, trajectory34, false)
             ),
 
-            new JustIntake(intake).withTimeout(0.2),
-            // new SetLow(telescope).withTimeout(.01),
-            // new armLow(arm).withTimeout(0.01),
-            new JustStopIntake(intake).withTimeout(0.1)
+            new armMid(arm).withTimeout(0.01),
+            new JustStopIntake(intake).withTimeout(0.01)
+
+            // new ParallelCommandGroup(
+            //     new JustStopIntake(intake),
+            //     new RunPathPlannerTrajectory2(drivetrain, trajectory4,true),
+            //     new armHigh(arm),
+            //     // new armMid(arm).withTimeout(0.7),
+            //     // new SetLow(telescope).withTimeout(4),
+            //     new SetHigh(telescope).withTimeout(.8)
+            // ),
+
+            // new JustIntake(intake).withTimeout(0.2),
+            // // new SetLow(telescope).withTimeout(.01),
+            // // new armLow(arm).withTimeout(0.01),
+            // new JustStopIntake(intake).withTimeout(0.1)
 
 
 

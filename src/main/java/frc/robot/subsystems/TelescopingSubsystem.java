@@ -105,7 +105,7 @@ public class TelescopingSubsystem extends SubsystemBase {
 
     public void runHigh(){
         // targetPosition = 190000;
-        motor.set(TalonFXControlMode.MotionMagic, 175000); //145k too low standish, 193k
+        motor.set(TalonFXControlMode.MotionMagic, 180000); //145k too low standish, 193k
     }
 
     public void runHighAuto(){

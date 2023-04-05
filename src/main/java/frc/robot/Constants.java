@@ -25,7 +25,7 @@ public final class Constants {
         /* Drivetrain */
         public static final double TRACK_WIDTH          = Units.inchesToMeters(17.25); //
         public static final double WHEEL_BASE           = Units.inchesToMeters(17.25);
-        public static final double WHEEL_DIAMETER       = Units.inchesToMeters(3.58);
+        public static double WHEEL_DIAMETER       = Units.inchesToMeters(3.92); //3.58 //3.92
         public static final double WHEEL_CIRCUMFERENCE  = WHEEL_DIAMETER * Math.PI;
 
         public static final double OPEN_LOOP_RAMP   = 0.25;
