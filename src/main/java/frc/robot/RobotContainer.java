@@ -442,8 +442,15 @@ public class RobotContainer {
 
           case RightWing:
             // return new Wings(drivetrain, intake, telescope, arm, B_RW1, B_RW2);
-            return new Wings(drivetrain, intake, telescope, arm, candle, BRW1, BRW2,null,null);
+            // return new Wings(drivetrain, intake, telescope, arm, candle, BRW1, BRW2,null,null);
             //basic
+            return new WingsBeta(drivetrain, intake, telescope, arm, candle, 
+            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BR1",6,3, false), 
+            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BR2",6,3, false), 
+            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BR3",6,3, false),
+            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BR34",4,2, false),  
+            null);
+
         
           case Center:
             return new Center(drivetrain, intake, telescope, arm, candle, R_Center, null);
