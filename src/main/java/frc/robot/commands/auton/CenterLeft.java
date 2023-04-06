@@ -10,12 +10,16 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.arm.*;
+import frc.robot.commands.drivetrain.BackwardsSlow;
+import frc.robot.commands.drivetrain.ForwardSlow2;
 import frc.robot.commands.drivetrain.RunPathPlannerTrajectory2;
+import frc.robot.commands.drivetrain.Stop;
 import frc.robot.commands.drivetrain.ZeroGyro;
 import frc.robot.commands.intake.*;
 import frc.robot.commands.macros.ground;
 import frc.robot.commands.macros.high;
 import frc.robot.commands.telescoping.SetHigh;
+import frc.robot.commands.telescoping.SetHighAuto;
 import frc.robot.commands.telescoping.SetLow;
 import frc.robot.commands.telescoping.SetMid;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -25,13 +29,13 @@ import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.TelescopingSubsystem;
 
 
-public class WingsBeta extends SequentialCommandGroup {
+public class CenterLeft extends SequentialCommandGroup {
 
 
     //intake and outtake work for cube, so inverse for cone
     //RA100 only for one PathPlannerTrajectory --- simple auton
-    public WingsBeta (SwerveDrivetrain drivetrain, IntakeSubsystem intake, TelescopingSubsystem telescope, 
-                  ArmSubsystem arm, OurBeautifulGlowingCANdleSubsystem candle, PathPlannerTrajectory trajectory1, PathPlannerTrajectory trajectory2, PathPlannerTrajectory trajectory3, PathPlannerTrajectory trajectory34,  PathPlannerTrajectory trajectory4) {
+    public CenterLeft (SwerveDrivetrain drivetrain, IntakeSubsystem intake, TelescopingSubsystem telescope, 
+                  ArmSubsystem arm, OurBeautifulGlowingCANdleSubsystem candle, PathPlannerTrajectory trajectory1, PathPlannerTrajectory trajectory2, PathPlannerTrajectory trajectory3) {
         
         addCommands(
             new DropCone(drivetrain, intake, telescope, arm, candle),
@@ -51,7 +55,7 @@ public class WingsBeta extends SequentialCommandGroup {
                 // new SetLow(telescope).withTimeout(4),
                 new SetMid(telescope).withTimeout(.8)
             ),
-            new JustIntake(intake).withTimeout(0.3),
+            new JustIntake(intake).withTimeout(0.2),
             // new SetLow(telescope).withTimeout(.01),
             // new armLow(arm).withTimeout(0.01),
             new JustStopIntake(intake).withTimeout(0.1),
@@ -59,36 +63,12 @@ public class WingsBeta extends SequentialCommandGroup {
             new ParallelCommandGroup(
                 new RunPathPlannerTrajectory2(drivetrain, trajectory3 ,true),
                 // new armMid(arm).withTimeout(0.7),
-                new JustOuttakeSpeed(intake, 0.4).withTimeout(3.0),
                 new SetLow(telescope).withTimeout(1)
             ),
 
-            new armLow(arm).withTimeout(0.05),
-
-            new ParallelCommandGroup(
-                new RunPathPlannerTrajectory2(drivetrain, trajectory34, false)
-            ),
-
-            new armMid(arm).withTimeout(0.01),
-            new JustStopIntake(intake).withTimeout(0.01)
-
-            // new ParallelCommandGroup(
-            //     new JustStopIntake(intake),
-            //     new RunPathPlannerTrajectory2(drivetrain, trajectory4,true),
-            //     new armHigh(arm),
-            //     // new armMid(arm).withTimeout(0.7),
-            //     // new SetLow(telescope).withTimeout(4),
-            //     new SetHigh(telescope).withTimeout(.8)
-            // ),
-
-            // new JustIntake(intake).withTimeout(0.2),
-            // // new SetLow(telescope).withTimeout(.01),
-            // // new armLow(arm).withTimeout(0.01),
-            // new JustStopIntake(intake).withTimeout(0.1)
-
-
-
-
+            new ForwardSlow2(drivetrain).until(() -> drivetrain.getGyroRoll() <11),
+            new BackwardsSlow(drivetrain).withTimeout(1.25), //1.75
+            new Stop(drivetrain)
 
         );
     }

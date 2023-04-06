@@ -41,6 +41,7 @@ import frc.robot.utils.TrajectoryHelper;
 import frc.robot.commands.auton.Basic;
 import frc.robot.commands.auton.Center;
 import frc.robot.commands.auton.CenterBeta;
+import frc.robot.commands.auton.CenterLeft;
 import frc.robot.commands.auton.RA1;
 import frc.robot.commands.auton.RA100;
 import frc.robot.commands.auton.RA200;
@@ -385,8 +386,8 @@ public class RobotContainer {
           case LeftWing:
             // return new Wings(drivetrain, intake, telescope, arm, candle, RL_STR1, RL_STR2,null, null);
             return new WingsBeta(drivetrain, intake, telescope, arm, candle, 
-            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RL_STR1Beta",6,3, false), 
-            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RL_STR2Beta",6,3, false), 
+            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RL_STR1Beta",2,1, false), 
+            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("redleft2beta",4,1.5, false), 
             TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RL_STR3Beta",6,3, false),
             TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RL_STR34Beta",4,2, false),  
             null);
@@ -405,14 +406,18 @@ public class RobotContainer {
 
           case Center:
             return new Center(drivetrain, intake, telescope, arm, candle, R_Center, null);
-
+            // return new RunPathPlannerTrajectory2(drivetrain, TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RL_STR2Beta",6,3, false), true);
 
 
           case Test:
             // return new RA1(drivetrain, intake, telescope, arm, R_STR, B_STR, null);
             // return new RunPathPlannerTrajectory2(drivetrain, B_STR);
             // return new RA200(drivetrain, intake, telescope, arm, RR_STR1, RR_STR2);
-            return new CenterBeta(drivetrain, intake, telescope, arm, R_CenterBeta1, R_CenterBeta2);
+            // return new CenterBeta(drivetrain, intake, telescope, arm, R_CenterBeta1, R_CenterBeta2);
+            return new CenterLeft(drivetrain, intake, telescope, arm, candle, 
+            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RL_STR1Beta",6,3, false),
+            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RL_STR2Beta",4,2, false),  
+            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RLC3",2,2, false));
             
         
           default:
@@ -426,8 +431,15 @@ public class RobotContainer {
             return new WaitCommand(15.0);
 
           case LeftWing:
-            return new Wings(drivetrain, intake, telescope, arm, candle, BLW1, BLW2,null,null);
-          
+            // return new Wings(drivetrain, intake, telescope, arm, candle, BLW1, BLW2,null,null);
+            return new WingsBeta(drivetrain, intake, telescope, arm, candle, 
+            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BL1",6,3, false), 
+            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BL2",6,3, false), 
+            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BL3",6,3, false),
+            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BL34",4,2, false),  
+            null);
+
+
           case RightWing:
             // return new Wings(drivetrain, intake, telescope, arm, B_RW1, B_RW2);
             return new Wings(drivetrain, intake, telescope, arm, candle, BRW1, BRW2,null,null);
