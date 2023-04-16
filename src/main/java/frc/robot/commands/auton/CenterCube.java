@@ -8,7 +8,10 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.arm.*;
+import frc.robot.commands.drivetrain.BackwardsFast;
+import frc.robot.commands.drivetrain.BackwardsPark;
 import frc.robot.commands.drivetrain.BackwardsSlow;
+import frc.robot.commands.drivetrain.ForwardFast;
 import frc.robot.commands.drivetrain.ForwardSlow2;
 import frc.robot.commands.drivetrain.RunPathPlannerTrajectory2;
 import frc.robot.commands.drivetrain.Stop;
@@ -36,15 +39,23 @@ public class CenterCube extends SequentialCommandGroup {
         addCommands(
             new DropCone(drivetrain, intake, telescope, arm, candle),
             new armHigh(arm).withTimeout(0.3),
-            new RunPathPlannerTrajectory2(drivetrain, trajectory1, true),
+            new RunPathPlannerTrajectory2(drivetrain, trajectory1, true).withTimeout(4),
             new ParallelCommandGroup(
                 new armLow(arm),
                 new JustOuttake(intake)
+            ).withTimeout(0.05),
+            new RunPathPlannerTrajectory2(drivetrain, trajectory2, true),
+            new ParallelCommandGroup(
+                new armHigh(arm).withTimeout(0.1),
+                new JustStopIntake(intake).withTimeout(0.1),
+                new RunPathPlannerTrajectory2(drivetrain, trajectory3, true)
             ),
-            new ForwardSlow2(drivetrain).until(() -> drivetrain.getGyroRoll() <11),
-            new BackwardsSlow(drivetrain).withTimeout(1.25), //1.75
+            new ForwardFast(drivetrain).until(() -> Math.abs(drivetrain.getGyroRoll()) <2),
+            new JustIntake(intake).withTimeout(0.1),
+            // new BackwardsSlow(drivetrain).withTimeout(1.25), //1.75
+            new BackwardsFast(drivetrain).withTimeout(0.7),
             new Stop(drivetrain)
-            //new InstantCommand(() -> drivetrain.
+            // new InstantCommand(() -> drivetrain.
         );
     }
     

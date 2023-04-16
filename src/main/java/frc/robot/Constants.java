@@ -171,7 +171,7 @@ public final class Constants {
         public static final int MOTOR_ID = 61;
         public static final double CUBE_DEFAULT_INTAKE_SPEED = 0.3;
         public static final double CONE_DEFAULT_INTAKE_SPEED = 0.75; // 0.35 standish
-        public static final double CUBE_DEFAULT_OUTTAKE_SPEED = 1.0; //0.4
+        public static double CUBE_DEFAULT_OUTTAKE_SPEED = 1.0; //0.4
         public static final double CONE_DEFAULT_OUTTAKE_SPEED = 0.44; // 0.2  //0.25 //0.3 too slow standish
 
         public static final int SolenoidId1 = 5; //in

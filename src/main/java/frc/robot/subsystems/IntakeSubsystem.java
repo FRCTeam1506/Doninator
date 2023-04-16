@@ -5,9 +5,11 @@ import frc.lib.math.Conversions;
 
 
 import com.ctre.phoenix.motorcontrol.ControlFrame;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticHub;
@@ -31,6 +33,19 @@ public class IntakeSubsystem extends SubsystemBase {
         motor.configFactoryDefault();
         motor.setControlFramePeriod(ControlFrame.Control_3_General, 100);
         motor.setInverted(TalonFXInvertType.CounterClockwise);
+        
+        //current limit burn out the motor at states
+        TalonFXConfiguration intakeMotorConfig   = new TalonFXConfiguration();
+        SupplyCurrentLimitConfiguration driveSupplyLimit = new SupplyCurrentLimitConfiguration(
+            Constants.SwerveDrivetrain.DRIVE_ENABLE_CURRENT_LIMIT, 
+            Constants.SwerveDrivetrain.DRIVE_CONTINUOUS_CL, 
+            Constants.SwerveDrivetrain.DRIVE_PEAK_CL, 
+            Constants.SwerveDrivetrain.DRIVE_PEAK_CURRENT_DURATION);
+
+        intakeMotorConfig.supplyCurrLimit = driveSupplyLimit;
+        motor.configAllSettings(intakeMotorConfig);
+
+
         //set motor to brake
         this.motor.setNeutralMode(Constants.SwerveDrivetrain.DRIVE_NEUTRAL_MODE);
         dashboard();
@@ -62,6 +77,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
     }
 
+    public void tapAuto(){ //to not drop the cone at start of auto
+        motor.set(TalonFXControlMode.PercentOutput, -0.2);
+    }
+
     public void outtakeDefSpeed(){
         if(Constants.CandleSubsystem.cone == true){
             motor.set(TalonFXControlMode.PercentOutput, Constants.IntakeSubsystem.CONE_DEFAULT_OUTTAKE_SPEED);
@@ -81,6 +100,15 @@ public class IntakeSubsystem extends SubsystemBase {
         System.out.println("pneumatic2");
 
     }
+
+    public void cubeSlow(){
+        Constants.IntakeSubsystem.CUBE_DEFAULT_OUTTAKE_SPEED = 0.3;
+    }
+    
+    public void cubeFast(){
+        Constants.IntakeSubsystem.CUBE_DEFAULT_OUTTAKE_SPEED = 1.0;
+    }
+
 
     public void intakeRPM(double rpm){        
         //gearratio is second number, set it equal to 1 for now

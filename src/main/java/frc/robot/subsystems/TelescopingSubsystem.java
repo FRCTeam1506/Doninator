@@ -6,9 +6,11 @@ import frc.robot.commands.drivetrain.SwerveTeleop;
 
 import com.ctre.phoenix.motorcontrol.ControlFrame;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 
 import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -67,6 +69,15 @@ public class TelescopingSubsystem extends SubsystemBase {
         motor.configMotionCruiseVelocity(kVelocity);
         motor.configMotionAcceleration(kAcceleration);
 
+        //current limit burn out the motor at states
+        SupplyCurrentLimitConfiguration driveSupplyLimit = new SupplyCurrentLimitConfiguration(
+            Constants.SwerveDrivetrain.DRIVE_ENABLE_CURRENT_LIMIT, 
+            Constants.SwerveDrivetrain.DRIVE_CONTINUOUS_CL, 
+            Constants.SwerveDrivetrain.DRIVE_PEAK_CL, 
+            Constants.SwerveDrivetrain.DRIVE_PEAK_CURRENT_DURATION);
+
+        motor.configSupplyCurrentLimit(driveSupplyLimit);
+
         // click = input.get();
 
         // resetMotors();
@@ -123,7 +134,7 @@ public class TelescopingSubsystem extends SubsystemBase {
     // }
 
     public void runHP(){
-        motor.set(TalonFXControlMode.MotionMagic, 30000); //166587, 168587
+        motor.set(TalonFXControlMode.MotionMagic, 40000); //35000 post-states
     }
 
 

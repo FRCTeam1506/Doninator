@@ -15,6 +15,7 @@ import frc.robot.commands.intake.*;
 import frc.robot.commands.macros.ground;
 import frc.robot.commands.macros.high;
 import frc.robot.commands.telescoping.SetHigh;
+import frc.robot.commands.telescoping.SetHighAuto;
 import frc.robot.commands.telescoping.SetLow;
 import frc.robot.commands.telescoping.SetMid;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -24,36 +25,42 @@ import frc.robot.subsystems.SwerveDrivetrain;
 import frc.robot.subsystems.TelescopingSubsystem;
 
 
-public class Wings extends SequentialCommandGroup {
+public class bump extends SequentialCommandGroup {
 
 
     //intake and outtake work for cube, so inverse for cone
     //RA100 only for one PathPlannerTrajectory --- simple auton
-    public Wings (SwerveDrivetrain drivetrain, IntakeSubsystem intake, TelescopingSubsystem telescope, 
-                  ArmSubsystem arm, OurBeautifulGlowingCANdleSubsystem candle, PathPlannerTrajectory trajectory1, PathPlannerTrajectory trajectory2) {
+    public bump (SwerveDrivetrain drivetrain, IntakeSubsystem intake, TelescopingSubsystem telescope, 
+                  ArmSubsystem arm, OurBeautifulGlowingCANdleSubsystem candle, PathPlannerTrajectory trajectory1, PathPlannerTrajectory trajectory15, PathPlannerTrajectory trajectory2) {
         
         addCommands(
             new DropCone(drivetrain, intake, telescope, arm, candle),
-            new JustStopIntake(intake).withTimeout(0.1),
-            new armLow(arm).withTimeout(.5),
-            new ParallelCommandGroup(
-                new JustOuttakeSpeed(intake, 0.4).withTimeout(4.4),
-                new RunPathPlannerTrajectory2(drivetrain, trajectory1, true)
+            new JustStopIntake(intake).withTimeout(0.01),
+            new armLow(arm).withTimeout(.05),
+            // new RunPathPlannerTrajectory2(drivetrain, trajectory1, true),
+            new ParallelDeadlineGroup(
+                new RunPathPlannerTrajectory2(drivetrain, trajectory1, true),
+                new JustOuttakeSpeed(intake, 0.4).withTimeout(1)//4.4
+                // new dropArmSpecific(arm,drivetrain)
             ),
             //    FollowPathWithEvents(
             //new RunPathPlannerTrajectory2(drivetrain, trajectory1)
-            new JustStopIntake(intake).withTimeout(0.1),
-            new armMid(arm).withTimeout(.2),
             new ParallelCommandGroup(
                 new RunPathPlannerTrajectory2(drivetrain, trajectory2, true),
                 new armMid(arm).withTimeout(0.7),
+                new JustStopIntake(intake).withTimeout(0.01)
                 // new SetLow(telescope).withTimeout(4),
-                new SetHigh(telescope).withTimeout(2)
             ),
+            new SetHighAuto(telescope).withTimeout(2),
             new JustIntake(intake).withTimeout(0.2),
-            new SetLow(telescope).withTimeout(0.4),
-            new armLow(arm).withTimeout(0.1),
-            new JustStopIntake(intake).withTimeout(0.1)
+            // new SetLow(telescope).withTimeout(0.4),
+            // new armLow(arm).withTimeout(0.1),
+            new JustStopIntake(intake).withTimeout(0.1),
+
+            new ParallelCommandGroup(
+                new SetLow(telescope).withTimeout(0.4),
+                new armHigh(arm)
+            )
         );
     }
     
