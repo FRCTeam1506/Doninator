@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -99,7 +100,7 @@ public class RobotContainer {
   private final JoystickButton macroLow = new JoystickButton(operator, PS4Controller.Button.kSquare.value);
   private final JoystickButton macroMid = new JoystickButton(operator, PS4Controller.Button.kCircle.value);
   private final JoystickButton macroHigh = new JoystickButton(operator, PS4Controller.Button.kTriangle.value);
-  private final JoystickButton macroHP = new JoystickButton(operator, PS4Controller.Button.kCross.value);
+  // private final JoystickButton macroHP = new JoystickButton(operator, PS4Controller.Button.kCross.value);
   private final JoystickButton macroTransport = new JoystickButton(operator, PS4Controller.Button.kTouchpad.value);
 
   // private final JoystickButton operatorOptions = new JoystickButton(operator, PS4Controller.Button.kOptions.value);
@@ -133,6 +134,8 @@ public class RobotContainer {
 
   public static PneumaticHub hub      = new PneumaticHub();
   public static Compressor compressor = new Compressor(1, PneumaticsModuleType.REVPH);
+
+  private final Timer timer = new Timer();
 
   /* Commands */
   private final Command c_zeroGyro = new InstantCommand( () -> drivetrain.zeroGyro() );
@@ -190,7 +193,7 @@ public class RobotContainer {
   public PathPlannerTrajectory B_LW1, B_LW2, B_RW1, B_RW2, RL_STR1, RL_STR2, R_Center, B_Center, RR_STR1,
                                RR_STR2, R_CenterBeta1, R_CenterBeta2, BlueTurn, BRW1, BRW2, BLW1, BLW2, BLW1R, BLW2R;
   private enum Colors { None, Red, Blue }
-  private enum Autons { Nothing, LeftWing, Center, CenterCubeHP, CenterCubeWall, RightWing, Bump, JustCone, Test }
+  private enum Autons { Nothing, LeftWing, Center, CenterCubeHP, CenterCubeWall, RightWing, SmoothOneCube, JustCone, Test }
   private SendableChooser<Colors> colorChooser = new SendableChooser<>();
   private SendableChooser<Autons> autonChooser = new SendableChooser<>();
 
@@ -271,13 +274,13 @@ public class RobotContainer {
     macroLow.onTrue(c_macroLow);
     macroMid.onTrue(c_macroMid);
     macroHigh.onTrue(c_macroHigh);
-    macroHP.onTrue(c_macroHP);
+    // macroHP.onTrue(c_macroHP);
     macroTransport.onTrue(c_macroTransport);
     macroTransport.onFalse(c_macroStop);
     macroLow.onFalse(c_macroStop);
     macroMid.onFalse(c_macroStop);
     macroHigh.onFalse(c_macroStop);
-    macroHP.onFalse(c_macroStop);
+    // macroHP.onFalse(c_macroStop);
 
   }
 
@@ -297,6 +300,9 @@ public class RobotContainer {
     }
     else if(operator.getPOV() == 180){
       macro.transport();
+    }
+    else if(operator.getCrossButton()){
+      macro.HP();
     }
 
     // operatorOptions.onTrue(c_macroHP);
@@ -352,11 +358,13 @@ public class RobotContainer {
   private void configureAuton() {
     autonChooser.setDefaultOption("Nothing", Autons.Nothing);
     autonChooser.addOption("LeftWing", Autons.LeftWing);
-    autonChooser.addOption("Bump", Autons.Bump);
+    // autonChooser.addOption("Bump", Autons.Bump);
     autonChooser.addOption("Center", Autons.Center);
     autonChooser.addOption("CenterCubeHP", Autons.CenterCubeHP);
     autonChooser.addOption("CenterCubeWall", Autons.CenterCubeWall);
     autonChooser.addOption("RightWing", Autons.RightWing);
+    autonChooser.addOption("SmoothOneCube", Autons.SmoothOneCube);
+
     autonChooser.addOption("JustCone", Autons.JustCone);
     autonChooser.addOption("Test", Autons.Test);
 
@@ -400,19 +408,23 @@ public class RobotContainer {
 
           case LeftWing:
             // return new Wings(drivetrain, intake, telescope, arm, candle, RL_STR1, RL_STR2);
-            return new WingsBeta(drivetrain, intake, telescope, arm, candle, 
-            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RL_STR1Beta",2,1, false), 
-            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("redleft2beta",4,1.5, false), 
-            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RL_STR3Beta",6,3, false),
-            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RL_STR34Beta",4,2, false),  
-            null);
+            // return new WingsBeta(drivetrain, intake, telescope, arm, candle, 
+            // TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RL_STR1Beta",2,1, false), 
+            // TrajectoryHelper.loadHolonomicPathPlannerTrajectory("redleft2beta",4,1.5, false), 
+            // TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RL_STR3Beta",6,3, false),
+            // TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RL_STR34Beta",4,2, false),  
+            // null);
+            return new bump(drivetrain, intake, telescope, arm, candle, 
+            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RL_STR1OG",3,2, false),
+            null, TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RL_STR2OG",3,2, false));
+
 
           case RightWing:
             // return new Wings(drivetrain, intake, telescope, arm, candle, RR_STR1, RR_STR2,
             // TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RR_STR3",4,2, false), 
             // TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RR_STR4",4,2, false));
         
-            return new WingsBetaFast(drivetrain, intake, telescope, arm, candle, 
+            return new WingsBetaFast(drivetrain, intake, telescope, arm, candle,
             TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RR_STR1Copy",9,5, false), 
             RR_STR2,
             TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RR_STR3",9,5, false),//6,3
@@ -424,16 +436,21 @@ public class RobotContainer {
             // return new RunPathPlannerTrajectory2(drivetrain, TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RL_STR2Beta",6,3, false), true);
 
           case CenterCubeHP:
-          return new CenterCube(drivetrain, intake, telescope, arm, candle, 
-          TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RCC1",3,1.5, false), 
-          TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RCC2",9,4, false), 
-          TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RCC3",6,3, false));
-
-          case CenterCubeWall:
             return new CenterCube(drivetrain, intake, telescope, arm, candle, 
             TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RCC1NHP",3,1.5, false), 
             TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RCC2NHP",9,4, false), 
             TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RCC3NHP",6,3, false));
+
+          case CenterCubeWall:
+            return new CenterCube(drivetrain, intake, telescope, arm, candle, 
+            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RCC1",3,1.5, false), 
+            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RCC2",9,4, false), 
+            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RCC3",6,3, false));
+
+          case SmoothOneCube:
+            return new Wings(drivetrain, intake, telescope, arm, candle, RR_STR1, 
+            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RR_STR2Old",3,1.8, false) 
+            );
 
           case Test:
             // return new RA1(drivetrain, intake, telescope, arm, R_STR, B_STR, null);
@@ -505,27 +522,38 @@ null,       TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BB2",2,1.5, fal
 
           case CenterCubeHP:
             return new CenterCube(drivetrain, intake, telescope, arm, candle, 
-            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RCC1",1.8,1, false), 
-            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RCC2",4,2, false), 
-            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RCC3",2.5,1.5, false));
+            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RCC1",3,1.5, false), 
+            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RCC2",9,4, false), 
+            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RCC3",6,3, false));
 
-          case Bump:
-            int nonBump = 6;
-            int nonBumpAccel = 4;
-            int bump = 2;
-            int bumpAccel = 1;
+          case CenterCubeWall:
+            return new CenterCube(drivetrain, intake, telescope, arm, candle, 
+            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RCC1NHP",3,1.5, false), 
+            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RCC2NHP",9,4, false), 
+            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("RCC3NHP",6,3, false));
 
-            return new bumpWorlds(drivetrain, intake, telescope, arm, candle, 
-            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("Z01",nonBump,nonBumpAccel, false),  
-            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("Z02",bump,bumpAccel, false),  
-            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("Z03",nonBump,nonBumpAccel, false),  
-            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("Z11",nonBump,nonBumpAccel, false),  
-            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("Z12",bump,bumpAccel, false),  
-            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("Z13",nonBump,nonBumpAccel, false),  
-            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("Z21",nonBump,nonBumpAccel, false),  
-            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("Z22",bump,bumpAccel, false),  
-            TrajectoryHelper.loadHolonomicPathPlannerTrajectory("Z23",nonBump,nonBumpAccel, false));
-          
+
+//           case Bump:
+//             // int nonBump = 6;
+//             // int nonBumpAccel = 4;
+//             // int bump = 2;
+//             // int bumpAccel = 1;
+
+//             // return new bumpWorlds(drivetrain, intake, telescope, arm, candle, 
+//             // TrajectoryHelper.loadHolonomicPathPlannerTrajectory("Z01",nonBump,nonBumpAccel, false),  
+//             // TrajectoryHelper.loadHolonomicPathPlannerTrajectory("Z02",bump,bumpAccel, false),  
+//             // TrajectoryHelper.loadHolonomicPathPlannerTrajectory("Z03",nonBump,nonBumpAccel, false),  
+//             // TrajectoryHelper.loadHolonomicPathPlannerTrajectory("Z11",nonBump,nonBumpAccel, false),  
+//             // TrajectoryHelper.loadHolonomicPathPlannerTrajectory("Z12",bump,bumpAccel, false),  
+//             // TrajectoryHelper.loadHolonomicPathPlannerTrajectory("Z13",nonBump,nonBumpAccel, false),  
+//             // TrajectoryHelper.loadHolonomicPathPlannerTrajectory("Z21",nonBump,nonBumpAccel, false),  
+//             // TrajectoryHelper.loadHolonomicPathPlannerTrajectory("Z22",bump,bumpAccel, false),  
+//             // TrajectoryHelper.loadHolonomicPathPlannerTrajectory("Z23",nonBump,nonBumpAccel, false));
+//             return new bump(drivetrain, intake, telescope, arm, candle, 
+//             TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BB1",2,1.5, false), 
+// null,       TrajectoryHelper.loadHolonomicPathPlannerTrajectory("BB2",2,1.5, false));
+
+
           case JustCone:
             return new DropCone(drivetrain, intake, telescope, arm, candle);
 
