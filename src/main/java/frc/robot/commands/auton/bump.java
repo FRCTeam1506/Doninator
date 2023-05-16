@@ -40,19 +40,22 @@ public class bump extends SequentialCommandGroup {
             // new RunPathPlannerTrajectory2(drivetrain, trajectory1, true),
             new ParallelDeadlineGroup(
                 new RunPathPlannerTrajectory2(drivetrain, trajectory1, true),
-                new JustOuttakeSpeed(intake, 0.4).withTimeout(1)//4.4
-                // new dropArmSpecific(arm,drivetrain)
+                new JustOuttakeSpeed(intake, 0.4).withTimeout(1),//4.4
+                new dropArmSpecific(arm,drivetrain)
             ),
             //    FollowPathWithEvents(
             //new RunPathPlannerTrajectory2(drivetrain, trajectory1)
-            new ParallelCommandGroup(
+            new JustStopIntake(intake).withTimeout(0.01),
+
+            new ParallelDeadlineGroup(
                 new RunPathPlannerTrajectory2(drivetrain, trajectory2, true),
                 new armMid(arm).withTimeout(0.7),
-                new JustStopIntake(intake).withTimeout(0.01)
+                new TapAutoCube(intake)
                 // new SetLow(telescope).withTimeout(4),
             ),
-            new SetHighAuto(telescope).withTimeout(2),
+            new SetHighAuto(telescope).withTimeout(1.5),
             new JustIntake(intake).withTimeout(0.2),
+            new armHigh(arm).withTimeout(0.01),
             // new SetLow(telescope).withTimeout(0.4),
             // new armLow(arm).withTimeout(0.1),
             new JustStopIntake(intake).withTimeout(0.1),

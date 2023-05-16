@@ -15,6 +15,7 @@ import frc.robot.commands.intake.*;
 import frc.robot.commands.macros.ground;
 import frc.robot.commands.macros.high;
 import frc.robot.commands.telescoping.SetHigh;
+import frc.robot.commands.telescoping.SetHighAuto;
 import frc.robot.commands.telescoping.SetLow;
 import frc.robot.commands.telescoping.SetMid;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -50,9 +51,10 @@ public class Wings extends SequentialCommandGroup {
                 // new SetLow(telescope).withTimeout(4),
                 new SetHigh(telescope).withTimeout(2)
             ),
+            new SetHighAuto(telescope).withTimeout(0.6),
             new JustIntake(intake).withTimeout(0.2),
             new SetLow(telescope).withTimeout(0.4),
-            new armLow(arm).withTimeout(0.1),
+            // new armLow(arm).withTimeout(0.1),
             new JustStopIntake(intake).withTimeout(0.1)
         );
     }
