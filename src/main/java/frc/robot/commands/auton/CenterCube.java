@@ -47,13 +47,13 @@ public class CenterCube extends SequentialCommandGroup {
             new RunPathPlannerTrajectory2(drivetrain, trajectory2, true),
             new ParallelCommandGroup(
                 new armHigh(arm).withTimeout(0.1),
-                new TapAutoCube(intake).withTimeout(0.1),
+                new JustStopIntake(intake).withTimeout(0.1),
                 new RunPathPlannerTrajectory2(drivetrain, trajectory3, true)
             ),
             new ForwardFast(drivetrain).until(() -> Math.abs(drivetrain.getGyroRoll()) <2),
             new JustIntake(intake).withTimeout(0.1),
             // new BackwardsSlow(drivetrain).withTimeout(1.25), //1.75
-            new BackwardsFast(drivetrain).withTimeout(0.86), //0.66 succeded third match, failed fourth match
+            new BackwardsFast(drivetrain).withTimeout(0.7),
             new Stop(drivetrain)
             // new InstantCommand(() -> drivetrain.
         );

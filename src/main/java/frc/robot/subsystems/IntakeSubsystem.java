@@ -81,11 +81,6 @@ public class IntakeSubsystem extends SubsystemBase {
         motor.set(TalonFXControlMode.PercentOutput, -0.2);
     }
 
-    public void tapAutoCube(){ //to not drop the cone at start of auto
-        motor.set(TalonFXControlMode.PercentOutput, 0.1);
-    }
-
-
     public void outtakeDefSpeed(){
         if(Constants.CandleSubsystem.cone == true){
             motor.set(TalonFXControlMode.PercentOutput, Constants.IntakeSubsystem.CONE_DEFAULT_OUTTAKE_SPEED);

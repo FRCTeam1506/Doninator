@@ -3,7 +3,7 @@ package frc.robot.commands.auton;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.FollowPathWithEvents;
 
-// import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
@@ -32,8 +32,7 @@ public class WingsBetaFast extends SequentialCommandGroup {
     //RA100 only for one PathPlannerTrajectory --- simple auton
     public WingsBetaFast (SwerveDrivetrain drivetrain, IntakeSubsystem intake, TelescopingSubsystem telescope, 
                   ArmSubsystem arm, OurBeautifulGlowingCANdleSubsystem candle, PathPlannerTrajectory trajectory1, PathPlannerTrajectory trajectory2, PathPlannerTrajectory trajectory3, PathPlannerTrajectory trajectory34,  PathPlannerTrajectory trajectory4, PathPlannerTrajectory turn) {
-        // Timer timer = new Timer();
-
+        
         addCommands(
             new DropCone(drivetrain, intake, telescope, arm, candle),
             new JustStopIntake(intake).withTimeout(0.01),
@@ -49,7 +48,7 @@ public class WingsBetaFast extends SequentialCommandGroup {
 
             //********TURN */
             // new RunPathPlannerTrajectory2(drivetrain, turn, true),
-
+            
             new ParallelCommandGroup(
                 new RunPathPlannerTrajectory2(drivetrain, trajectory2,true),
                 // new armMid(arm).withTimeout(0.7),
@@ -78,17 +77,17 @@ public class WingsBetaFast extends SequentialCommandGroup {
 
             // new armMid(arm).withTimeout(0.01),
             // new JustStopIntake(intake).withTimeout(0.01)
-            new JustStopIntake(intake).withTimeout(0.01),
 
             new ParallelCommandGroup(
                 new armMid(arm),
-                new RunPathPlannerTrajectory2(drivetrain, trajectory4,true),
-                new TimedOuttakeAuto(intake)
+                new JustStopIntake(intake),
+                new RunPathPlannerTrajectory2(drivetrain, trajectory4,true)
                 // new armHigh(arm),
                 // new armMid(arm).withTimeout(0.7),
                 // new SetLow(telescope).withTimeout(4),
                 // new SetHigh(telescope).withTimeout(.8)
-            )
+            ),
+            new JustOuttakeSpeed(intake, -0.7).withTimeout(1.0)
 
             // new JustIntake(intake).withTimeout(0.2),
             // // new SetLow(telescope).withTimeout(.01),

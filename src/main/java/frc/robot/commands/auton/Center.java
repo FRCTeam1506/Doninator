@@ -38,7 +38,7 @@ public class Center extends SequentialCommandGroup {
             new armHigh(arm).withTimeout(0.3),
             new RunPathPlannerTrajectory2(drivetrain, trajectory1, true),
             new ForwardSlow2(drivetrain).until(() -> drivetrain.getGyroRoll() <11),
-            new BackwardsSlow(drivetrain).withTimeout(1.175), //1.75 //1.25 for standish, ford field //1.1 for DTE field
+            new BackwardsSlow(drivetrain).withTimeout(1.1), //1.75 //1.25 for standish, ford field //1.1 for DTE field
             new Stop(drivetrain)
             //new InstantCommand(() -> drivetrain.
         );
